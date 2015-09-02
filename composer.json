@@ -1,0 +1,24 @@
+{
+  "name": "larryli/IPv4",
+  "description": "IP v4 中国城市地址库",
+  "homepage": "https://github.com/larryli/IPv4",
+  "minimum-stability": "dev",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Larry Li",
+      "email": "larryli@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4",
+    "symfony/console": "~2.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.5"
+  },
+  "autoload": {
+    "psr-4": { "larryli\\IPv4\\": "src/" }
+  },
+  "bin": ["bin/ipv4"]
+}
