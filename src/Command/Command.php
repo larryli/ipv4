@@ -5,10 +5,10 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\IPv4\Command;
+namespace larryli\ipv4\Command;
 
-use larryli\IPv4\IPDB\MonIPDB;
-use larryli\IPv4\IPDB\QQWry;
+use larryli\ipv4\IPDB\MonIPDB;
+use larryli\ipv4\IPDB\QQWry;
 use Symfony\Component\Console\Command\Command as BaseCommand;
 
 class Command extends BaseCommand
@@ -25,7 +25,7 @@ class Command extends BaseCommand
         parent::__construct($name);
         $this->runtime = realpath(dirname(__DIR__) . '/../runtime');
         if (empty($this->runtime)) {
-            throw new \Exception('larryli\\IPv4 runtime must not empty!');
+            throw new \Exception('larryli\\ipv4 runtime must not empty!');
         }
     }
 

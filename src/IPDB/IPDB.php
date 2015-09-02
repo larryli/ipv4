@@ -5,7 +5,7 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\IPv4\IPDB;
+namespace larryli\ipv4\IPDB;
 
 
 abstract class IPDB

@@ -1,7 +1,7 @@
 {
-  "name": "larryli/IPv4",
+  "name": "larryli/ipv4",
   "description": "IP v4 中国城市地址库",
-  "homepage": "https://github.com/larryli/IPv4",
+  "homepage": "https://github.com/larryli/ipv4",
   "minimum-stability": "dev",
   "license": "MIT",
   "authors": [
@@ -18,7 +18,7 @@
     "phpunit/phpunit": "~4.5"
   },
   "autoload": {
-    "psr-4": { "larryli\\IPv4\\": "src/" }
+    "psr-4": { "larryli\\ipv4\\": "src/" }
   },
   "bin": ["bin/ipv4"]
 }

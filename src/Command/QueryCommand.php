@@ -5,7 +5,7 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\IPv4\Command;
+namespace larryli\ipv4\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
