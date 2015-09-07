@@ -7,6 +7,8 @@
 
 namespace larryli\ipv4\Command;
 
+use larryli\ipv4\Query\Query;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -49,7 +51,7 @@ class DumpCommand extends Command
         $output->writeln("<info>dump {$type}:</info>");
         switch ($type) {
             case 'default':
-                $this->dumpDefault($output, '17monipdb', 'dump_17monipdb.json');
+                $this->dumpDefault($output, 'monipdb', 'dump_monipdb.json');
                 $this->dumpDefault($output, 'qqwry', 'dump_qqwry.json');
                 $this->dumpDefault($output, 'full', 'dump_full.json');
                 $this->dumpDefault($output, 'mini', 'dump_mini.json');
@@ -57,7 +59,7 @@ class DumpCommand extends Command
                 $this->dumpDefault($output, 'world', 'dump_world.json');
                 break;
             case 'address':
-                $this->dumpAddress($output, '17monipdb', 'dump_17monipdb_address.json');
+                $this->dumpAddress($output, 'monipdb', 'dump_monipdb_address.json');
                 $this->dumpAddress($output, 'qqwry', 'dump_qqwry_address.json');
                 $this->dumpAddress($output, 'full', 'dump_full_address.json');
                 $this->dumpAddress($output, 'mini', 'dump_mini_address.json');
@@ -65,7 +67,7 @@ class DumpCommand extends Command
                 $this->dumpAddress($output, 'world', 'dump_world_address.json');
                 break;
             case 'guess':
-                $this->dumpGuess($output, '17monipdb', 'dump_17monipdb_guess.json');
+                $this->dumpGuess($output, 'monipdb', 'dump_monipdb_guess.json');
                 $this->dumpGuess($output, 'qqwry', 'dump_qqwry_guess.json');
                 break;
             default:
@@ -82,7 +84,7 @@ class DumpCommand extends Command
     private function dumpDefault($output, $name, $filename)
     {
         $result = [];
-        $query = $this->newQuery($name);
+        $query = Query::factory($name);
         $this->dump($output, $query, $filename, function ($output, $query) use (&$result) {
             $query->dump(function ($ip, $address) use ($output, &$result) {
                 static $n = 0;
@@ -104,7 +106,7 @@ class DumpCommand extends Command
      */
     private function dumpAddress($output, $name, $filename)
     {
-        $query = $this->newQuery($name);
+        $query = Query::factory($name);
         $result = $this->address($output, $query, $filename);
         $this->write($output, $filename, $result);
     }
@@ -117,7 +119,7 @@ class DumpCommand extends Command
      */
     private function dumpGuess($output, $name, $filename)
     {
-        $query = $this->newQuery($name);
+        $query = Query::factory($name);
         $addresses = $this->address($output, $query, $filename);
         $result = $this->guess($output, $query, $filename, $addresses);
         $this->write($output, $filename, $result);

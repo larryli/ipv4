@@ -46,4 +46,42 @@ abstract class Query
      */
     abstract public function getTotal();
 
+    /**
+     * @var array
+     */
+    static protected $objects = [];
+
+    /**
+     * @param $name
+     * @param null $options
+     */
+    static public function factory($name, $options = null)
+    {
+        if (!isset(self::$objects[$name])) {
+            switch ($name) {
+                case 'monipdb':
+                    $obj = new MonIPDBQuery($options);
+                    break;
+                case 'qqwry':
+                    $obj = new QQWryQuery($options);
+                    break;
+                case 'full':
+                    $obj = new FullQuery($options);
+                    break;
+                case 'mini':
+                    $obj = new MiniQuery($options);
+                    break;
+                case 'china':
+                    $obj = new ChinaQuery($options);
+                    break;
+                case 'world':
+                    $obj = new WorldQuery($options);
+                    break;
+                default:
+                    throw new \Exception("Unknown Query name \"{$name}\"");
+            }
+            self::$objects[$name] = $obj;
+        }
+        return self::$objects[$name];
+    }
 }

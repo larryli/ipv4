@@ -44,6 +44,18 @@ class QQWryQuery extends FileQuery
     private $cached = [];
 
     /**
+     * @param string $filename
+     * @throws \Exception
+     */
+    function __construct($filename = '')
+    {
+        if (empty($filename)) {
+            $filename = self::getRuntime('qqwry.dat');
+        }
+        return parent::__construct($filename);
+    }
+
+    /**
      *
      */
     public function __destruct()

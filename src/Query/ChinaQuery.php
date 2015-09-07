@@ -14,7 +14,6 @@ namespace larryli\ipv4\Query;
  */
 class ChinaQuery extends DatabaseQuery
 {
-
     /**
      * @return string
      */
@@ -24,26 +23,14 @@ class ChinaQuery extends DatabaseQuery
     }
 
     /**
-     * @param $func
-     * @param $db1
-     * @param $db2
+     * @param $id
+     * @return int
      */
-    public function generate($func, $db1, $db2)
+    public function translateId($id)
     {
-        $this->startSave();
-        $func(0, $db1->getTotal());
-        $db1->dumpId(function ($ip, $id) use ($func, $db1) {
-            static $n = 0;
-            $n++;
-            if ($id > 10 && $id < 100000) {  // 国外
-                $id = 0;
-            }
-            if ($this->saveTo($ip, $id)) {
-                $func(1, $n);
-            }
-        });
-        $this->endSave();
-        $func(2, 0);
+        if ($id > 10 && $id < 100000) {  // 国外
+            $id = 0;
+        }
+        return $id;
     }
-
 }

@@ -7,6 +7,8 @@
 
 namespace larryli\ipv4\Command;
 
+use larryli\ipv4\Query\Query;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -48,7 +50,7 @@ class CleanCommand extends Command
         $output->writeln("<info>clean {$type}:</info>");
         switch ($type) {
             case 'all':
-                $this->clean($output, '17monipdb');
+                $this->clean($output, 'monipdb');
                 $this->clean($output, 'qqwry');
                 $this->clean($output, 'full');
                 $this->clean($output, 'mini');
@@ -57,7 +59,7 @@ class CleanCommand extends Command
                 $this->cleanDivision($output);
                 break;
             case 'file':
-                $this->clean($output, '17monipdb');
+                $this->clean($output, 'monipdb');
                 $this->clean($output, 'qqwry');
                 break;
             case 'database':
@@ -80,7 +82,7 @@ class CleanCommand extends Command
     private function clean($output, $name)
     {
         $output->write("<info>clean {$name}:</info>");
-        $query = $this->newQuery($name);
+        $query = Query::factory($name);
         $query->clean();
         $output->writeln('<info> completed!</info>');
     }

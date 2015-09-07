@@ -44,25 +44,9 @@ abstract class FileQuery extends Query
      * @param bool|false $is_init
      * @throws \Exception
      */
-    public function __construct($filename, $is_init = false)
+    public function __construct($filename)
     {
-        if (empty(self::$divisions)) {
-            self::$divisions = [
-                '中国' => ['id' => 1],
-                '本机地址' => ['id' => 2],
-                '局域网' => ['id' => 3],
-                '保留地址' => ['id' => 4],
-                'IPIP.NET' => ['id' => 4],    // alias
-                'IANA机构' => ['id' => 4],    // alias
-                'CZ88.NET' => ['id' => 4],    // alias
-                '纯真网络' => ['id' => 4],    // alias
-                '本地链路' => ['id' => 5],
-            ];
-            self::$divisions = array_merge(self::$divisions, require('guess_world.php'));
-            self::$divisions = array_merge(self::$divisions, require('guess_china.php'));
-            self::$divisions = array_merge(self::$divisions, require('guess_college.php'));
-        }
-
+        self::initGuess();
         if (empty($filename)) {
             throw new \Exception("must have a database file.");
         }
@@ -80,9 +64,38 @@ abstract class FileQuery extends Query
             }
         }
         $this->filename = $filename;
-        if ($is_init) {
-            $this->init();
+    }
+
+    /**
+     *
+     */
+    static protected function initGuess()
+    {
+        if (empty(self::$divisions)) {
+            self::$divisions = [
+                '中国' => ['id' => 1],
+                '本机地址' => ['id' => 2],
+                '局域网' => ['id' => 3],
+                '保留地址' => ['id' => 4],
+                'IPIP.NET' => ['id' => 4],    // alias
+                'IANA机构' => ['id' => 4],    // alias
+                'CZ88.NET' => ['id' => 4],    // alias
+                '纯真网络' => ['id' => 4],    // alias
+                '本地链路' => ['id' => 5],
+            ];
+            self::$divisions = array_merge(self::$divisions, require('guess_world.php'));
+            self::$divisions = array_merge(self::$divisions, require('guess_china.php'));
+            self::$divisions = array_merge(self::$divisions, require('guess_college.php'));
         }
+    }
+
+    static protected function getRuntime($filename = '')
+    {
+        $runtime = realpath(dirname(dirname(__DIR__)) . '/runtime');
+        if (empty($runtime)) {
+            throw new \Exception('larryli\\ipv4 runtime must not empty!');
+        }
+        return $runtime . '/' . $filename;
     }
 
     /**

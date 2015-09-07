@@ -44,6 +44,18 @@ class MonIPDBQuery extends FileQuery
     private $cached = [];
 
     /**
+     * @param string $filename
+     * @throws \Exception
+     */
+    function __construct($filename = '')
+    {
+        if (empty($filename)) {
+            $filename = self::getRuntime('17monipdb.dat');
+        }
+        return parent::__construct($filename);
+    }
+
+    /**
      *
      */
     public function __destruct()

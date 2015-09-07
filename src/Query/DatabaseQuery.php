@@ -40,16 +40,15 @@ abstract class DatabaseQuery extends Query
     private $last_saved = [];
 
     /**
-     * @param $func
-     * @param $db1
-     * @param $db2
+     * @param $id
+     * @return mixed
      */
-    abstract public function generate($func, $db1, $db2);
+    abstract public function translateId($id);
 
     /**
      * @throws \Exception
      */
-    public function __construct()
+    public function __construct($options = null)
     {
         if (self::$medoo === null) {
             self::initMedoo();
@@ -237,6 +236,48 @@ EOT;
         if ($this->exists()) {
             self::$medoo->drop_table($this->name());
         }
+    }
+
+    /**
+     * @param $func
+     * @param $db1
+     * @param $db2
+     * @throws \Exception
+     */
+    public function generate($func, $db1, $db2)
+    {
+        $this->startSave();
+        $func(0, $db1->getTotal());
+        if (method_exists($db1, 'dumpId')) {
+            $db1->dumpId(function ($ip, $id) use ($func, $db1) {
+                static $n = 0;
+                $n++;
+                $id = $this->translateId($id);
+                if ($this->saveTo($ip, $id)) {
+                    $func(1, $n);
+                }
+            });
+        } else {
+            if (!method_exists($db1, 'guess')) {
+                $name = $db1->name();
+                throw new \Exception("{$name} do not guess");
+            }
+            $again = is_object($db2) && method_exists($db2, 'guess');
+            $db1->dump(function ($ip, $address) use ($func, $db1, $db2, $again) {
+                static $n = 0;
+                $n++;
+                list($id, $_) = $db1->guess($address);
+                if (empty($id) && $again) {
+                    list($id, $_) = $db2->guess($db2->query($ip));
+                }
+                $id = $this->translateId($id);
+                if ($this->saveTo($ip, $id)) {
+                    $func(1, $n);
+                }
+            });
+        }
+        $this->endSave();
+        $func(2, 0);
     }
 
     /**

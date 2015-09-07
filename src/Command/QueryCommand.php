@@ -7,6 +7,8 @@
 
 namespace larryli\ipv4\Command;
 
+use larryli\ipv4\Query\Query;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,7 +46,7 @@ class QueryCommand extends Command
         $ip = $input->getArgument('ip');
         $output->writeln("<info>query \"{$ip}\":</info>");
         $ip = ip2long($ip);
-        $this->query($output, '17monipdb', $ip);
+        $this->query($output, 'monipdb', $ip);
         $this->query($output, 'qqwry', $ip);
         $this->query($output, 'full', $ip);
         $this->query($output, 'mini', $ip);
@@ -60,7 +62,7 @@ class QueryCommand extends Command
      */
     private function query($output, $name, $ip)
     {
-        $query = $this->newQuery($name);
+        $query = Query::factory($name);
         $address = $query->query($ip);
         $output->writeln("\t<comment>{$name}:</comment> {$address}");
     }

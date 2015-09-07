@@ -7,6 +7,8 @@
 
 namespace larryli\ipv4\Command;
 
+use larryli\ipv4\Query\Query;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -46,7 +48,7 @@ class InitCommand extends Command
     {
         $force = $input->getOption('force');
         $output->writeln("<info>initialize ip database:</info>");
-        $monipdb = $this->download($output, '17monipdb', $force);
+        $monipdb = $this->download($output, 'monipdb', $force);
         $qqwry = $this->download($output, 'qqwry', $force);
         $this->division($output);
         $full = $this->generate($output, 'full', $force, $monipdb, $qqwry);
@@ -89,7 +91,7 @@ class InitCommand extends Command
      */
     protected function generate($output, $name, $force, $db1, $db2 = null)
     {
-        $query = $this->newQuery($name);
+        $query = Query::factory($name);
         $name = $query->name();
         if (!$force && $query->exists()) {
             $output->writeln("<comment>use exist {$name} table.</comment>", OutputInterface::VERBOSITY_VERBOSE);
@@ -123,7 +125,7 @@ class InitCommand extends Command
      */
     protected function download($output, $name, $force)
     {
-        $query = $this->newQuery($name);
+        $query = Query::factory($name);
         $name = $query->name();
         if (!$force && $query->exists()) {
             $output->writeln("<comment>use exist {$name} file.</comment>", OutputInterface::VERBOSITY_VERBOSE);

@@ -14,7 +14,6 @@ namespace larryli\ipv4\Query;
  */
 class FullQuery extends DatabaseQuery
 {
-
     /**
      * @return string
      */
@@ -24,27 +23,11 @@ class FullQuery extends DatabaseQuery
     }
 
     /**
-     * @param $func
-     * @param $db1
-     * @param $db2
+     * @param $id
+     * @return mixed
      */
-    public function generate($func, $db1, $db2)
+    public function translateId($id)
     {
-        $this->startSave();
-        $func(0, $db1->getTotal());
-        $db1->dump(function ($ip, $address) use ($func, $db1, $db2) {
-            static $n = 0;
-            $n++;
-            list($id, $_) = $db1->guess($address);
-            if (empty($id)) {
-                list($id, $_) = $db2->guess($db2->query($ip));
-            }
-            if ($this->saveTo($ip, $id)) {
-                $func(1, $n);
-            }
-        });
-        $this->endSave();
-        $func(2, 0);
+        return $id;
     }
-
 }
