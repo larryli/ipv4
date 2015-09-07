@@ -10,7 +10,7 @@ use Symfony\Component\Console\Application;
 
 $app = new Application('IP v4', '1.0-dev');
 $app->add(new larryli\ipv4\Command\InitCommand);
-$app->add(new larryli\ipv4\Command\DumpCommand);
 $app->add(new larryli\ipv4\Command\QueryCommand);
-//$app->add(new larryli\ipv4\Command\TestCommand);
+$app->add(new larryli\ipv4\Command\CleanCommand);
+$app->add(new larryli\ipv4\Command\DumpCommand);
 $app->run();

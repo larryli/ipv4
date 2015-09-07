@@ -1,6 +1,6 @@
 <?php
 /**
- * InitCommand.php
+ * DumpCommand.php
  *
  * Author: Larry Li <larryli@qq.com>
  */
@@ -12,10 +12,20 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class DumpCommand
+ * @package larryli\ipv4\Command
+ */
 class DumpCommand extends Command
 {
+    /**
+     * @var null
+     */
     private $progress = null;
 
+    /**
+     *
+     */
     protected function configure()
     {
         $this
@@ -28,6 +38,11 @@ class DumpCommand extends Command
                 'default');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @throws \Exception
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $type = $input->getArgument('type');
@@ -36,10 +51,18 @@ class DumpCommand extends Command
             case 'default':
                 $this->dumpDefault($output, '17monipdb', 'dump_17monipdb.json');
                 $this->dumpDefault($output, 'qqwry', 'dump_qqwry.json');
+                $this->dumpDefault($output, 'full', 'dump_full.json');
+                $this->dumpDefault($output, 'mini', 'dump_mini.json');
+                $this->dumpDefault($output, 'china', 'dump_china.json');
+                $this->dumpDefault($output, 'world', 'dump_world.json');
                 break;
             case 'address':
                 $this->dumpAddress($output, '17monipdb', 'dump_17monipdb_address.json');
                 $this->dumpAddress($output, 'qqwry', 'dump_qqwry_address.json');
+                $this->dumpAddress($output, 'full', 'dump_full_address.json');
+                $this->dumpAddress($output, 'mini', 'dump_mini_address.json');
+                $this->dumpAddress($output, 'china', 'dump_china_address.json');
+                $this->dumpAddress($output, 'world', 'dump_world_address.json');
                 break;
             case 'guess':
                 $this->dumpGuess($output, '17monipdb', 'dump_17monipdb_guess.json');
@@ -50,12 +73,18 @@ class DumpCommand extends Command
         }
     }
 
+    /**
+     * @param $output
+     * @param $name
+     * @param $filename
+     * @throws \Exception
+     */
     private function dumpDefault($output, $name, $filename)
     {
         $result = [];
-        $ipdb = $this->newIPDB($name);
-        $this->dump($output, $ipdb, $filename, function ($output, $ipdb) use (&$result) {
-            $ipdb->dump(function ($ip, $address) use ($output, &$result) {
+        $query = $this->newQuery($name);
+        $this->dump($output, $query, $filename, function ($output, $query) use (&$result) {
+            $query->dump(function ($ip, $address) use ($output, &$result) {
                 static $n = 0;
                 $result[long2ip($ip)] = $address;
                 $n++;
@@ -67,36 +96,60 @@ class DumpCommand extends Command
         $this->write($output, $filename, $result);
     }
 
+    /**
+     * @param $output
+     * @param $name
+     * @param $filename
+     * @throws \Exception
+     */
     private function dumpAddress($output, $name, $filename)
     {
-        $ipdb = $this->newIPDB($name);
-        $result = $this->address($output, $ipdb, $filename);
+        $query = $this->newQuery($name);
+        $result = $this->address($output, $query, $filename);
         $this->write($output, $filename, $result);
     }
 
+    /**
+     * @param $output
+     * @param $name
+     * @param $filename
+     * @throws \Exception
+     */
     private function dumpGuess($output, $name, $filename)
     {
-        $ipdb = $this->newIPDB($name);
-        $addresses = $this->address($output, $ipdb, $filename);
-        $result = $this->guess($output, $ipdb, $filename, $addresses);
+        $query = $this->newQuery($name);
+        $addresses = $this->address($output, $query, $filename);
+        $result = $this->guess($output, $query, $filename, $addresses);
         $this->write($output, $filename, $result);
     }
 
-    private function dump($output, $ipdb, $filename, $func)
+    /**
+     * @param $output
+     * @param $query
+     * @param $filename
+     * @param $func
+     */
+    private function dump($output, $query, $filename, $func)
     {
         $output->writeln("<info>dump {$filename}:</info>");
-        $this->progress = new ProgressBar($output, $ipdb->getTotal());
+        $this->progress = new ProgressBar($output, $query->getTotal());
         $this->progress->start();
-        $func($output, $ipdb);
+        $func($output, $query);
         $this->progress->finish();
         $output->writeln('<info> completed!</info>');
     }
 
-    private function address($output, $ipdb, $filename)
+    /**
+     * @param $output
+     * @param $query
+     * @param $filename
+     * @return array
+     */
+    private function address($output, $query, $filename)
     {
         $addresses = [];
-        $this->dump($output, $ipdb, $filename, function ($output, $ipdb) use (&$addresses) {
-            $ipdb->dump(function ($ip, $address) use ($output, &$addresses) {
+        $this->dump($output, $query, $filename, function ($output, $query) use (&$addresses) {
+            $query->dump(function ($_, $address) use ($output, &$addresses) {
                 static $n = 0;
                 if (!in_array($address, $addresses)) {
                     $addresses[] = $address;
@@ -111,7 +164,14 @@ class DumpCommand extends Command
         return $addresses;
     }
 
-    private function guess($output, $ipdb, $filename, $addresses)
+    /**
+     * @param $output
+     * @param $query
+     * @param $filename
+     * @param $addresses
+     * @return array
+     */
+    private function guess($output, $query, $filename, $addresses)
     {
         $result = [];
         $output->writeln("<info>guess {$filename}:</info>");
@@ -119,8 +179,7 @@ class DumpCommand extends Command
         $this->progress->start();
         foreach ($addresses as $address) {
             static $n = 0;
-            list($id, $name) = $ipdb->guess($address);
-            $result[$address] = "{$id} {$name}";
+            list($result[$address], $_) = $query->guess($address);
             $n++;
             if (($n % 10) == 0) {
                 $this->progress->setProgress($n);
@@ -131,6 +190,11 @@ class DumpCommand extends Command
         return $result;
     }
 
+    /**
+     * @param $output
+     * @param $filename
+     * @param $result
+     */
     private function write($output, $filename, $result)
     {
         $output->write("<info>write {$filename}:</info>");

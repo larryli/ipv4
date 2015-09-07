@@ -1,4 +1,5 @@
 .idea/
+config/db.php
 composer.phar
 runtime/
 vendor/

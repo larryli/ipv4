@@ -1,29 +1,49 @@
 <?php
 /**
- * IPDB.php
+ * FileQuery.php
  *
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\IPDB;
+namespace larryli\ipv4\Query;
 
 
-abstract class IPDB
+/**
+ * Class FileQuery
+ * @package larryli\ipv4\Query
+ */
+abstract class FileQuery extends Query
 {
-    public $filename = '';
+    /**
+     * @var string
+     */
+    protected $filename = '';
+    /**
+     * @var bool
+     */
     protected $is_init = false;
+    /**
+     * @var array
+     */
     static protected $divisions = [];
 
+    /**
+     * @param $func
+     * @return mixed
+     */
     abstract public function download($func = file_get_contents);
 
-    abstract public function dump($func);
-
-    abstract public function getTotal();
-
-    abstract public function query($ip);
-
+    /**
+     * @param $address
+     * @return mixed
+     */
     abstract public function guess($address);
 
+    /**
+     * @param $filename
+     * @param bool|false $is_init
+     * @throws \Exception
+     */
     public function __construct($filename, $is_init = false)
     {
         if (empty(self::$divisions)) {
@@ -65,6 +85,9 @@ abstract class IPDB
         }
     }
 
+    /**
+     * @return bool
+     */
     public function init()
     {
         if ($this->is_init) {
@@ -74,9 +97,30 @@ abstract class IPDB
         return false;
     }
 
-    public static function getClass()
+    /**
+     * @return string
+     */
+    public function name()
     {
-        return get_called_class();
+        return basename($this->filename);
+    }
+
+    /**
+     * @return bool
+     */
+    public function exists()
+    {
+        return file_exists($this->filename);
+    }
+
+    /**
+     *
+     */
+    public function clean()
+    {
+        if ($this->exists()) {
+            unlink($this->filename);
+        }
     }
 
 }

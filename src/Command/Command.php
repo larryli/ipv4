@@ -7,37 +7,61 @@
 
 namespace larryli\ipv4\Command;
 
-use larryli\ipv4\IPDB\MonIPDB;
-use larryli\ipv4\IPDB\QQWry;
-use Symfony\Component\Console\Command\Command as BaseCommand;
-
-class Command extends BaseCommand
+/**
+ * Class Command
+ * @package larryli\ipv4\Command
+ */
+class Command extends \Symfony\Component\Console\Command\Command
 {
+    /**
+     * @var string
+     */
     protected $runtime = '';
 
+    /**
+     * @param string $filename
+     * @return string
+     */
     protected function getRuntime($filename = '')
     {
         return $this->runtime . '/' . $filename;
     }
 
+    /**
+     * @param null $name
+     * @throws \Exception
+     */
     public function __construct($name = null)
     {
         parent::__construct($name);
-        $this->runtime = realpath(dirname(__DIR__) . '/../runtime');
+        $this->runtime = realpath(dirname(dirname(__DIR__)) . '/runtime');
         if (empty($this->runtime)) {
             throw new \Exception('larryli\\ipv4 runtime must not empty!');
         }
     }
 
-    protected function newIPDB($name)
+    /**
+     * @param $name
+     * @return \larryli\ipv4\Query\ChinaQuery|\larryli\ipv4\Query\FullQuery|\larryli\ipv4\Query\MiniQuery|\larryli\ipv4\Query\MonIPDBQuery|\larryli\ipv4\Query\QQWryQuery|\larryli\ipv4\Query\WorldQuery
+     * @throws \Exception
+     */
+    protected function newQuery($name)
     {
         switch ($name) {
             case '17monipdb':
-                return new MonIPDB($this->getRuntime('17monipdb.dat'));
+                return new \larryli\ipv4\Query\MonIPDBQuery($this->getRuntime('17monipdb.dat'));
             case 'qqwry':
-                return new QQWry($this->getRuntime('qqwry.dat'));
+                return new \larryli\ipv4\Query\QQWryQuery($this->getRuntime('qqwry.dat'));
+            case 'full':
+                return new \larryli\ipv4\Query\FullQuery();
+            case 'mini':
+                return new \larryli\ipv4\Query\MiniQuery();
+            case 'china':
+                return new \larryli\ipv4\Query\ChinaQuery();
+            case 'world':
+                return new \larryli\ipv4\Query\WorldQuery();
             default:
-                throw new \Exception("Unknown IPDB name \"{$name}\"");
+                throw new \Exception("Unknown Query name \"{$name}\"");
         }
     }
 }

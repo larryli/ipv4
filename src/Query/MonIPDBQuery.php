@@ -1,23 +1,51 @@
 <?php
 /**
- * MonIPDB.php
+ * MonIPDBQuery.php
  *
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\IPDB;
+namespace larryli\ipv4\Query;
 
 
-class MonIPDB extends IPDB
+/**
+ * Class MonIPDBQuery
+ * @package larryli\ipv4\Query
+ */
+class MonIPDBQuery extends FileQuery
 {
+    /**
+     *
+     */
     const URL = 'http://s.qdcdn.com/17mon/17monipdb.zip';
+    /**
+     * @var null
+     */
     private $fp = null;
+    /**
+     * @var int
+     */
     private $offset = 0;
+    /**
+     * @var int
+     */
     private $end = 0;
+    /**
+     * @var array
+     */
     private $index = [];
+    /**
+     * @var array
+     */
     private $data = [];
+    /**
+     * @var array
+     */
     private $cached = [];
 
+    /**
+     *
+     */
     public function __destruct()
     {
         if ($this->fp !== null) {
@@ -25,6 +53,10 @@ class MonIPDB extends IPDB
         }
     }
 
+    /**
+     * @param $func
+     * @throws \Exception
+     */
     public function download($func = file_get_contents)
     {
         $file = $func(self::URL);
@@ -41,6 +73,10 @@ class MonIPDB extends IPDB
         }
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     public function init()
     {
         if (parent::init()) {
@@ -50,7 +86,8 @@ class MonIPDB extends IPDB
         if ($this->fp === FALSE) {
             throw new \Exception("Invalid {$this->filename} file!");
         }
-        list($_, $this->offset) = unpack('N', fread($this->fp, 4));
+        $offset = unpack('Nlen', fread($this->fp, 4));
+        $this->offset = $offset['len'];
         if ($this->offset < 4) {
             throw new \Exception("Invalid {$this->filename} file!");
         }
@@ -59,17 +96,25 @@ class MonIPDB extends IPDB
         return true;
     }
 
+    /**
+     * @param $func
+     * @throws \Exception
+     */
     public function dump($func)
     {
         $this->init();
         for ($start = 1024; $start < $this->end; $start += 8) {
-            list($_, $ip) = unpack('N', $this->index{$start} . $this->index{$start + 1} . $this->index{$start + 2} . $this->index{$start + 3});
-            list($_, $offset) = unpack('V', $this->index{$start + 4} . $this->index{$start + 5} . $this->index{$start + 6} . "\x0");
-            list($_, $length) = unpack('C', $this->index{$start + 7});
-            $func($ip, $this->readOffset($offset, $length));
+            $ip = unpack('Nlen', $this->index{$start} . $this->index{$start + 1} . $this->index{$start + 2} . $this->index{$start + 3});
+            $offset = unpack('Vlen', $this->index{$start + 4} . $this->index{$start + 5} . $this->index{$start + 6} . "\x0");
+            $length = unpack('Clen', $this->index{$start + 7});
+            $func($ip['len'], $this->readOffset($offset['len'], $length['len']));
         }
     }
 
+    /**
+     * @return int
+     * @throws \Exception
+     */
     public function getTotal()
     {
         $this->init();
@@ -77,6 +122,11 @@ class MonIPDB extends IPDB
     }
 
 
+    /**
+     * @param $ip
+     * @return mixed
+     * @throws \Exception
+     */
     public function query($ip)
     {
         $ip_start = floor($ip / (256 * 256 * 256));
@@ -91,25 +141,30 @@ class MonIPDB extends IPDB
         $this->init();
         $nip = pack('N', $ip);
         $tmp_offset = $ip_start * 4;
-        list($_, $start) = unpack('V', $this->index[$tmp_offset] . $this->index[$tmp_offset + 1] . $this->index[$tmp_offset + 2] . $this->index[$tmp_offset + 3]);
-        $start = $start * 8 + 1024;
+        $start = unpack('Vlen', @$this->index{$tmp_offset} . @$this->index{$tmp_offset + 1} . @$this->index{$tmp_offset + 2} . @$this->index{$tmp_offset + 3});
+        $start = $start['len'] * 8 + 1024;
         if ($ip_start == 255) {
             $end = $this->end - 8;
         } else {
-            list($_, $end) = unpack('V', $this->index[$tmp_offset + 4] . $this->index[$tmp_offset + 5] . $this->index[$tmp_offset + 6] . $this->index[$tmp_offset + 7]);
-            $end = $end * 8 + 1024 - 8;
+            $end = unpack('Vlen', @$this->index{$tmp_offset + 4} . @$this->index{$tmp_offset + 5} . @$this->index{$tmp_offset + 6} . @$this->index{$tmp_offset + 7});
+            $end = $end['len'] * 8 + 1024 - 8;
         }
-        $start = $this->find2($nip, $start, $end);
+        $start = $this->find($nip, $start, $end);
         if ($start === null) {
             $this->cached[$ip] = '';
         } else {
-            list($_, $offset) = unpack('V', $this->index{$start + 4} . $this->index{$start + 5} . $this->index{$start + 6} . "\x0");
-            list($_, $length) = unpack('C', $this->index{$start + 7});
-            $this->cached[$ip] = $this->readOffset($offset, $length);
+            $offset = unpack('Vlen', @$this->index{$start + 4} . @$this->index{$start + 5} . @$this->index{$start + 6} . "\x0");
+            $length = unpack('Clen', @$this->index{$start + 7});
+            $this->cached[$ip] = $this->readOffset($offset['len'], $length['len']);
         }
         return $this->cached[$ip];
     }
 
+    /**
+     * @param $address
+     * @return array
+     * @throws \Exception
+     */
     public function guess($address)
     {
         list($country, $province, $city, $_) = explode("\t", $address);
@@ -140,7 +195,13 @@ class MonIPDB extends IPDB
         return [0, ''];
     }
 
-    private function find1($ip, $l, $r)
+    /**
+     * @param $ip
+     * @param $l
+     * @param $r
+     * @return int|null
+     */
+    private function find($ip, $l, $r)
     {
         for ($m = $l; $m <= $r; $m += 8) {
             if ($this->index{$m} . $this->index{$m + 1} . $this->index{$m + 2} . $this->index{$m + 3} >= $ip) {
@@ -150,22 +211,11 @@ class MonIPDB extends IPDB
         return null;
     }
 
-    private function find2($ip, $l, $r)
-    {
-        if ($l + 8 >= $r) {
-            return $r;
-        }
-        $m = intval(($l + $r) / 16) * 8;
-        $mip = $this->index{$m} . $this->index{$m + 1} . $this->index{$m + 2} . $this->index{$m + 3};
-        if ($ip == $mip) {
-            return $m;
-        } else if ($ip < $mip) {
-            return $this->find2($ip, $l, $m);
-        } else {
-            return $this->find2($ip, $m, $r);
-        }
-    }
-
+    /**
+     * @param $offset
+     * @param $len
+     * @return mixed
+     */
     private function readOffset($offset, $len)
     {
         if (!isset($this->data[$offset])) {

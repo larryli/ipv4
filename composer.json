@@ -12,7 +12,8 @@
   ],
   "require": {
     "php": ">=5.4",
-    "symfony/console": "~2.5"
+    "symfony/console": "~2.5",
+    "catfan/medoo": "~0.9.8"
   },
   "require-dev": {
     "phpunit/phpunit": "~4.5"
