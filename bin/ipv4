@@ -13,4 +13,5 @@ $app->add(new larryli\ipv4\Command\InitCommand);
 $app->add(new larryli\ipv4\Command\QueryCommand);
 $app->add(new larryli\ipv4\Command\CleanCommand);
 $app->add(new larryli\ipv4\Command\DumpCommand);
+$app->add(new larryli\ipv4\Command\BenchmarkCommand);
 $app->run();

@@ -20,11 +20,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CleanCommand extends Command
 {
     /**
-     * @var null
-     */
-    private $progress = null;
-
-    /**
      *
      */
     protected function configure()
@@ -70,7 +65,8 @@ class CleanCommand extends Command
                 $this->cleanDivision($output);
                 break;
             default:
-                throw new \Exception("Unknown type \"{$type}\".");
+                $output->writeln("<error>Unknown type \"{$type}\".</error>");
+                break;
         }
     }
 

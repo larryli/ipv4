@@ -71,7 +71,8 @@ class DumpCommand extends Command
                 $this->dumpGuess($output, 'qqwry', 'dump_qqwry_guess.json');
                 break;
             default:
-                throw new \Exception("Unknown type \"{$type}\".");
+                $output->writeln("<error>Unknown type \"{$type}\".</error>");
+                break;
         }
     }
 

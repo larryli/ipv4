@@ -20,11 +20,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class QueryCommand extends Command
 {
     /**
-     * @var null
-     */
-    private $progress = null;
-
-    /**
      *
      */
     protected function configure()
