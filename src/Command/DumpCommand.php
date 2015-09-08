@@ -110,7 +110,7 @@ class DumpCommand extends Command
     {
         $query = Query::create($name);
         if ($query->total() > 0) {
-            $result = $this->address($output, $query, $filename);
+            $result = $this->address($output, $query, $filename, 'dump_' . $name . '.json');
             $this->write($output, $filename, $result);
         }
     }
@@ -125,7 +125,12 @@ class DumpCommand extends Command
     {
         $query = Query::create($name);
         if ($query->total() > 0) {
-            $addresses = $this->address($output, $query, $filename);
+            $json_filename = 'dump_' . $name . '_address.json';
+            if (file_exists($json_filename)) {
+                $addresses = $this->read($output, $json_filename);
+            } else {
+                $addresses = $this->address($output, $query, $filename, 'dump_' . $name . '.json');
+            }
             $result = $this->guess($output, $query, $filename, $addresses);
             $this->write($output, $filename, $result);
         }
@@ -151,23 +156,28 @@ class DumpCommand extends Command
      * @param OutputInterface $output
      * @param Query $query
      * @param string $filename
+     * @param string $json_filename
      * @return array
      */
-    private function address(OutputInterface $output, Query $query, $filename)
+    private function address(OutputInterface $output, Query $query, $filename, $json_filename)
     {
-        $addresses = [];
-        $this->dump($output, $query, $filename, function (Query $query) use (&$addresses) {
-            $query->dump(function ($_, $address) use (&$addresses) {
-                static $n = 0;
-                if (!in_array($address, $addresses)) {
-                    $addresses[] = $address;
-                }
-                $n++;
-                if (($n % 250) == 0) {
-                    $this->progress->setProgress($n);
-                }
+        if (file_exists($json_filename)) {
+            $addresses = array_unique(array_values($this->read($output, $json_filename)));
+        } else {
+            $addresses = [];
+            $this->dump($output, $query, $filename, function (Query $query) use (&$addresses) {
+                $query->dump(function ($_, $address) use (&$addresses) {
+                    static $n = 0;
+                    if (!in_array($address, $addresses)) {
+                        $addresses[] = $address;
+                    }
+                    $n++;
+                    if (($n % 250) == 0) {
+                        $this->progress->setProgress($n);
+                    }
+                });
             });
-        });
+        }
         sort($addresses);
         return $addresses;
     }
@@ -208,5 +218,18 @@ class DumpCommand extends Command
         $output->write("<info>write {$filename}:</info>");
         file_put_contents($filename, json_encode($result, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
         $output->writeln('<info> completed!</info>');
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param string $filename
+     * @return string[] $result
+     */
+    private function read(OutputInterface $output, $filename)
+    {
+        $output->write("<info>read {$filename}:</info>");
+        $result = json_decode(file_get_contents($filename), true);
+        $output->writeln('<info> completed!</info>');
+        return $result;
     }
 }

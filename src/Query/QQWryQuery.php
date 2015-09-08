@@ -31,14 +31,17 @@ class QQWryQuery extends FileQuery
      */
     private $end = 0;
     /**
+     * index cache
      * @var array
      */
-    private $index = [];
+    private $index;
     /**
+     * record cache
      * @var array
      */
-    private $data = [];
+    private $data;
     /**
+     * query address/division id cache
      * @var array
      */
     private $cached = [];
@@ -131,6 +134,7 @@ class QQWryQuery extends FileQuery
     protected function traverse(callable $func, callable $translate)
     {
         $this->init();
+        $this->initData();
         $start = 0;
         while (1) {
             $offset = unpack('Llen', $this->index{$start + 4} . $this->index{$start + 5} . $this->index{$start + 6} . "\x0");
@@ -144,6 +148,19 @@ class QQWryQuery extends FileQuery
                 break;
             }
         }
+    }
+
+    /**
+     *
+     */
+    private function initData()
+    {
+        fseek($this->fp, 0);
+        $offset = unpack('Llen', fread($this->fp, 4));
+        fseek($this->fp, 0);
+        $this->data = fread($this->fp, $offset['len']);
+        fclose($this->fp);
+        $this->fp = null;
     }
 
     /**
@@ -252,44 +269,41 @@ class QQWryQuery extends FileQuery
 
     /**
      * @param $offset
-     * @return mixed
+     * @return string
      */
     private function readRecode($offset)
     {
-        if (!isset($this->data[$offset])) {
-            $record = array('', '');
-            $offset = $offset + 4;
-            $flag = ord($this->readOffset(1, $offset));
-            if ($flag == 1) {
-                $location_offset = $this->readOffset(3, $offset + 1);
-                $location_offset = unpack('Llen', $location_offset . "\x0");
-                $sub_flag = ord($this->readOffset(1, $location_offset['len']));
-                if ($sub_flag == 2) {
-                    // 国家
-                    $country_offset = $this->readOffset(3, $location_offset['len'] + 1);
-                    $country_offset = unpack('Llen', $country_offset . "\x0");
-                    $record[0] = $this->readLocation($country_offset['len']);
-                    // 地区
-                    $record[1] = $this->readLocation($location_offset['len'] + 4);
-                } else {
-                    $record[0] = $this->readLocation($location_offset['len']);
-                    $record[1] = $this->readLocation($location_offset['len'] + strlen($record[0]) + 1);
-                }
-            } else if ($flag == 2) {
-                // 地区
-                // offset + 1(flag) + 3(country offset)
-                $record[1] = $this->readLocation($offset + 4);
-                // offset + 1(flag)
-                $country_offset = $this->readOffset(3, $offset + 1);
+        $record = array('', '');
+        $offset = $offset + 4;
+        $flag = ord($this->readOffset(1, $offset));
+        if ($flag == 1) {
+            $location_offset = $this->readOffset(3, $offset + 1);
+            $location_offset = unpack('Llen', $location_offset . "\x0");
+            $sub_flag = ord($this->readOffset(1, $location_offset['len']));
+            if ($sub_flag == 2) {
+                // 国家
+                $country_offset = $this->readOffset(3, $location_offset['len'] + 1);
                 $country_offset = unpack('Llen', $country_offset . "\x0");
                 $record[0] = $this->readLocation($country_offset['len']);
+                // 地区
+                $record[1] = $this->readLocation($location_offset['len'] + 4);
             } else {
-                $record[0] = $this->readLocation($offset);
-                $record[1] = $this->readLocation($offset + strlen($record[0]) + 1);
+                $record[0] = $this->readLocation($location_offset['len']);
+                $record[1] = $this->readLocation($location_offset['len'] + strlen($record[0]) + 1);
             }
-            $this->data[$offset] = @iconv('GBK', 'UTF-8//IGNORE', implode("\t", $record));
+        } else if ($flag == 2) {
+            // 地区
+            // offset + 1(flag) + 3(country offset)
+            $record[1] = $this->readLocation($offset + 4);
+            // offset + 1(flag)
+            $country_offset = $this->readOffset(3, $offset + 1);
+            $country_offset = unpack('Llen', $country_offset . "\x0");
+            $record[0] = $this->readLocation($country_offset['len']);
+        } else {
+            $record[0] = $this->readLocation($offset);
+            $record[1] = $this->readLocation($offset + strlen($record[0]) + 1);
         }
-        return $this->data[$offset];
+        return @iconv('GBK', 'UTF-8//IGNORE', implode("\t", $record));
     }
 
     /**
@@ -329,6 +343,9 @@ class QQWryQuery extends FileQuery
      */
     private function readOffset($len, $offset)
     {
+        if (empty($this->fp)) {
+            return substr($this->data, $offset, $len);
+        }
         fseek($this->fp, $offset);
         return fread($this->fp, $len);
     }
