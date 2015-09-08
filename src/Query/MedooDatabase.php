@@ -44,19 +44,14 @@ class MedooDatabase extends Database
     protected function initConfig()
     {
         $config = dirname(dirname(__DIR__)) . '/config/db.php';
-        if (!file_exists($config)) {
-            $data = <<<EOT
-<?php
-return [
-    'database_type' => 'sqlite',
-    'database_file' => __DIR__ . '/../runtime/ipv4.sqlite',
-];
-EOT;
-            if (file_put_contents($config, $data) === FALSE) {
-                throw new \Exception("write config file \"{$config}\" error");
-            }
+        if (file_exists($config)) {
+            return require($config);
+        } else {
+            return [
+                'database_type' => 'sqlite',
+                'database_file' => dirname(dirname(__DIR__)) . '/runtime/ipv4.sqlite',
+            ];
         }
-        return require($config);
     }
 
     /**

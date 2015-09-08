@@ -60,7 +60,7 @@ class MonIPDBQuery extends FileQuery
      */
     public function __destruct()
     {
-        if ($this->fp !== null) {
+        if ($this->fp != null) {
             fclose($this->fp);
         }
     }

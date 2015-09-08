@@ -61,7 +61,7 @@ abstract class Query
      * @param $name
      * @param null $options
      */
-    static public function factory($name, $options = null)
+    static public function create($name, $options = null)
     {
         if (!isset(self::$objects[$name])) {
             switch ($name) {
@@ -89,5 +89,32 @@ abstract class Query
             self::$objects[$name] = $obj;
         }
         return self::$objects[$name];
+    }
+
+    static public function config($options = null)
+    {
+        if (empty($options)) {
+            $config = dirname(dirname(__DIR__)) . '/config/query.php';
+            if (file_exists($config)) {
+                $options = $config;
+            } else {
+                $options = [
+                    'monipdb' => '',
+                    'qqwry' => '',
+                    'full' => ['monipdb', 'qqwry'],
+                    'mini' => 'full',
+                    'china' => 'full',
+                    'world' => 'full',
+                ];
+            }
+        }
+        if (is_string($options)) {
+            $options = require($options);
+        }
+        if (is_array($options)) {
+            return $options;
+        } else {
+            throw new \Exception("Error query factory {$options}");
+        }
     }
 }

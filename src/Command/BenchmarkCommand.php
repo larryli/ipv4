@@ -56,22 +56,23 @@ class BenchmarkCommand extends Command
         $output->writeln("<info>benchmark {$type}:</info>\t<comment>{$times} times</comment>");
         switch ($type) {
             case 'all':
-                $this->benchmark($output, 'monipdb', $times);
-                $this->benchmark($output, 'qqwry', $times);
-                $this->benchmark($output, 'full', $times);
-                $this->benchmark($output, 'mini', $times);
-                $this->benchmark($output, 'china', $times);
-                $this->benchmark($output, 'world', $times);
+                foreach (Query::config() as $query => $options) {
+                    $this->benchmark($output, $query, $times);
+                }
                 break;
             case 'file':
-                $this->benchmark($output, 'monipdb', $times);
-                $this->benchmark($output, 'qqwry', $times);
+                foreach (Query::config() as $query => $options) {
+                    if (empty($options)) {
+                        $this->benchmark($output, $query, $times);
+                    }
+                }
                 break;
             case 'database':
-                $this->benchmark($output, 'full', $times);
-                $this->benchmark($output, 'mini', $times);
-                $this->benchmark($output, 'china', $times);
-                $this->benchmark($output, 'world', $times);
+                foreach (Query::config() as $query => $options) {
+                    if (!empty($options)) {
+                        $this->benchmark($output, $query, $times);
+                    }
+                }
                 break;
             default:
                 $output->writeln("<error>Unknown type \"{$type}\".</error>");
@@ -88,7 +89,7 @@ class BenchmarkCommand extends Command
     private function benchmark($output, $name, $times)
     {
         $output->write("\t<info>benchmark {$name}:</info> \t");
-        $query = Query::factory($name);
+        $query = Query::create($name);
         $start = microtime(true);
         for ($i = 0;  $i < $times; $i++) {
             $ip = mt_rand(0, 4294967295);

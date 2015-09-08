@@ -41,32 +41,39 @@ class CleanCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $cleanDivision = false;
         $type = $input->getArgument('type');
         $output->writeln("<info>clean {$type}:</info>");
         switch ($type) {
             case 'all':
-                $this->clean($output, 'monipdb');
-                $this->clean($output, 'qqwry');
-                $this->clean($output, 'full');
-                $this->clean($output, 'mini');
-                $this->clean($output, 'china');
-                $this->clean($output, 'world');
-                $this->cleanDivision($output);
+                foreach (Query::config() as $query => $options) {
+                    if (!empty($options)) {
+                        $cleanDivision = true;
+                    }
+                    $this->clean($output, $query);
+                }
                 break;
             case 'file':
-                $this->clean($output, 'monipdb');
-                $this->clean($output, 'qqwry');
+                foreach (Query::config() as $query => $options) {
+                    if (empty($options)) {
+                        $this->clean($output, $query);
+                    }
+                }
                 break;
             case 'database':
-                $this->clean($output, 'full');
-                $this->clean($output, 'mini');
-                $this->clean($output, 'china');
-                $this->clean($output, 'world');
-                $this->cleanDivision($output);
+                foreach (Query::config() as $query => $options) {
+                    if (!empty($options)) {
+                        $cleanDivision = true;
+                        $this->clean($output, $query);
+                    }
+                }
                 break;
             default:
                 $output->writeln("<error>Unknown type \"{$type}\".</error>");
                 break;
+        }
+        if ($cleanDivision) {
+            $this->cleanDivision($output);
         }
     }
 
@@ -78,7 +85,7 @@ class CleanCommand extends Command
     private function clean($output, $name)
     {
         $output->write("<info>clean {$name}:</info>");
-        $query = Query::factory($name);
+        $query = Query::create($name);
         $query->clean();
         $output->writeln('<info> completed!</info>');
     }

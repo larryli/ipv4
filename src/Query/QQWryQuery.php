@@ -60,7 +60,7 @@ class QQWryQuery extends FileQuery
      */
     public function __destruct()
     {
-        if ($this->fp !== null) {
+        if ($this->fp != null) {
             fclose($this->fp);
         }
     }
@@ -124,10 +124,18 @@ class QQWryQuery extends FileQuery
     protected function dumpFunc($func, $translate)
     {
         $this->init();
-        for ($start = 0; $start < $this->end; $start += 7) {
-            $ip = unpack('Llen', $this->index{$start} . $this->index{$start + 1} . $this->index{$start + 2} . $this->index{$start + 3});
+        $start = 0;
+        while(1) {
             $offset = unpack('Llen', $this->index{$start + 4} . $this->index{$start + 5} . $this->index{$start + 6} . "\x0");
-            $func($ip['len'], $translate($this->readRecode($offset['len'])));
+            $data = $translate($this->readRecode($offset['len']));
+            $start += 7;
+            if ($start < $this->end) {
+                $ip = unpack('Llen', $this->index{$start} . $this->index{$start + 1} . $this->index{$start + 2} . $this->index{$start + 3});
+                $func($ip['len'] - 1, $data);
+            } else {
+                $func(4294967295, $data);  // last
+                break;
+            }
         }
     }
 

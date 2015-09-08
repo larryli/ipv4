@@ -51,24 +51,21 @@ class DumpCommand extends Command
         $output->writeln("<info>dump {$type}:</info>");
         switch ($type) {
             case 'default':
-                $this->dumpDefault($output, 'monipdb', 'dump_monipdb.json');
-                $this->dumpDefault($output, 'qqwry', 'dump_qqwry.json');
-                $this->dumpDefault($output, 'full', 'dump_full.json');
-                $this->dumpDefault($output, 'mini', 'dump_mini.json');
-                $this->dumpDefault($output, 'china', 'dump_china.json');
-                $this->dumpDefault($output, 'world', 'dump_world.json');
+                foreach (Query::config() as $query => $options) {
+                    $this->dumpDefault($output, $query, 'dump_' . $query . '.json');
+                }
                 break;
             case 'address':
-                $this->dumpAddress($output, 'monipdb', 'dump_monipdb_address.json');
-                $this->dumpAddress($output, 'qqwry', 'dump_qqwry_address.json');
-                $this->dumpAddress($output, 'full', 'dump_full_address.json');
-                $this->dumpAddress($output, 'mini', 'dump_mini_address.json');
-                $this->dumpAddress($output, 'china', 'dump_china_address.json');
-                $this->dumpAddress($output, 'world', 'dump_world_address.json');
+                foreach (Query::config() as $query => $options) {
+                    $this->dumpAddress($output, $query, 'dump_' . $query . '_address.json');
+                }
                 break;
             case 'guess':
-                $this->dumpGuess($output, 'monipdb', 'dump_monipdb_guess.json');
-                $this->dumpGuess($output, 'qqwry', 'dump_qqwry_guess.json');
+                foreach (Query::config() as $query => $options) {
+                    if (empty($options)) {
+                        $this->dumpGuess($output, $query, 'dump_' . $query . '_guess.json');
+                    }
+                }
                 break;
             default:
                 $output->writeln("<error>Unknown type \"{$type}\".</error>");
@@ -85,7 +82,7 @@ class DumpCommand extends Command
     private function dumpDefault($output, $name, $filename)
     {
         $result = [];
-        $query = Query::factory($name);
+        $query = Query::create($name);
         $this->dump($output, $query, $filename, function ($output, $query) use (&$result) {
             $query->dump(function ($ip, $address) use ($output, &$result) {
                 static $n = 0;
@@ -107,7 +104,7 @@ class DumpCommand extends Command
      */
     private function dumpAddress($output, $name, $filename)
     {
-        $query = Query::factory($name);
+        $query = Query::create($name);
         $result = $this->address($output, $query, $filename);
         $this->write($output, $filename, $result);
     }
@@ -120,7 +117,7 @@ class DumpCommand extends Command
      */
     private function dumpGuess($output, $name, $filename)
     {
-        $query = Query::factory($name);
+        $query = Query::create($name);
         $addresses = $this->address($output, $query, $filename);
         $result = $this->guess($output, $query, $filename, $addresses);
         $this->write($output, $filename, $result);

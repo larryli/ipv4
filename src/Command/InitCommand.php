@@ -8,6 +8,7 @@
 namespace larryli\ipv4\Command;
 
 use larryli\ipv4\Query\Query;
+use larryli\ipv4\Query\DatabaseQuery;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -48,13 +49,14 @@ class InitCommand extends Command
     {
         $force = $input->getOption('force');
         $output->writeln("<info>initialize ip database:</info>");
-        $monipdb = $this->download($output, 'monipdb', $force);
-        $qqwry = $this->download($output, 'qqwry', $force);
-        $this->division($output);
-        $full = $this->generate($output, 'full', $force, $monipdb, $qqwry);
-        $this->generate($output, 'mini', $force, $full);
-        $this->generate($output, 'china', $force, $full);
-        $this->generate($output, 'world', $force, $full);
+        foreach (Query::config() as $query => $options) {
+            if (empty($options)) {
+                $this->download($output, $query, $force);
+            } else {
+                $this->division($output);
+                $this->generate($output, $query, $force, $options);
+            }
+        }
     }
 
     /**
@@ -62,7 +64,7 @@ class InitCommand extends Command
      */
     protected function division($output)
     {
-        \larryli\ipv4\Query\DatabaseQuery::initDivision(function ($code, $n) use ($output) {
+        DatabaseQuery::initDivision(function ($code, $n) use ($output) {
             switch ($code) {
                 case 0:
                     $output->writeln("<info>generate divisions table:</info>");
@@ -80,23 +82,25 @@ class InitCommand extends Command
         }, true);
     }
 
-    /**
-     * @param $output
-     * @param $name
-     * @param $force
-     * @param $db1
-     * @param null $db2
-     * @return \larryli\ipv4\Query\ChinaQuery|\larryli\ipv4\Query\FullQuery|\larryli\ipv4\Query\MiniQuery|\larryli\ipv4\Query\WorldQuery
-     * @throws \Exception
-     */
-    protected function generate($output, $name, $force, $db1, $db2 = null)
+    protected function generate($output, $name, $force, $options)
     {
-        $query = Query::factory($name);
+        $query = Query::create($name);
+        if (is_string($options)) {
+            $db1 = Query::create($options);
+            $use = $db1->name();
+            $db2 = null;
+        } else if (is_array($options)) {
+            $db1 = Query::create($options[0]);
+            $db2 = Query::create($options[1]);
+            $use = $db1->name() . ' and ' . $db2->name;
+        } else {
+            throw new \Exception("Error generate options {$options}");
+        }
         $name = $query->name();
         if (!$force && $query->exists()) {
             $output->writeln("<comment>use exist {$name} table.</comment>", OutputInterface::VERBOSITY_VERBOSE);
         } else {
-            $output->writeln("<info>generate {$name} table:</info>");
+            $output->writeln("<info>generate {$name} table use {$use}:</info>");
             $query->generate(function ($code, $n) use ($output) {
                 switch ($code) {
                     case 0:
@@ -125,7 +129,7 @@ class InitCommand extends Command
      */
     protected function download($output, $name, $force)
     {
-        $query = Query::factory($name);
+        $query = Query::create($name);
         $name = $query->name();
         if (!$force && $query->exists()) {
             $output->writeln("<comment>use exist {$name} file.</comment>", OutputInterface::VERBOSITY_VERBOSE);

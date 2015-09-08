@@ -41,12 +41,9 @@ class QueryCommand extends Command
         $ip = $input->getArgument('ip');
         $output->writeln("<info>query \"{$ip}\":</info>");
         $ip = ip2long($ip);
-        $this->query($output, 'monipdb', $ip);
-        $this->query($output, 'qqwry', $ip);
-        $this->query($output, 'full', $ip);
-        $this->query($output, 'mini', $ip);
-        $this->query($output, 'china', $ip);
-        $this->query($output, 'world', $ip);
+        foreach (Query::config() as $query => $options) {
+            $this->query($output, $query, $ip);
+        }
     }
 
     /**
@@ -57,7 +54,7 @@ class QueryCommand extends Command
      */
     private function query($output, $name, $ip)
     {
-        $query = Query::factory($name);
+        $query = Query::create($name);
         $address = $query->query($ip);
         $output->writeln("\t<comment>{$name}:</comment> {$address}");
     }
