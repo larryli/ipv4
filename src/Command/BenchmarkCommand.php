@@ -88,15 +88,17 @@ class BenchmarkCommand extends Command
      */
     private function benchmark($output, $name, $times)
     {
-        $output->write("\t<info>benchmark {$name}:</info> \t");
         $query = Query::create($name);
-        $start = microtime(true);
-        for ($i = 0;  $i < $times; $i++) {
-            $ip = mt_rand(0, 4294967295);
-            $query->query($ip);
+        if ($query->total() > 0) {
+            $output->write("\t<info>benchmark {$name}:</info> \t");
+            $start = microtime(true);
+            for ($i = 0; $i < $times; $i++) {
+                $ip = mt_rand(0, 4294967295);
+                $query->address($ip);
+            }
+            $time = microtime(true) - $start;
+            $output->writeln("<comment>{$time}s</comment>");
         }
-        $time = microtime(true) - $start;
-        $output->writeln("<comment>{$time}s</comment>");
     }
 
 }
