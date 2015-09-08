@@ -71,7 +71,7 @@ abstract class DatabaseQuery extends Query
      * @param $func
      * @throws \Exception
      */
-    static public function initDivision($func)
+    static public function initDivision($func, $has_extra = false)
     {
         if (self::$db === null) {
             self::initDatabase(null);
@@ -81,6 +81,9 @@ abstract class DatabaseQuery extends Query
         }
         if (self::$db->count(self::DIVISION) == 0) {
             $divisions = require('divisions.php');
+            if ($has_extra) {
+                $divisions = array_merge($divisions, require('divisions_extra.php'));
+            }
             $func(0, count($divisions));
             foreach (array_chunk($divisions, self::SIZE) as $n => $data) {
                 $func(1, self::SIZE * $n);

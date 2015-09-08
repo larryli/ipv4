@@ -77,7 +77,7 @@ class InitCommand extends Command
                     $output->writeln('<info> completed!</info>');
                     break;
             }
-        });
+        }, true);
     }
 
     /**
