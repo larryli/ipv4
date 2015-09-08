@@ -69,7 +69,7 @@ class MonIPDBQuery extends FileQuery
      * @param $func
      * @throws \Exception
      */
-    public function download($func = file_get_contents)
+    public function generate(callable $func = file_get_contents, Query $provider = null, Query $provider_extra = null)
     {
         $file = $func(self::URL);
         $zip_file = dirname($this->filename) . '/17monipdb.zip';
@@ -113,7 +113,7 @@ class MonIPDBQuery extends FileQuery
      * @param $translate
      * @throws \Exception
      */
-    protected function dumpFunc($func, $translate)
+    protected function traverse(callable $func, callable $translate)
     {
         $this->init();
         for ($start = 1024; $start < $this->end; $start += 8) {
@@ -128,7 +128,7 @@ class MonIPDBQuery extends FileQuery
      * @return int
      * @throws \Exception
      */
-    public function getTotal()
+    public function total()
     {
         $this->init();
         return intval(($this->end - 1024) / 8);
@@ -140,7 +140,7 @@ class MonIPDBQuery extends FileQuery
      * @return mixed
      * @throws \Exception
      */
-    public function query($ip)
+    public function address($ip)
     {
         $ip_start = floor($ip / (256 * 256 * 256));
 

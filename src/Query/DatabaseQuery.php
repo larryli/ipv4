@@ -159,7 +159,7 @@ abstract class DatabaseQuery extends Query
      * @param $func
      * @param $translateId
      */
-    protected function dumpFunc($func, $translateId)
+    protected function traverse(callable $func, $translateId)
     {
         $total = $this->getTotal();
         for ($i = 0; $i < $total; $i += self::SIZE) {
@@ -173,9 +173,9 @@ abstract class DatabaseQuery extends Query
     /**
      * @param $func
      */
-    public function dumpId($func)
+    public function each(callable $func)
     {
-        $this->dumpFunc($func, function ($id) {
+        $this->traverse($func, function ($id) {
             return $id;
         });
     }
@@ -183,25 +183,33 @@ abstract class DatabaseQuery extends Query
     /**
      * @param $func
      */
-    public function dump($func)
+    public function dump(callable $func)
     {
-        $this->dumpFunc($func, self::getData);
+        $this->traverse($func, self::getData);
     }
 
     /**
      * @param $ip
      * @return mixed
      */
-    public function query($ip)
+    public function address($ip)
     {
-        $id = self::$db->getIndex($this->name(), $ip);
-        return self::getData($id);
+        return self::getData($this->id($ip));
+    }
+
+    /**
+     * @param $ip
+     * @return mixed
+     */
+    public function id($ip)
+    {
+        return self::$db->getIndex($this->name(), $ip);
     }
 
     /**
      * @return mixed
      */
-    public function getTotal()
+    public function total()
     {
         return self::$db->count($this->name());
     }
@@ -222,12 +230,12 @@ abstract class DatabaseQuery extends Query
      * @param $db2
      * @throws \Exception
      */
-    public function generate($func, $db1, $db2 = null)
+    public function generate(callable $func, Query $provider = null, Query $provider_extra = null)
     {
-        if (is_object($db2) && method_exists($db2, 'guess')) {
-            $translateId = function ($ip, $id) use ($db2) {
+        if (!empty($provider_extra)) {
+            $translateId = function ($ip, $id) use ($provider_extra) {
                 if (empty($id)) {
-                    list($id, $_) = $db2->guess($db2->query($ip));
+                    $id = $provider_extra->id($ip);
                 }
                 return $id;
             };
@@ -238,8 +246,8 @@ abstract class DatabaseQuery extends Query
         }
 
         $this->startSave();
-        $func(0, $db1->getTotal());
-        $db1->dumpId(function ($ip, $id) use ($func, $translateId) {
+        $func(0, $provider->total());
+        $provider->each(function ($ip, $id) use ($func, $translateId) {
             static $n = 0;
             $n++;
             $id = $this->translateId($translateId($ip, $id));

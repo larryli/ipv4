@@ -6,10 +6,11 @@
  */
 
 return [
-    'monipdb' => '',    // empty
-    'qqwry' => '',
+    'monipdb',    // empty
+    'qqwry',
     'full' => ['monipdb', 'qqwry'], // ex. 'monipdb', 'qqwry', ['qqwry', 'monipdb']
     'mini' => 'full',   // ex. ['monipdb', 'qqwry'], 'monipdb', 'qqwry', ['qqwry', 'monipdb']
     'china' => 'full',
     'world' => 'full',
+    'freeipip',
 ];

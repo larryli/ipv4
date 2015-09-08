@@ -49,12 +49,12 @@ class InitCommand extends Command
     {
         $force = $input->getOption('force');
         $output->writeln("<info>initialize ip database:</info>");
-        foreach (Query::config() as $query => $options) {
-            if (empty($options)) {
+        foreach (Query::config() as $query => $provider) {
+            if (empty($provider)) {
                 $this->download($output, $query, $force);
             } else {
                 $this->division($output);
-                $this->generate($output, $query, $force, $options);
+                $this->generate($output, $query, $force, $provider);
             }
         }
     }
@@ -82,25 +82,25 @@ class InitCommand extends Command
         }, true);
     }
 
-    protected function generate($output, $name, $force, $options)
+    protected function generate($output, $name, $force, $provider)
     {
         $query = Query::create($name);
-        if (is_string($options)) {
-            $db1 = Query::create($options);
+        if (is_string($provider)) {
+            $db1 = Query::create($provider);
             $use = $db1->name();
             $db2 = null;
-        } else if (is_array($options)) {
-            $db1 = Query::create($options[0]);
-            $db2 = Query::create($options[1]);
-            $use = $db1->name() . ' and ' . $db2->name;
+        } else if (is_array($provider)) {
+            $db1 = Query::create($provider[0]);
+            $db2 = Query::create($provider[1]);
+            $use = $db1->name() . ' and ' . $db2->name();
         } else {
-            throw new \Exception("Error generate options {$options}");
+            throw new \Exception("Error generate options {$provider}");
         }
         $name = $query->name();
         if (!$force && $query->exists()) {
             $output->writeln("<comment>use exist {$name} table.</comment>", OutputInterface::VERBOSITY_VERBOSE);
         } else {
-            $output->writeln("<info>generate {$name} table use {$use}:</info>");
+            $output->writeln("<info>generate {$name} table with {$use}:</info>");
             $query->generate(function ($code, $n) use ($output) {
                 switch ($code) {
                     case 0:
@@ -132,10 +132,10 @@ class InitCommand extends Command
         $query = Query::create($name);
         $name = $query->name();
         if (!$force && $query->exists()) {
-            $output->writeln("<comment>use exist {$name} file.</comment>", OutputInterface::VERBOSITY_VERBOSE);
+            $output->writeln("<comment>use exist {$name} file or api.</comment>", OutputInterface::VERBOSITY_VERBOSE);
         } else {
             $output->writeln("<info>download {$name} file:</info>");
-            $query->download(function ($url) use ($output) {
+            $query->generate(function ($url) use ($output) {
                 return file_get_contents($url, false, $this->createStreamContext($output));
             });
             $output->writeln('<info> completed!</info>');

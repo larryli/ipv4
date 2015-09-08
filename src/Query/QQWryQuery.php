@@ -69,7 +69,7 @@ class QQWryQuery extends FileQuery
      * @param $func
      * @throws \Exception
      */
-    public function download($func = file_get_contents)
+    public function generate(callable $func = file_get_contents, Query $provider = null, Query $provider_extra = null)
     {
         $copywrite = $func(self::COPYWRITE_URL);
         $qqwry = $func(self::QQWRY_URL);
@@ -121,11 +121,11 @@ class QQWryQuery extends FileQuery
      * @param $translate
      * @throws \Exception
      */
-    protected function dumpFunc($func, $translate)
+    protected function traverse(callable $func, callable $translate)
     {
         $this->init();
         $start = 0;
-        while(1) {
+        while (1) {
             $offset = unpack('Llen', $this->index{$start + 4} . $this->index{$start + 5} . $this->index{$start + 6} . "\x0");
             $data = $translate($this->readRecode($offset['len']));
             $start += 7;
@@ -143,7 +143,7 @@ class QQWryQuery extends FileQuery
      * @return int
      * @throws \Exception
      */
-    public function getTotal()
+    public function total()
     {
         $this->init();
         return intval($this->end / 7);
@@ -154,7 +154,7 @@ class QQWryQuery extends FileQuery
      * @return mixed
      * @throws \Exception
      */
-    public function query($ip)
+    public function address($ip)
     {
         $ip_start = floor($ip / (256 * 256 * 256));
 
@@ -325,5 +325,4 @@ class QQWryQuery extends FileQuery
         fseek($this->fp, $offset);
         return fread($this->fp, $len);
     }
-
 }

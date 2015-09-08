@@ -46,23 +46,23 @@ class CleanCommand extends Command
         $output->writeln("<info>clean {$type}:</info>");
         switch ($type) {
             case 'all':
-                foreach (Query::config() as $query => $options) {
-                    if (!empty($options)) {
+                foreach (Query::config() as $query => $provider) {
+                    if (!empty($provider)) {
                         $cleanDivision = true;
                     }
                     $this->clean($output, $query);
                 }
                 break;
             case 'file':
-                foreach (Query::config() as $query => $options) {
-                    if (empty($options)) {
+                foreach (Query::config() as $query => $provider) {
+                    if (empty($provider)) {
                         $this->clean($output, $query);
                     }
                 }
                 break;
             case 'database':
-                foreach (Query::config() as $query => $options) {
-                    if (!empty($options)) {
+                foreach (Query::config() as $query => $provider) {
+                    if (!empty($provider)) {
                         $cleanDivision = true;
                         $this->clean($output, $query);
                     }

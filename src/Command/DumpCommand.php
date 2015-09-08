@@ -51,18 +51,18 @@ class DumpCommand extends Command
         $output->writeln("<info>dump {$type}:</info>");
         switch ($type) {
             case 'default':
-                foreach (Query::config() as $query => $options) {
+                foreach (Query::config() as $query => $provider) {
                     $this->dumpDefault($output, $query, 'dump_' . $query . '.json');
                 }
                 break;
             case 'address':
-                foreach (Query::config() as $query => $options) {
+                foreach (Query::config() as $query => $provider) {
                     $this->dumpAddress($output, $query, 'dump_' . $query . '_address.json');
                 }
                 break;
             case 'guess':
-                foreach (Query::config() as $query => $options) {
-                    if (empty($options)) {
+                foreach (Query::config() as $query => $provider) {
+                    if (empty($provider)) {
                         $this->dumpGuess($output, $query, 'dump_' . $query . '_guess.json');
                     }
                 }

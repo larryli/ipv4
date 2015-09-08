@@ -28,12 +28,6 @@ abstract class FileQuery extends Query
     static protected $divisions = [];
 
     /**
-     * @param $func
-     * @return mixed
-     */
-    abstract public function download($func = file_get_contents);
-
-    /**
      * @param $address
      * @return mixed
      */
@@ -44,7 +38,7 @@ abstract class FileQuery extends Query
      * @param $translate
      * @return mixed
      */
-    abstract protected function dumpFunc($func, $translate);
+    abstract protected function traverse(callable $func, callable $translate);
 
     /**
      * @param $filename
@@ -152,9 +146,9 @@ abstract class FileQuery extends Query
      * @param $func
      * @throws \Exception
      */
-    public function dump($func)
+    public function dump(callable $func)
     {
-        $this->dumpFunc($func, function ($str) {
+        $this->traverse($func, function ($str) {
             return $str;
         });
     }
@@ -163,11 +157,22 @@ abstract class FileQuery extends Query
      * @param $func
      * @throws \Exception
      */
-    public function dumpId($func)
+    public function each(callable $func)
     {
-        $this->dumpFunc($func, function ($str) {
+        $this->traverse($func, function ($str) {
             list($id, $_) = $this->guess($str);
             return $id;
         });
+    }
+
+    /**
+     * @param $ip
+     * @return mixed
+     * @throws \Exception
+     */
+    public function id($ip)
+    {
+        list($id, $_) = $this->guess($this->address($ip));
+        return $id;
     }
 }

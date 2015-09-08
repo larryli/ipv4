@@ -27,30 +27,44 @@ abstract class Query
     /**
      * @return mixed
      */
+    abstract public function total();
+
+    /**
+     * @return mixed
+     */
     abstract public function clean();
 
     /**
-     * @param $func
+     * @param callback $func
+     * @param Query|null $provider
+     * @param Query|null $provider_extra
      * @return mixed
      */
-    abstract public function dump($func);
+    abstract public function generate(callable $func, Query $provider = null, Query $provider_extra = null);
 
     /**
-     * @param $func
+     * @param callback $func
      * @return mixed
      */
-    abstract public function dumpId($func);
+    abstract public function dump(callable $func);
+
+    /**
+     * @param callback $func
+     * @return mixed
+     */
+    abstract public function each(callable $func);
 
     /**
      * @param $ip
-     * @return mixed
+     * @return string
      */
-    abstract public function query($ip);
+    abstract public function address($ip);
 
     /**
-     * @return mixed
+     * @param $ip
+     * @return integer
      */
-    abstract public function getTotal();
+    abstract public function id($ip);
 
     /**
      * @var array
@@ -58,39 +72,46 @@ abstract class Query
     static protected $objects = [];
 
     /**
+     * @var array
+     */
+    static public $classes = [
+        'monipdb' => MonIPDBQuery,
+        'qqwry' => QQWryQuery,
+        'full' => FullQuery,
+        'mini' => MiniQuery,
+        'china' => ChinaQuery,
+        'world' => WorldQuery,
+        'freeipip' => FreeIPIPQuery,
+        'taobao' => TaobaoQuery,
+        'sina' => SinaQuery,
+        'baidumap' => BaiduMapQuery,
+    ];
+
+    /**
      * @param $name
      * @param null $options
+     * @return Query
+     * @throws \Exception
      */
     static public function create($name, $options = null)
     {
         if (!isset(self::$objects[$name])) {
-            switch ($name) {
-                case 'monipdb':
-                    $obj = new MonIPDBQuery($options);
-                    break;
-                case 'qqwry':
-                    $obj = new QQWryQuery($options);
-                    break;
-                case 'full':
-                    $obj = new FullQuery($options);
-                    break;
-                case 'mini':
-                    $obj = new MiniQuery($options);
-                    break;
-                case 'china':
-                    $obj = new ChinaQuery($options);
-                    break;
-                case 'world':
-                    $obj = new WorldQuery($options);
-                    break;
-                default:
-                    throw new \Exception("Unknown Query name \"{$name}\"");
+            if (isset(self::$classes[$name])) {
+                $class = __NAMESPACE__ . '\\' . self::$classes[$name];
+                $obj = new $class($options);
+            } else {
+                throw new \Exception("Unknown Query name \"{$name}\"");
             }
             self::$objects[$name] = $obj;
         }
         return self::$objects[$name];
     }
 
+    /**
+     * @param null $options
+     * @return array
+     * @throws \Exception
+     */
     static public function config($options = null)
     {
         if (empty($options)) {
@@ -99,8 +120,8 @@ abstract class Query
                 $options = $config;
             } else {
                 $options = [
-                    'monipdb' => '',
-                    'qqwry' => '',
+                    'monipdb',
+                    'qqwry',
                     'full' => ['monipdb', 'qqwry'],
                     'mini' => 'full',
                     'china' => 'full',
@@ -112,7 +133,15 @@ abstract class Query
             $options = require($options);
         }
         if (is_array($options)) {
-            return $options;
+            $result = [];
+            foreach ($options as $query => $provider) {
+                if (is_integer($query)) {
+                    $query = $provider;
+                    $provider = '';
+                }
+                $result[$query] = $provider;
+            }
+            return $result;
         } else {
             throw new \Exception("Error query factory {$options}");
         }
