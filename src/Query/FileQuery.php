@@ -40,6 +40,13 @@ abstract class FileQuery extends Query
     abstract public function guess($address);
 
     /**
+     * @param $func
+     * @param $translate
+     * @return mixed
+     */
+    abstract protected function dumpFunc($func, $translate);
+
+    /**
      * @param $filename
      * @param bool|false $is_init
      * @throws \Exception
@@ -89,6 +96,11 @@ abstract class FileQuery extends Query
         }
     }
 
+    /**
+     * @param string $filename
+     * @return string
+     * @throws \Exception
+     */
     static protected function getRuntime($filename = '')
     {
         $runtime = realpath(dirname(dirname(__DIR__)) . '/runtime');
@@ -136,4 +148,26 @@ abstract class FileQuery extends Query
         }
     }
 
+    /**
+     * @param $func
+     * @throws \Exception
+     */
+    public function dump($func)
+    {
+        $this->dumpFunc($func, function ($str) {
+            return $str;
+        });
+    }
+
+    /**
+     * @param $func
+     * @throws \Exception
+     */
+    public function dumpId($func)
+    {
+        $this->dumpFunc($func, function ($str) {
+            list($id, $_) = $this->guess($str);
+            return $id;
+        });
+    }
 }

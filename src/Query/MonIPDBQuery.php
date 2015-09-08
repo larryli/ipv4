@@ -110,16 +110,17 @@ class MonIPDBQuery extends FileQuery
 
     /**
      * @param $func
+     * @param $translate
      * @throws \Exception
      */
-    public function dump($func)
+    protected function dumpFunc($func, $translate)
     {
         $this->init();
         for ($start = 1024; $start < $this->end; $start += 8) {
             $ip = unpack('Nlen', $this->index{$start} . $this->index{$start + 1} . $this->index{$start + 2} . $this->index{$start + 3});
             $offset = unpack('Vlen', $this->index{$start + 4} . $this->index{$start + 5} . $this->index{$start + 6} . "\x0");
             $length = unpack('Clen', $this->index{$start + 7});
-            $func($ip['len'], $this->readOffset($offset['len'], $length['len']));
+            $func($ip['len'], $translate($this->readOffset($offset['len'], $length['len'])));
         }
     }
 

@@ -118,15 +118,16 @@ class QQWryQuery extends FileQuery
 
     /**
      * @param $func
+     * @param $translate
      * @throws \Exception
      */
-    public function dump($func)
+    protected function dumpFunc($func, $translate)
     {
         $this->init();
         for ($start = 0; $start < $this->end; $start += 7) {
             $ip = unpack('Llen', $this->index{$start} . $this->index{$start + 1} . $this->index{$start + 2} . $this->index{$start + 3});
             $offset = unpack('Llen', $this->index{$start + 4} . $this->index{$start + 5} . $this->index{$start + 6} . "\x0");
-            $func($ip['len'], $this->readRecode($offset['len']));
+            $func($ip['len'], $translate($this->readRecode($offset['len'])));
         }
     }
 

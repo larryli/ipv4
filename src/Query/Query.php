@@ -36,6 +36,12 @@ abstract class Query
     abstract public function dump($func);
 
     /**
+     * @param $func
+     * @return mixed
+     */
+    abstract public function dumpId($func);
+
+    /**
      * @param $ip
      * @return mixed
      */

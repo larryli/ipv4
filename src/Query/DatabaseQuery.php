@@ -25,7 +25,7 @@ abstract class DatabaseQuery extends Query
     /**
      * @var
      */
-    static protected $medoo;
+    static protected $db;
     /**
      * @var
      */
@@ -50,30 +50,21 @@ abstract class DatabaseQuery extends Query
      */
     public function __construct($options = null)
     {
-        if (self::$medoo === null) {
-            self::initMedoo();
+        if (self::$db === null) {
+            self::initDatabase($options);
         }
     }
 
     /**
      * @throws \Exception
      */
-    static protected function initMedoo()
+    static public function initDatabase($options)
     {
-        $config = dirname(dirname(__DIR__)) . '/config/db.php';
-        if (!file_exists($config)) {
-            $data = <<<EOT
-<?php
-return [
-    'database_type' => 'sqlite',
-    'database_file' => __DIR__ . '/../runtime/ipv4.sqlite',
-];
-EOT;
-            if (file_put_contents($config, $data) === FALSE) {
-                throw new \Exception("write config file \"{$config}\" error");
-            }
+        if (is_a($options, Database)) {
+            self::$db = $options;
+        } else {
+            self::$db = new MedooDatabase($options);
         }
-        self::$medoo = new Medoo(require($config));
     }
 
     /**
@@ -82,26 +73,18 @@ EOT;
      */
     static public function initDivision($func)
     {
-        if (self::$medoo === null) {
-            self::initMedoo();
+        if (self::$db === null) {
+            self::initDatabase(null);
         }
-        if (!self::$medoo->table_exists(self::DIVISION)) {
-            self::$medoo->create_table(self::DIVISION, [
-                'id' => self::$medoo->pk_type(true, false),
-                'name' => 'varchar(255)',
-                'title' => 'varchar(255)',
-                'is_city' => 'boolean',
-                'parent_id' => self::$medoo->int_type(false),
-            ]);
-            self::$medoo->create_index('is_city', self::DIVISION, 'is_city');
-            self::$medoo->create_index('parent_id', self::DIVISION, 'parent_id');
+        if (!self::$db->tableExists(self::DIVISION)) {
+            self::$db->createDivisionsTable(self::DIVISION);
         }
-        if (self::$medoo->count(self::DIVISION) == 0) {
+        if (self::$db->count(self::DIVISION) == 0) {
             $divisions = require('divisions.php');
             $func(0, count($divisions));
             foreach (array_chunk($divisions, self::SIZE) as $n => $data) {
                 $func(1, self::SIZE * $n);
-                self::$medoo->insert(self::DIVISION, $data);
+                self::$db->insertDivisions(self::DIVISION, $data);
             }
             $func(2, 0);
         }
@@ -112,11 +95,11 @@ EOT;
      */
     static public function cleanDivision()
     {
-        if (self::$medoo === null) {
-            self::initMedoo();
+        if (self::$db === null) {
+            self::initDatabase(null);
         }
-        if (self::$medoo->table_exists(self::DIVISION)) {
-            self::$medoo->drop_table(self::DIVISION);
+        if (self::$db->tableExists(self::DIVISION)) {
+            self::$db->cleanTable(self::DIVISION);
         }
     }
 
@@ -129,7 +112,7 @@ EOT;
         if (empty($id)) {
             return '';
         }
-        $data = self::$medoo->get('divisions', ['name', 'parent_id'], ['id' => $id]);
+        $data = self::$db->getDivision(self::DIVISION, $id);
         if (empty($data['parent_id'])) {
             return $data['name'];
         }
@@ -154,13 +137,10 @@ EOT;
      */
     protected function initTable()
     {
-        if (!self::$medoo->table_exists($this->name())) {
-            self::$medoo->create_table($this->name(), [
-                'id' => self::$medoo->pk_type(false, true),
-                'division_id' => self::$medoo->int_type(false),
-            ]);
+        if (!self::$db->tableExists($this->name())) {
+            self::$db->createIndexTable($this->name());
         } else {
-            self::$medoo->clean_table($this->name());
+            self::$db->cleanTable($this->name());
         }
     }
 
@@ -169,7 +149,22 @@ EOT;
      */
     public function exists()
     {
-        return self::$medoo->table_exists($this->name());
+        return self::$db->tableExists($this->name());
+    }
+
+    /**
+     * @param $func
+     * @param $translateId
+     */
+    protected function dumpFunc($func, $translateId)
+    {
+        $total = $this->getTotal();
+        for ($i = 0; $i < $total; $i += self::SIZE) {
+            $data = self::$db->getIndexes($this->name(), $i, self::SIZE);
+            foreach ($data as $row) {
+                $func($row['id'], $translateId($row['division_id']));
+            }
+        }
     }
 
     /**
@@ -177,16 +172,9 @@ EOT;
      */
     public function dumpId($func)
     {
-        $total = $this->getTotal();
-        for ($i = 0; $i < $total; $i += self::SIZE) {
-            $data = self::$medoo->select($this->name(), ['id', 'division_id'], [
-                'ORDER' => 'id ASC',
-                'LIMIT' => [$i, self::SIZE],
-            ]);
-            foreach ($data as $row) {
-                $func($row['id'], $row['division_id']);
-            }
-        }
+        $this->dumpFunc($func, function ($id) {
+            return $id;
+        });
     }
 
     /**
@@ -194,16 +182,7 @@ EOT;
      */
     public function dump($func)
     {
-        $total = $this->getTotal();
-        for ($i = 0; $i < $total; $i += self::SIZE) {
-            $data = self::$medoo->select($this->name(), ['id', 'division_id'], [
-                'ORDER' => 'id ASC',
-                'LIMIT' => [$i, self::SIZE],
-            ]);
-            foreach ($data as $row) {
-                $func($row['id'], self::getData($row['division_id']));
-            }
-        }
+        $this->dumpFunc($func, self::getData);
     }
 
     /**
@@ -212,11 +191,7 @@ EOT;
      */
     public function query($ip)
     {
-        $id = self::$medoo->get($this->name(), 'division_id', [
-            'id[>=]' => $ip,
-            'ORDER' => 'id ASC',
-            'LIMIT' => 1,
-        ]);
+        $id = self::$db->getIndex($this->name(), $ip);
         return self::getData($id);
     }
 
@@ -225,7 +200,7 @@ EOT;
      */
     public function getTotal()
     {
-        return self::$medoo->count($this->name());
+        return self::$db->count($this->name());
     }
 
     /**
@@ -234,7 +209,7 @@ EOT;
     public function clean()
     {
         if ($this->exists()) {
-            self::$medoo->drop_table($this->name());
+            self::$db->dropTable($this->name());
         }
     }
 
@@ -244,38 +219,31 @@ EOT;
      * @param $db2
      * @throws \Exception
      */
-    public function generate($func, $db1, $db2)
+    public function generate($func, $db1, $db2 = null)
     {
-        $this->startSave();
-        $func(0, $db1->getTotal());
-        if (method_exists($db1, 'dumpId')) {
-            $db1->dumpId(function ($ip, $id) use ($func, $db1) {
-                static $n = 0;
-                $n++;
-                $id = $this->translateId($id);
-                if ($this->saveTo($ip, $id)) {
-                    $func(1, $n);
-                }
-            });
-        } else {
-            if (!method_exists($db1, 'guess')) {
-                $name = $db1->name();
-                throw new \Exception("{$name} do not guess");
-            }
-            $again = is_object($db2) && method_exists($db2, 'guess');
-            $db1->dump(function ($ip, $address) use ($func, $db1, $db2, $again) {
-                static $n = 0;
-                $n++;
-                list($id, $_) = $db1->guess($address);
-                if (empty($id) && $again) {
+        if (is_object($db2) && method_exists($db2, 'guess')) {
+            $translateId = function ($ip, $id) use ($db2) {
+                if (empty($id)) {
                     list($id, $_) = $db2->guess($db2->query($ip));
                 }
-                $id = $this->translateId($id);
-                if ($this->saveTo($ip, $id)) {
-                    $func(1, $n);
-                }
-            });
+                return $id;
+            };
+        } else {
+            $translateId = function ($_, $id) {
+                return $id;
+            };
         }
+
+        $this->startSave();
+        $func(0, $db1->getTotal());
+        $db1->dumpId(function ($ip, $id) use ($func, $translateId) {
+            static $n = 0;
+            $n++;
+            $id = $this->translateId($translateId($ip, $id));
+            if ($this->saveTo($ip, $id)) {
+                $func(1, $n);
+            }
+        });
         $this->endSave();
         $func(2, 0);
     }
@@ -316,7 +284,7 @@ EOT;
     protected function endSave()
     {
         $this->saved[] = $this->last_saved;
-        self::$medoo->insert($this->name(), $this->saved);
+        self::$db->insertIndexes($this->name(), $this->saved);
         $this->saved = [];
     }
 
