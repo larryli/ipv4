@@ -83,17 +83,19 @@ class DumpCommand extends Command
     {
         $result = [];
         $query = Query::create($name);
-        $this->dump($output, $query, $filename, function ($output, $query) use (&$result) {
-            $query->dump(function ($ip, $address) use ($output, &$result) {
-                static $n = 0;
-                $result[long2ip($ip)] = $address;
-                $n++;
-                if (($n % 250) == 0) {
-                    $this->progress->setProgress($n);
-                }
+        if ($query->total() > 0) {
+            $this->dump($output, $query, $filename, function ($output, $query) use (&$result) {
+                $query->dump(function ($ip, $address) use ($output, &$result) {
+                    static $n = 0;
+                    $result[long2ip($ip)] = $address;
+                    $n++;
+                    if (($n % 250) == 0) {
+                        $this->progress->setProgress($n);
+                    }
+                });
             });
-        });
-        $this->write($output, $filename, $result);
+            $this->write($output, $filename, $result);
+        }
     }
 
     /**
@@ -105,8 +107,10 @@ class DumpCommand extends Command
     private function dumpAddress($output, $name, $filename)
     {
         $query = Query::create($name);
-        $result = $this->address($output, $query, $filename);
-        $this->write($output, $filename, $result);
+        if ($query->total() > 0) {
+            $result = $this->address($output, $query, $filename);
+            $this->write($output, $filename, $result);
+        }
     }
 
     /**
@@ -118,9 +122,11 @@ class DumpCommand extends Command
     private function dumpGuess($output, $name, $filename)
     {
         $query = Query::create($name);
-        $addresses = $this->address($output, $query, $filename);
-        $result = $this->guess($output, $query, $filename, $addresses);
-        $this->write($output, $filename, $result);
+        if ($query->total() > 0) {
+            $addresses = $this->address($output, $query, $filename);
+            $result = $this->guess($output, $query, $filename, $addresses);
+            $this->write($output, $filename, $result);
+        }
     }
 
     /**
