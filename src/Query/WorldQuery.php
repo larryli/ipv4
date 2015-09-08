@@ -23,7 +23,8 @@ class WorldQuery extends DatabaseQuery
     }
 
     /**
-     * @param $id
+     * @param int $id
+     * @return int
      */
     public function translateId($id)
     {

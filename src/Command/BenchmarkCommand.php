@@ -44,6 +44,7 @@ class BenchmarkCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -81,12 +82,12 @@ class BenchmarkCommand extends Command
     }
 
     /**
-     * @param $output
-     * @param $name
-     * @param $times
+     * @param OutputInterface $output
+     * @param string $name
+     * @param integer $times
      * @throws \Exception
      */
-    private function benchmark($output, $name, $times)
+    private function benchmark(OutputInterface $output, $name, $times)
     {
         $query = Query::create($name);
         if ($query->total() > 0) {

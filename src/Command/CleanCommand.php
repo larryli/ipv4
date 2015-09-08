@@ -8,6 +8,7 @@
 namespace larryli\ipv4\Command;
 
 use larryli\ipv4\Query\Query;
+use larryli\ipv4\Query\DatabaseQuery;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,6 +38,7 @@ class CleanCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return void
      * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -78,11 +80,11 @@ class CleanCommand extends Command
     }
 
     /**
-     * @param $output
-     * @param $name
+     * @param OutputInterface $output
+     * @param string $name
      * @throws \Exception
      */
-    private function clean($output, $name)
+    private function clean(OutputInterface $output, $name)
     {
         $output->write("<info>clean {$name}:</info>");
         $query = Query::create($name);
@@ -91,12 +93,12 @@ class CleanCommand extends Command
     }
 
     /**
-     * @param $output
+     * @param OutputInterface $output
      */
-    private function cleanDivision($output)
+    private function cleanDivision(OutputInterface $output)
     {
         $output->write("<info>clean divisions:</info>");
-        \larryli\ipv4\Query\DatabaseQuery::cleanDivision();
+        DatabaseQuery::cleanDivision();
         $output->writeln('<info> completed!</info>');
     }
 

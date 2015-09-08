@@ -15,75 +15,70 @@ namespace larryli\ipv4\Query;
 abstract class Database
 {
     /**
-     * @param $table
+     * @param string $table
      * @return bool
-     * @throws \Exception
      */
     abstract public function tableExists($table);
 
     /**
-     * @param $table
-     * @throws \Exception
+     * @param string $table
      */
     abstract public function createDivisionsTable($table);
 
     /**
-     * @param $table
-     * @throws \Exception
+     * @param string $table
      */
     abstract public function createIndexTable($table);
 
     /**
-     * @param $table
-     * @throws \Exception
+     * @param string $table
      */
     abstract public function cleanTable($table);
 
     /**
-     * @param $table
+     * @param string $table
      */
     abstract public function dropTable($table);
 
     /**
-     * @param $table
-     * @param $data
-     * @return mixed
+     * @param string $table
+     * @param array $data
      */
     abstract function insertDivisions($table, $data);
 
     /**
-     * @param $table
-     * @param $data
+     * @param string $table
+     * @param array $data
      */
     abstract public function insertIndexes($table, $data);
 
     /**
      * @param $table
-     * @return bool|int
+     * @return int
      */
     abstract public function count($table);
 
 
     /**
-     * @param $table
-     * @param $id
-     * @return bool
+     * @param string $table
+     * @param integer $id
+     * @return mixed
      */
     abstract public function getDivision($table, $id);
 
 
     /**
-     * @param $table
-     * @param $ip
-     * @return bool
+     * @param string $table
+     * @param integer $ip
+     * @return mixed
      */
     abstract public function getIndex($table, $ip);
 
     /**
-     * @param $table
-     * @param $start
-     * @param $size
-     * @return array|bool
+     * @param string $table
+     * @param integer $start
+     * @param integer $size
+     * @return mixed
      */
     abstract public function getIndexes($table, $start, $size);
 }

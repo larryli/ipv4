@@ -10,87 +10,114 @@ namespace larryli\ipv4\Query;
 
 /**
  * Class Query
+ *
  * @package larryli\ipv4\Query
  */
 abstract class Query
 {
     /**
-     * @return mixed
+     * name of the query
+     *
+     * @return string name string
      */
     abstract public function name();
 
     /**
-     * @return mixed
+     * check data is exists
+     *
+     * @return bool false meed the query need generate()
      */
     abstract public function exists();
 
     /**
-     * @return mixed
+     * numbers of data rows
+     *
+     * @return integer
      */
     abstract public function total();
 
     /**
-     * @return mixed
+     * clean data
+     *
+     * @return void
      */
     abstract public function clean();
 
     /**
-     * @param callback $func
-     * @param Query|null $provider
-     * @param Query|null $provider_extra
-     * @return mixed
+     * generate data with provider
+     *
+     * @param callback $func notify function
+     * @param Query|null $provider main query provider
+     * @param Query|null $provider_extra extra query provider
+     * @return void
      */
     abstract public function generate(callable $func, Query $provider = null, Query $provider_extra = null);
 
     /**
-     * @param callback $func
-     * @return mixed
+     * dump all data with address string
+     *
+     * @param callback $func notify function
+     * @return void
      */
     abstract public function dump(callable $func);
 
     /**
-     * @param callback $func
-     * @return mixed
+     * dump all data with division id
+     *
+     * @param callback $func notify function
+     * @return void
      */
     abstract public function each(callable $func);
 
     /**
+     * query ip address
+     *
      * @param $ip
      * @return string
      */
     abstract public function address($ip);
 
     /**
+     * query ip division id
+     *
      * @param $ip
      * @return integer
      */
     abstract public function id($ip);
 
     /**
-     * @var array
+     * factory objects
+     *
+     * @var Query[]
      */
     static protected $objects = [];
 
     /**
-     * @var array
+     * object names
+     *
+     * @var string[]
      */
     static public $classes = [
-        'monipdb' => MonIPDBQuery,
-        'qqwry' => QQWryQuery,
-        'full' => FullQuery,
-        'mini' => MiniQuery,
-        'china' => ChinaQuery,
-        'world' => WorldQuery,
-        'freeipip' => FreeIPIPQuery,
-        'taobao' => TaobaoQuery,
-        'sina' => SinaQuery,
-        'baidumap' => BaiduMapQuery,
+        'monipdb' => 'MonIPDBQuery',
+        'qqwry' => 'QQWryQuery',
+        'full' => 'FullQuery',
+        'mini' => 'MiniQuery',
+        'china' => 'ChinaQuery',
+        'world' => 'WorldQuery',
+        'freeipip' => 'FreeIPIPQuery',
+        'taobao' => 'TaobaoQuery',
+        'sina' => 'SinaQuery',
+        'baidumap' => 'BaiduMapQuery',
     ];
 
     /**
+     * create query object with name
+     *
+     * if object exists, return directly
+     *
      * @param $name
-     * @param null $options
-     * @return Query
+     * @param mixed $options object config
+     * @return Query|FileQuery|DataBaseQuery|ApiQuery
      * @throws \Exception
      */
     static public function create($name, $options = null)
@@ -108,7 +135,9 @@ abstract class Query
     }
 
     /**
-     * @param null $options
+     * return objects config
+     *
+     * @param null|array $options config filename or array
      * @return array
      * @throws \Exception
      */
@@ -130,7 +159,7 @@ abstract class Query
             }
         }
         if (is_string($options)) {
-            $options = require($options);
+            $options = require($options . '');  // fix inspect
         }
         if (is_array($options)) {
             $result = [];

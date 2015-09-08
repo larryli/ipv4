@@ -28,7 +28,7 @@ class MedooDatabase extends Database
         if (empty($options)) {
             $options = $this->initConfig();
         } else if (is_string($options)) {
-            $options = require($options);
+            $options = require($options . '');  // fix inspect
         }
         if (is_array($options) && isset($options['database_type'])) {
             $this->medoo = new Medoo($options);
@@ -45,7 +45,7 @@ class MedooDatabase extends Database
     {
         $config = dirname(dirname(__DIR__)) . '/config/db.php';
         if (file_exists($config)) {
-            return require($config);
+            return require($config . '');  // fix inspect
         } else {
             return [
                 'database_type' => 'sqlite',
@@ -111,8 +111,8 @@ class MedooDatabase extends Database
     }
 
     /**
-     * @param $table
-     * @param $data
+     * @param string $table
+     * @param array $data
      */
     public function insertDivisions($table, $data)
     {
@@ -120,8 +120,8 @@ class MedooDatabase extends Database
     }
 
     /**
-     * @param $table
-     * @param $data
+     * @param string $table
+     * @param array $data
      */
     public function insertIndexes($table, $data)
     {
@@ -140,7 +140,7 @@ class MedooDatabase extends Database
     /**
      * @param $table
      * @param $id
-     * @return bool
+     * @return mixed
      */
     public function getDivision($table, $id)
     {
@@ -150,7 +150,7 @@ class MedooDatabase extends Database
     /**
      * @param $table
      * @param $ip
-     * @return bool
+     * @return mixed
      */
     public function getIndex($table, $ip)
     {
@@ -165,7 +165,7 @@ class MedooDatabase extends Database
      * @param $table
      * @param $start
      * @param $size
-     * @return array|bool
+     * @return mixed
      */
     public function getIndexes($table, $start, $size)
     {

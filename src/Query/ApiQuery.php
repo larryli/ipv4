@@ -38,8 +38,11 @@ abstract class ApiQuery extends Query
         // do nothing.
     }
 
+
     /**
-     *
+     * @param callable $func
+     * @param Query|null $provider
+     * @param Query|null $provider_extra
      */
     public function generate(callable $func, Query $provider = null, Query $provider_extra = null)
     {
@@ -47,7 +50,7 @@ abstract class ApiQuery extends Query
     }
 
     /**
-     * @param $func
+     * @param callable $func
      */
     public function dump(callable $func)
     {
@@ -55,7 +58,7 @@ abstract class ApiQuery extends Query
     }
 
     /**
-     * @param $func
+     * @param callable $func
      */
     public function each(callable $func)
     {

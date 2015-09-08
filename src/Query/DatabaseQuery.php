@@ -23,13 +23,13 @@ abstract class DatabaseQuery extends Query
      */
     const DIVISION = 'divisions';
     /**
-     * @var
+     * @var Database
      */
     static protected $db;
     /**
-     * @var
+     * @var string[]
      */
-    static private $data;
+    static private $data = [];
     /**
      * @var array
      */
@@ -46,7 +46,7 @@ abstract class DatabaseQuery extends Query
     abstract public function translateId($id);
 
     /**
-     * @throws \Exception
+     * @param null|string|array|Database $options
      */
     public function __construct($options = null)
     {
@@ -56,11 +56,12 @@ abstract class DatabaseQuery extends Query
     }
 
     /**
+     * @param string|array|Database $options
      * @throws \Exception
      */
     static public function initDatabase($options)
     {
-        if (is_a($options, Database)) {
+        if (is_a($options, __NAMESPACE__ . '\\Database')) {
             self::$db = $options;
         } else {
             self::$db = new MedooDatabase($options);
@@ -68,10 +69,11 @@ abstract class DatabaseQuery extends Query
     }
 
     /**
-     * @param $func
+     * @param callable $func
+     * @param bool $has_extra
      * @throws \Exception
      */
-    static public function initDivision($func, $has_extra = false)
+    static public function initDivision(callable $func, $has_extra = false)
     {
         if (self::$db === null) {
             self::initDatabase(null);
@@ -135,8 +137,6 @@ abstract class DatabaseQuery extends Query
     }
 
     /**
-     * @param $medoo
-     * @param $table
      */
     protected function initTable()
     {
@@ -148,7 +148,7 @@ abstract class DatabaseQuery extends Query
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
     public function exists()
     {
@@ -161,7 +161,7 @@ abstract class DatabaseQuery extends Query
      */
     protected function traverse(callable $func, $translateId)
     {
-        $total = $this->getTotal();
+        $total = $this->total();
         for ($i = 0; $i < $total; $i += self::SIZE) {
             $data = self::$db->getIndexes($this->name(), $i, self::SIZE);
             foreach ($data as $row) {
@@ -171,7 +171,7 @@ abstract class DatabaseQuery extends Query
     }
 
     /**
-     * @param $func
+     * @param callable $func
      */
     public function each(callable $func)
     {
@@ -181,11 +181,13 @@ abstract class DatabaseQuery extends Query
     }
 
     /**
-     * @param $func
+     * @param callable $func
      */
     public function dump(callable $func)
     {
-        $this->traverse($func, self::getData);
+        $this->traverse($func, function ($id) {
+            return self::getData($id);
+        });
     }
 
     /**
@@ -225,9 +227,9 @@ abstract class DatabaseQuery extends Query
     }
 
     /**
-     * @param $func
-     * @param $db1
-     * @param $db2
+     * @param callable $func
+     * @param Query|null $provider
+     * @param Query|null $provider_extra
      * @throws \Exception
      */
     public function generate(callable $func, Query $provider = null, Query $provider_extra = null)

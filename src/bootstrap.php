@@ -5,9 +5,13 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
+/**
+ * @param $file
+ * @return bool|mixed
+ */
 function includeIfExists($file)
 {
-    return file_exists($file) ? include $file : false;
+    return file_exists($file) ? include $file . '' : false; // fix inspect
 }
 if ((!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php')) && (!$loader = includeIfExists(__DIR__.'/../../../autoload.php'))) {
     echo 'You must set up the project dependencies, run the following commands:'.PHP_EOL.

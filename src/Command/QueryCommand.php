@@ -35,6 +35,7 @@ class QueryCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -47,12 +48,12 @@ class QueryCommand extends Command
     }
 
     /**
-     * @param $output
-     * @param $name
-     * @param $ip
+     * @param OutputInterface $output
+     * @param string $name
+     * @param integer $ip
      * @throws \Exception
      */
-    private function query($output, $name, $ip)
+    private function query(OutputInterface $output, $name, $ip)
     {
         $query = Query::create($name);
         $address = $query->address($ip);

@@ -39,7 +39,7 @@ class MonIPDBQuery extends FileQuery
      */
     private $data = [];
     /**
-     * @var array
+     * @var string[]
      */
     private $cached = [];
 
@@ -66,12 +66,18 @@ class MonIPDBQuery extends FileQuery
     }
 
     /**
-     * @param $func
+     * @param callable $func
+     * @param Query|null $provider
+     * @param Query|null $provider_extra
      * @throws \Exception
      */
-    public function generate(callable $func = file_get_contents, Query $provider = null, Query $provider_extra = null)
+    public function generate(callable $func = null, Query $provider = null, Query $provider_extra = null)
     {
-        $file = $func(self::URL);
+        if (empty($func)) {
+            $file = file_get_contents(self::URL);
+        } else {
+            $file = $func(self::URL);
+        }
         $zip_file = dirname($this->filename) . '/17monipdb.zip';
         file_put_contents($zip_file, $file);
         $zip = new \ZipArchive;
@@ -137,12 +143,12 @@ class MonIPDBQuery extends FileQuery
 
     /**
      * @param $ip
-     * @return mixed
+     * @return string
      * @throws \Exception
      */
     public function address($ip)
     {
-        $ip_start = floor($ip / (256 * 256 * 256));
+        $ip_start = intval(floor($ip / (256 * 256 * 256)));
 
         if ($ip_start < 0 || $ip_start > 255) {
             throw new \Exception("{$ip} is not valid.");
@@ -154,20 +160,20 @@ class MonIPDBQuery extends FileQuery
         $this->init();
         $nip = pack('N', $ip);
         $tmp_offset = $ip_start * 4;
-        $start = unpack('Vlen', @$this->index{$tmp_offset} . @$this->index{$tmp_offset + 1} . @$this->index{$tmp_offset + 2} . @$this->index{$tmp_offset + 3});
+        $start = unpack('Vlen', $this->index{$tmp_offset} . $this->index{$tmp_offset + 1} . $this->index{$tmp_offset + 2} . $this->index{$tmp_offset + 3});
         $start = $start['len'] * 8 + 1024;
         if ($ip_start == 255) {
             $end = $this->end - 8;
         } else {
-            $end = unpack('Vlen', @$this->index{$tmp_offset + 4} . @$this->index{$tmp_offset + 5} . @$this->index{$tmp_offset + 6} . @$this->index{$tmp_offset + 7});
+            $end = unpack('Vlen', $this->index{$tmp_offset + 4} . $this->index{$tmp_offset + 5} . $this->index{$tmp_offset + 6} . $this->index{$tmp_offset + 7});
             $end = $end['len'] * 8 + 1024 - 8;
         }
         $start = $this->find($nip, $start, $end);
         if ($start === null) {
             $this->cached[$ip] = '';
         } else {
-            $offset = unpack('Vlen', @$this->index{$start + 4} . @$this->index{$start + 5} . @$this->index{$start + 6} . "\x0");
-            $length = unpack('Clen', @$this->index{$start + 7});
+            $offset = unpack('Vlen', $this->index{$start + 4} . $this->index{$start + 5} . $this->index{$start + 6} . "\x0");
+            $length = unpack('Clen', $this->index{$start + 7});
             $this->cached[$ip] = $this->readOffset($offset['len'], $length['len']);
         }
         return $this->cached[$ip];

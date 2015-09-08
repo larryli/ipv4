@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class InitCommand extends Command
 {
     /**
-     * @var null
+     * @var ProgressBar|null
      */
     private $progress = null;
 
@@ -44,6 +44,7 @@ class InitCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -60,9 +61,9 @@ class InitCommand extends Command
     }
 
     /**
-     * @param $output
+     * @param OutputInterface $output
      */
-    protected function division($output)
+    protected function division(OutputInterface $output)
     {
         DatabaseQuery::initDivision(function ($code, $n) use ($output) {
             switch ($code) {
@@ -82,17 +83,25 @@ class InitCommand extends Command
         }, true);
     }
 
-    protected function generate($output, $name, $force, $provider)
+    /**
+     * @param OutputInterface $output
+     * @param string $name
+     * @param bool $force
+     * @param string|array $provider
+     * @return void
+     * @throws \Exception
+     */
+    protected function generate(OutputInterface $output, $name, $force, $provider)
     {
         $query = Query::create($name);
         if (is_string($provider)) {
-            $db1 = Query::create($provider);
-            $use = $db1->name();
-            $db2 = null;
+            $provider = Query::create($provider);
+            $use = $provider->name();
+            $provider_extra = null;
         } else if (is_array($provider)) {
-            $db1 = Query::create($provider[0]);
-            $db2 = Query::create($provider[1]);
-            $use = $db1->name() . ' and ' . $db2->name();
+            $provider_extra = Query::create($provider[1]);
+            $provider = Query::create($provider[0]);
+            $use = $provider->name() . ' and ' . $provider_extra->name();
         } else {
             throw new \Exception("Error generate options {$provider}");
         }
@@ -114,20 +123,19 @@ class InitCommand extends Command
                         $this->progress->finish();
                         break;
                 }
-            }, $db1, $db2);
+            }, $provider, $provider_extra);
             $output->writeln('<info> completed!</info>');
         }
-        return $query;
     }
 
     /**
-     * @param $output
-     * @param $name
-     * @param $force
-     * @return \larryli\ipv4\Query\MonIPDBQuery|\larryli\ipv4\Query\QQWryQuery
+     * @param OutputInterface $output
+     * @param string $name
+     * @param bool $force
+     * @return void
      * @throws \Exception
      */
-    protected function download($output, $name, $force)
+    protected function download(OutputInterface $output, $name, $force)
     {
         $query = Query::create($name);
         $name = $query->name();
@@ -140,7 +148,6 @@ class InitCommand extends Command
             });
             $output->writeln('<info> completed!</info>');
         }
-        return $query;
     }
 
     /**
@@ -171,5 +178,4 @@ class InitCommand extends Command
         ]);
         return $ctx;
     }
-
 }

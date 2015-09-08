@@ -100,12 +100,10 @@ class Medoo extends \medoo
                 $query = $this->query('SELECT count(*) FROM sqlite_master WHERE type='
                     . $this->quote('table') . ' AND name='
                     . $this->quote($this->prefix . $table));
-                return 0 + $query->fetchColumn() ? true : false;
+                return boolval($query->fetchColumn());
                 break;
             case 'mysql':
                 $query = $this->query('SHOW TABLES LIKE ' . $this->quote($this->prefix . $table));
-//                echo $query->queryString;
-//                die($query->fetchColumn());
                 return ($query->fetchColumn() === false) ? false : true;
                 break;
             default:
@@ -151,8 +149,9 @@ class Medoo extends \medoo
     }
 
     /**
-     * @param $table
+     * @param string $table
      * @return mixed
+     * @throws \Exception
      */
     public function clean_table($table)
     {

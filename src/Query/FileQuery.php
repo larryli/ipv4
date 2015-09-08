@@ -10,11 +10,16 @@ namespace larryli\ipv4\Query;
 
 /**
  * Class FileQuery
+ *
+ * query data use file
+ *
  * @package larryli\ipv4\Query
  */
 abstract class FileQuery extends Query
 {
     /**
+     * data filename
+     *
      * @var string
      */
     protected $filename = '';
@@ -29,20 +34,19 @@ abstract class FileQuery extends Query
 
     /**
      * @param $address
-     * @return mixed
+     * @return array
      */
     abstract public function guess($address);
 
     /**
      * @param $func
      * @param $translate
-     * @return mixed
+     * @return void
      */
     abstract protected function traverse(callable $func, callable $translate);
 
     /**
-     * @param $filename
-     * @param bool|false $is_init
+     * @param string $filename
      * @throws \Exception
      */
     public function __construct($filename)
@@ -133,7 +137,7 @@ abstract class FileQuery extends Query
     }
 
     /**
-     *
+     * @return void
      */
     public function clean()
     {
@@ -143,7 +147,7 @@ abstract class FileQuery extends Query
     }
 
     /**
-     * @param $func
+     * @param callable $func
      * @throws \Exception
      */
     public function dump(callable $func)
@@ -154,7 +158,7 @@ abstract class FileQuery extends Query
     }
 
     /**
-     * @param $func
+     * @param callable $func
      * @throws \Exception
      */
     public function each(callable $func)
@@ -167,7 +171,7 @@ abstract class FileQuery extends Query
 
     /**
      * @param $ip
-     * @return mixed
+     * @return integer
      * @throws \Exception
      */
     public function id($ip)

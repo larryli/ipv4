@@ -8,6 +8,7 @@
 namespace larryli\ipv4\Command;
 
 use larryli\ipv4\Query\Query;
+use larryli\ipv4\Query\FileQuery;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DumpCommand extends Command
 {
     /**
-     * @var null
+     * @var ProgressBar|null
      */
     private $progress = null;
 
@@ -43,6 +44,7 @@ class DumpCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return void
      * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -79,13 +81,13 @@ class DumpCommand extends Command
      * @param $filename
      * @throws \Exception
      */
-    private function dumpDefault($output, $name, $filename)
+    private function dumpDefault(OutputInterface $output, $name, $filename)
     {
         $result = [];
         $query = Query::create($name);
         if ($query->total() > 0) {
-            $this->dump($output, $query, $filename, function ($output, $query) use (&$result) {
-                $query->dump(function ($ip, $address) use ($output, &$result) {
+            $this->dump($output, $query, $filename, function (Query $query) use (&$result) {
+                $query->dump(function ($ip, $address) use (&$result) {
                     static $n = 0;
                     $result[long2ip($ip)] = $address;
                     $n++;
@@ -99,12 +101,12 @@ class DumpCommand extends Command
     }
 
     /**
-     * @param $output
-     * @param $name
-     * @param $filename
+     * @param OutputInterface $output
+     * @param string $name
+     * @param string $filename
      * @throws \Exception
      */
-    private function dumpAddress($output, $name, $filename)
+    private function dumpAddress(OutputInterface $output, $name, $filename)
     {
         $query = Query::create($name);
         if ($query->total() > 0) {
@@ -114,12 +116,12 @@ class DumpCommand extends Command
     }
 
     /**
-     * @param $output
-     * @param $name
-     * @param $filename
+     * @param OutputInterface $output
+     * @param string $name
+     * @param string $filename
      * @throws \Exception
      */
-    private function dumpGuess($output, $name, $filename)
+    private function dumpGuess(OutputInterface $output, $name, $filename)
     {
         $query = Query::create($name);
         if ($query->total() > 0) {
@@ -130,32 +132,32 @@ class DumpCommand extends Command
     }
 
     /**
-     * @param $output
-     * @param $query
-     * @param $filename
-     * @param $func
+     * @param OutputInterface $output
+     * @param Query $query
+     * @param string $filename
+     * @param callable $func
      */
-    private function dump($output, $query, $filename, $func)
+    private function dump(OutputInterface $output, Query $query, $filename, callable $func)
     {
         $output->writeln("<info>dump {$filename}:</info>");
-        $this->progress = new ProgressBar($output, $query->getTotal());
+        $this->progress = new ProgressBar($output, $query->total());
         $this->progress->start();
-        $func($output, $query);
+        $func($query);
         $this->progress->finish();
         $output->writeln('<info> completed!</info>');
     }
 
     /**
-     * @param $output
-     * @param $query
-     * @param $filename
+     * @param OutputInterface $output
+     * @param Query $query
+     * @param string $filename
      * @return array
      */
-    private function address($output, $query, $filename)
+    private function address(OutputInterface $output, Query $query, $filename)
     {
         $addresses = [];
-        $this->dump($output, $query, $filename, function ($output, $query) use (&$addresses) {
-            $query->dump(function ($_, $address) use ($output, &$addresses) {
+        $this->dump($output, $query, $filename, function (Query $query) use (&$addresses) {
+            $query->dump(function ($_, $address) use (&$addresses) {
                 static $n = 0;
                 if (!in_array($address, $addresses)) {
                     $addresses[] = $address;
@@ -171,13 +173,13 @@ class DumpCommand extends Command
     }
 
     /**
-     * @param $output
-     * @param $query
-     * @param $filename
-     * @param $addresses
+     * @param OutputInterface $output
+     * @param FileQuery $query
+     * @param string $filename
+     * @param string[] $addresses
      * @return array
      */
-    private function guess($output, $query, $filename, $addresses)
+    private function guess(OutputInterface $output, FileQuery $query, $filename, $addresses)
     {
         $result = [];
         $output->writeln("<info>guess {$filename}:</info>");
@@ -197,15 +199,14 @@ class DumpCommand extends Command
     }
 
     /**
-     * @param $output
-     * @param $filename
-     * @param $result
+     * @param OutputInterface $output
+     * @param string $filename
+     * @param string[] $result
      */
-    private function write($output, $filename, $result)
+    private function write(OutputInterface $output, $filename, $result)
     {
         $output->write("<info>write {$filename}:</info>");
         file_put_contents($filename, json_encode($result, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
         $output->writeln('<info> completed!</info>');
     }
-
 }

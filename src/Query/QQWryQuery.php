@@ -66,13 +66,20 @@ class QQWryQuery extends FileQuery
     }
 
     /**
-     * @param $func
+     * @param callable $func
+     * @param Query|null $provider
+     * @param Query|null $provider_extra
      * @throws \Exception
      */
-    public function generate(callable $func = file_get_contents, Query $provider = null, Query $provider_extra = null)
+    public function generate(callable $func = null, Query $provider = null, Query $provider_extra = null)
     {
-        $copywrite = $func(self::COPYWRITE_URL);
-        $qqwry = $func(self::QQWRY_URL);
+        if (empty($func)) {
+            $copywrite = file_get_contents(self::COPYWRITE_URL);
+            $qqwry = file_get_contents(self::QQWRY_URL);
+        } else {
+            $copywrite = $func(self::COPYWRITE_URL);
+            $qqwry = $func(self::QQWRY_URL);
+        }
         $key = unpack("V6", $copywrite)[6];
         for ($i = 0; $i < 0x200; $i++) {
             $key *= 0x805;
@@ -117,8 +124,8 @@ class QQWryQuery extends FileQuery
     }
 
     /**
-     * @param $func
-     * @param $translate
+     * @param callable $func
+     * @param callable $translate
      * @throws \Exception
      */
     protected function traverse(callable $func, callable $translate)
@@ -156,7 +163,7 @@ class QQWryQuery extends FileQuery
      */
     public function address($ip)
     {
-        $ip_start = floor($ip / (256 * 256 * 256));
+        $ip_start = intval(floor($ip / (256 * 256 * 256)));
 
         if ($ip_start < 0 || $ip_start > 255) {
             throw new \Exception("{$ip} is not valid.");
