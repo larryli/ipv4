@@ -11,7 +11,7 @@ use larryli\ipv4\query\Query;
 
 /**
  * Class QueryTest
- * @package larryli\ipv4\Tests\Query
+ * @package larryli\ipv4\tests\query
  */
 class QueryTest extends \PHPUnit_Framework_TestCase
 {

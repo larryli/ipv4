@@ -11,7 +11,7 @@ use larryli\ipv4\query\MonIPDBQuery;
 
 /**
  * Class MonIPDBQueryTest
- * @package larryli\ipv4\Tests\Query
+ * @package larryli\ipv4\tests\query
  */
 class MonIPDBQueryTest extends \PHPUnit_Framework_TestCase
 {
