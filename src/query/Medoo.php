@@ -6,11 +6,11 @@
  * @see: https://github.com/catfan/Medoo/commit/319a37a859e9f3e44f849e631862ee2eb1043033
  */
 
-namespace larryli\ipv4\Query;
+namespace larryli\ipv4\query;
 
 /**
  * Class Medoo
- * @package larryli\ipv4\Query
+ * @package larryli\ipv4\query
  */
 class Medoo extends \medoo
 {

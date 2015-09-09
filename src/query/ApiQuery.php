@@ -5,12 +5,12 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Query;
+namespace larryli\ipv4\query;
 
 
 /**
  * Class ApiQuery
- * @package larryli\ipv4\Query
+ * @package larryli\ipv4\query
  */
 abstract class ApiQuery extends Query
 {
@@ -52,18 +52,18 @@ abstract class ApiQuery extends Query
      * @param $ip
      * @return int
      */
-    public function division_id($ip)
+    public function findId($ip)
     {
         return 0;
     }
 
 
-    public function string($integer)
+    public function divisionById($integer)
     {
         return '';
     }
 
-    public function integer($string)
+    public function idByDivision($string)
     {
         return 0;
     }

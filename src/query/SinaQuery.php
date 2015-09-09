@@ -5,12 +5,12 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Query;
+namespace larryli\ipv4\query;
 
 
 /**
  * Class SinaQuery
- * @package larryli\ipv4\Query
+ * @package larryli\ipv4\query
  */
 class SinaQuery extends ApiQuery
 {
@@ -26,7 +26,7 @@ class SinaQuery extends ApiQuery
      * @param $ip
      * @return string
      */
-    public function division($ip)
+    public function find($ip)
     {
         $url = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip=' . long2ip($ip);
         $content = json_decode(@file_get_contents($url), true);

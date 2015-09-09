@@ -5,12 +5,12 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Query;
+namespace larryli\ipv4\query;
 
 
 /**
  * Class MonIPDBQuery
- * @package larryli\ipv4\Query
+ * @package larryli\ipv4\query
  */
 class MonIPDBQuery extends FileQuery
 {
@@ -108,7 +108,7 @@ class MonIPDBQuery extends FileQuery
      * @return string
      * @throws \Exception
      */
-    public function division($ip)
+    public function find($ip)
     {
         $ip_start = intval(floor($ip / (256 * 256 * 256)));
 
@@ -130,7 +130,7 @@ class MonIPDBQuery extends FileQuery
             $end = unpack('Vlen', $this->index{$tmp_offset + 4} . $this->index{$tmp_offset + 5} . $this->index{$tmp_offset + 6} . $this->index{$tmp_offset + 7});
             $end = $end['len'] * 8 + 1024 - 8;
         }
-        $start = $this->find($nip, $start, $end);
+        $start = $this->findIndex($nip, $start, $end);
         if ($start === null) {
             $this->cached[$ip] = '';
         } else {
@@ -177,7 +177,7 @@ class MonIPDBQuery extends FileQuery
      * @param $r
      * @return int|null
      */
-    private function find($ip, $l, $r)
+    private function findIndex($ip, $l, $r)
     {
         for ($m = $l; $m <= $r; $m += 8) {
             if ($this->index{$m} . $this->index{$m + 1} . $this->index{$m + 2} . $this->index{$m + 3} >= $ip) {
@@ -206,7 +206,7 @@ class MonIPDBQuery extends FileQuery
      * @return array
      * @throws \Exception
      */
-    public function integer($address)
+    public function idByDivision($address)
     {
         list($country, $province, $city, $_) = explode("\t", $address);
 
@@ -279,14 +279,5 @@ class MonIPDBQuery extends FileQuery
     public function rewind()
     {
         $this->position = 1024;
-    }
-
-    /**
-     * @param int $integer
-     * @return string
-     */
-    public function string($integer)
-    {
-        return '';
     }
 }

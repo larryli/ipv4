@@ -5,9 +5,9 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Tests\Query;
+namespace larryli\ipv4\tests\query;
 
-use larryli\ipv4\Query\Query;
+use larryli\ipv4\query\Query;
 
 /**
  * Class QueryTest

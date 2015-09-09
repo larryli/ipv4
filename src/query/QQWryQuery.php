@@ -5,12 +5,12 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Query;
+namespace larryli\ipv4\query;
 
 
 /**
  * Class QQWryQuery
- * @package larryli\ipv4\Query
+ * @package larryli\ipv4\query
  */
 class QQWryQuery extends FileQuery
 {
@@ -49,7 +49,7 @@ class QQWryQuery extends FileQuery
      */
     private $data;
     /**
-     * query address/division id cache
+     * query division cache
      * @var array
      */
     private $cached = [];
@@ -118,7 +118,7 @@ class QQWryQuery extends FileQuery
      * @return mixed
      * @throws \Exception
      */
-    public function division($ip)
+    public function find($ip)
     {
         $ip_start = intval(floor($ip / (256 * 256 * 256)));
 
@@ -130,7 +130,7 @@ class QQWryQuery extends FileQuery
         }
 
         $this->initFile();
-        $offset = $this->find($ip, 0, $this->end);
+        $offset = $this->findIndex($ip, 0, $this->end);
         $offset = unpack('Llen', $this->index{$offset + 4} . $this->index{$offset + 5} . $this->index{$offset + 6} . "\x0");
         $this->cached[$ip] = $this->readRecode($offset['len']);
         return $this->cached[$ip];
@@ -142,7 +142,7 @@ class QQWryQuery extends FileQuery
      * @param $r
      * @return int
      */
-    private function find($ip, $l, $r)
+    private function findIndex($ip, $l, $r)
     {
         if ($l + 7 >= $r) {
             return $l;
@@ -150,9 +150,9 @@ class QQWryQuery extends FileQuery
         $m = intval(($l + $r) / 14) * 7;
         $mip = unpack('Llen', $this->index{$m} . $this->index{$m + 1} . $this->index{$m + 2} . $this->index{$m + 3});
         if ($ip < $mip['len']) {
-            return $this->find($ip, $l, $m);
+            return $this->findIndex($ip, $l, $m);
         } else {
-            return $this->find($ip, $m, $r);
+            return $this->findIndex($ip, $m, $r);
         }
     }
 
@@ -274,7 +274,7 @@ class QQWryQuery extends FileQuery
      * @param $address
      * @return integer
      */
-    public function integer($address)
+    public function idByDivision($address)
     {
         foreach (self::$divisions as $country_name => $country_data) {
             if (strncmp($address, $country_name, strlen($country_name)) == 0) {
@@ -362,23 +362,6 @@ class QQWryQuery extends FileQuery
     /**
      *
      */
-    public function rewind()
-    {
-        $this->position = $this->start;
-    }
-
-    /**
-     * @param int $integer
-     * @return string
-     */
-    public function string($integer)
-    {
-        return '';
-    }
-
-    /**
-     *
-     */
     private function initData()
     {
         $this->initFile();
@@ -390,5 +373,13 @@ class QQWryQuery extends FileQuery
             fclose($this->fp);
             $this->fp = null;
         }
+    }
+
+    /**
+     *
+     */
+    public function rewind()
+    {
+        $this->position = $this->start;
     }
 }

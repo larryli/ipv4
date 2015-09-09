@@ -5,7 +5,7 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Query;
+namespace larryli\ipv4\query;
 
 
 /**
@@ -13,10 +13,14 @@ namespace larryli\ipv4\Query;
  *
  * query data use file
  *
- * @package larryli\ipv4\Query
+ * @package larryli\ipv4\query
  */
 abstract class FileQuery extends Query
 {
+    /**
+     * @var array
+     */
+    static protected $divisions = [];
     /**
      * data filename
      *
@@ -27,10 +31,6 @@ abstract class FileQuery extends Query
      * @var bool
      */
     protected $is_initFile = false;
-    /**
-     * @var array
-     */
-    static protected $divisions = [];
 
     /**
      * @param string $filename
@@ -96,31 +96,11 @@ abstract class FileQuery extends Query
     }
 
     /**
-     * @return bool
-     */
-    protected function initFile()
-    {
-        if ($this->is_initFile) {
-            return true;
-        }
-        $this->is_initFile = true;
-        return false;
-    }
-
-    /**
      * @return string
      */
     public function name()
     {
         return basename($this->filename);
-    }
-
-    /**
-     * @return bool
-     */
-    public function exists()
-    {
-        return file_exists($this->filename);
     }
 
     /**
@@ -134,12 +114,41 @@ abstract class FileQuery extends Query
     }
 
     /**
+     * @return bool
+     */
+    public function exists()
+    {
+        return file_exists($this->filename);
+    }
+
+    /**
      * @param $ip
      * @return integer
      * @throws \Exception
      */
-    public function division_id($ip)
+    public function findId($ip)
     {
-        return $this->integer($this->division($ip));
+        return $this->idByDivision($this->find($ip));
+    }
+
+    /**
+     * @param int $integer
+     * @return string
+     */
+    public function divisionById($integer)
+    {
+        return '';
+    }
+
+    /**
+     * @return bool
+     */
+    protected function initFile()
+    {
+        if ($this->is_initFile) {
+            return true;
+        }
+        $this->is_initFile = true;
+        return false;
     }
 }

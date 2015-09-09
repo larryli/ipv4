@@ -5,10 +5,10 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Command;
+namespace larryli\ipv4\commands;
 
-use larryli\ipv4\Query\Query;
-use larryli\ipv4\Query\FileQuery;
+use larryli\ipv4\query\Query;
+use larryli\ipv4\query\FileQuery;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class DumpCommand
- * @package larryli\ipv4\Command
+ * @package larryli\ipv4\commands
  */
 class DumpCommand extends Command
 {
@@ -65,7 +65,7 @@ class DumpCommand extends Command
             case 'division_id':
                 foreach (Query::config() as $query => $provider) {
                     if (empty($provider)) {
-                        $this->dumpDivisionId($output, $query, 'dump_' . $query . '_division_id.json');
+                        $this->dumpDivisionWithId($output, $query, 'dump_' . $query . '_division_id.json');
                     }
                 }
                 break;
@@ -107,7 +107,7 @@ class DumpCommand extends Command
             $time = Query::time();
             foreach ($query as $ip => $division) {
                 if (is_integer($division)) {
-                    $division = $query->string($division);
+                    $division = $query->divisionById($division);
                 }
                 $result[long2ip($ip)] = $division;
                 $n++;
@@ -165,6 +165,8 @@ class DumpCommand extends Command
         } else {
             $result = $this->dump($output, $query, $filename);
         }
+        $result = array_unique(array_values($result));
+        sort($result);
         return $result;
     }
 
@@ -187,7 +189,7 @@ class DumpCommand extends Command
      * @param string $filename
      * @throws \Exception
      */
-    private function dumpDivisionId(OutputInterface $output, $name, $filename)
+    private function dumpDivisionWithId(OutputInterface $output, $name, $filename)
     {
         $query = Query::create($name);
         $json_filename = 'dump_' . $name . '_division.json';
@@ -197,7 +199,7 @@ class DumpCommand extends Command
             $result = $this->divisions($output, $query, $filename, 'dump_' . $name . '.json');
         }
         if (count($result) > 0) {
-            $result = $this->division_ids($output, $query, $result);
+            $result = $this->divisionsWithId($output, $query, $result);
             $this->write($output, $filename, $result);
         }
     }
@@ -208,7 +210,7 @@ class DumpCommand extends Command
      * @param string[] $divisions
      * @return array
      */
-    private function division_ids(OutputInterface $output, FileQuery $query, $divisions)
+    private function divisionsWithId(OutputInterface $output, FileQuery $query, $divisions)
     {
         $result = [];
         $output->writeln("<info>translate division to division_id:</info>");
@@ -217,7 +219,7 @@ class DumpCommand extends Command
         $n = 0;
         $time = Query::time();
         foreach ($divisions as $division) {
-            $result[$division] = $query->integer($division);
+            $result[$division] = $query->idByDivision($division);
             $n++;
             if ($time < Query::time()) {
                 $this->progress->setProgress($n);

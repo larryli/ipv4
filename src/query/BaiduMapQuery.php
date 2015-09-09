@@ -5,12 +5,12 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Query;
+namespace larryli\ipv4\query;
 
 
 /**
  * Class BaiduMapQuery
- * @package larryli\ipv4\Query
+ * @package larryli\ipv4\query
  * @see http://api.map.baidu.com/lbsapi/cloud/ip-location-api.htm
  */
 class BaiduMapQuery extends ApiQuery
@@ -36,7 +36,7 @@ class BaiduMapQuery extends ApiQuery
      * @param $ip
      * @return string
      */
-    public function division($ip)
+    public function find($ip)
     {
         $url = 'http://api.map.baidu.com/location/ip?ak=' . $this->key . '&ip=' . long2ip($ip);
         $content = json_decode(@file_get_contents($url), true);

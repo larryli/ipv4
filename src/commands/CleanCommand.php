@@ -1,39 +1,33 @@
 <?php
 /**
- * BenchmarkCommand.php
+ * CleanCommand.php
  *
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Command;
+namespace larryli\ipv4\commands;
 
-use larryli\ipv4\Query\Query;
+use larryli\ipv4\query\Query;
+use larryli\ipv4\query\DatabaseQuery;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class BenchmarkCommand
- * @package larryli\ipv4\Command
+ * Class CleanCommand
+ * @package larryli\ipv4\commands
  */
-class BenchmarkCommand extends Command
+class CleanCommand extends Command
 {
     /**
      *
      */
     protected function configure()
     {
-        $this->setName('benchmark')
-            ->setDescription('benchmark')
-            ->addOption(
-                'times',
-                't',
-                InputOption::VALUE_OPTIONAL,
-                'number of times',
-                100000
-            )
+        $this
+            ->setName('clean')
+            ->setDescription('clean ip database')
             ->addArgument(
                 'type',
                 InputArgument::OPTIONAL,
@@ -45,33 +39,34 @@ class BenchmarkCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return void
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $times = $input->getOption('times');
-        if ($times < 1) {
-            $output->writeln("<error>benchmark {$times} is too small</error>");
-            return;
-        }
+        $cleanDivision = false;
         $type = $input->getArgument('type');
-        $output->writeln("<info>benchmark {$type}:</info>\t<comment>{$times} times</comment>");
+        $output->writeln("<info>clean {$type}:</info>");
         switch ($type) {
             case 'all':
                 foreach (Query::config() as $query => $provider) {
-                    $this->benchmark($output, $query, $times);
+                    if (!empty($provider)) {
+                        $cleanDivision = true;
+                    }
+                    $this->clean($output, $query);
                 }
                 break;
             case 'file':
                 foreach (Query::config() as $query => $provider) {
                     if (empty($provider)) {
-                        $this->benchmark($output, $query, $times);
+                        $this->clean($output, $query);
                     }
                 }
                 break;
             case 'database':
                 foreach (Query::config() as $query => $provider) {
                     if (!empty($provider)) {
-                        $this->benchmark($output, $query, $times);
+                        $cleanDivision = true;
+                        $this->clean($output, $query);
                     }
                 }
                 break;
@@ -79,27 +74,32 @@ class BenchmarkCommand extends Command
                 $output->writeln("<error>Unknown type \"{$type}\".</error>");
                 break;
         }
+        if ($cleanDivision) {
+            $this->cleanDivision($output);
+        }
     }
 
     /**
      * @param OutputInterface $output
      * @param string $name
-     * @param integer $times
      * @throws \Exception
      */
-    private function benchmark(OutputInterface $output, $name, $times)
+    private function clean(OutputInterface $output, $name)
     {
+        $output->write("<info>clean {$name}:</info>");
         $query = Query::create($name);
-        if (count($query) > 0) {
-            $output->write("\t<info>benchmark {$name}:</info> \t");
-            $start = microtime(true);
-            for ($i = 0; $i < $times; $i++) {
-                $ip = mt_rand(0, 4294967295);
-                $query->division($ip);
-            }
-            $time = microtime(true) - $start;
-            $output->writeln("<comment>{$time} secs</comment>");
-        }
+        $query->clean();
+        $output->writeln('<info> completed!</info>');
+    }
+
+    /**
+     * @param OutputInterface $output
+     */
+    private function cleanDivision(OutputInterface $output)
+    {
+        $output->write("<info>clean divisions:</info>");
+        DatabaseQuery::cleanDivision();
+        $output->writeln('<info> completed!</info>');
     }
 
 }

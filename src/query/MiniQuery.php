@@ -5,12 +5,12 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Query;
+namespace larryli\ipv4\query;
 
 
 /**
  * Class MiniQuery
- * @package larryli\ipv4\Query
+ * @package larryli\ipv4\query
  */
 class MiniQuery extends DatabaseQuery
 {

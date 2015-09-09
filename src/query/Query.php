@@ -5,13 +5,13 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Query;
+namespace larryli\ipv4\query;
 
 
 /**
  * Class Query
  *
- * @package larryli\ipv4\Query
+ * @package larryli\ipv4\query
  */
 abstract class Query implements \Countable, \Iterator
 {
@@ -147,12 +147,12 @@ abstract class Query implements \Countable, \Iterator
     abstract public function clean();
 
     /**
-     * query ip address
+     * query ip division
      *
      * @param $ip
      * @return string
      */
-    abstract public function division($ip);
+    abstract public function find($ip);
 
     /**
      * query ip division id
@@ -160,21 +160,21 @@ abstract class Query implements \Countable, \Iterator
      * @param $ip
      * @return integer
      */
-    abstract public function division_id($ip);
+    abstract public function findId($ip);
 
     /**
-     * translate division_id to division
+     * translate division id to division
      *
-     * @param integer $integer division_id
+     * @param integer $integer division id
      * @return string division
      */
-    abstract public function string($integer);
+    abstract public function divisionById($integer);
 
     /**
-     * translate division to division_id
+     * translate division to division id
      *
      * @param string $string division
-     * @return integer division_id
+     * @return integer division id
      */
-    abstract public function integer($string);
+    abstract public function idByDivision($string);
 }

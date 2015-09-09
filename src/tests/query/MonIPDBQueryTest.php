@@ -5,9 +5,9 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Tests\Query;
+namespace larryli\ipv4\tests\query;
 
-use larryli\ipv4\Query\MonIPDBQuery;
+use larryli\ipv4\query\MonIPDBQuery;
 
 /**
  * Class MonIPDBQueryTest
@@ -65,7 +65,7 @@ class MonIPDBQueryTest extends \PHPUnit_Framework_TestCase
         if (!self::$query->exists()) {
             self::$query->init();
         }
-        $this->assertNotEmpty(self::$query->division(ip2long('0.0.0.0')));
+        $this->assertNotEmpty(self::$query->find(ip2long('0.0.0.0')));
     }
 
     /**
@@ -84,34 +84,34 @@ class MonIPDBQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertGreaterThan(10000, count(self::$query));
     }
 
-    public function testInteger()
+    public function testIdByDivision()
     {
-        $this->assertEquals(202, self::$query->integer("美国\t美国\t\t"));
-        $this->assertEquals(420100, self::$query->integer("中国\t湖北\t武汉\t"));
-        $this->assertEquals(440300, self::$query->integer("中国\t广东\t深圳\t"));
+        $this->assertEquals(202, self::$query->idByDivision("美国\t美国\t\t"));
+        $this->assertEquals(420100, self::$query->idByDivision("中国\t湖北\t武汉\t"));
+        $this->assertEquals(440300, self::$query->idByDivision("中国\t广东\t深圳\t"));
     }
 
     /**
      * @depends testInit
      */
-    public function testDivision()
+    public function testFind()
     {
-        $this->assertContains('深圳', self::$query->division(ip2long('202.96.134.133'))); // 深圳
-        $this->assertContains('武汉', self::$query->division(ip2long('202.103.24.68')));  // 武汉
+        $this->assertContains('深圳', self::$query->find(ip2long('202.96.134.133'))); // 深圳
+        $this->assertContains('武汉', self::$query->find(ip2long('202.103.24.68')));  // 武汉
     }
 
     /**
      * @depends testInit
      */
-    public function testDivision_id()
+    public function testFindId()
     {
-        $this->assertEquals(4, self::$query->division_id(ip2long('0.0.0.0')));
-        $this->assertEquals(2, self::$query->division_id(ip2long('127.0.0.1')));
-        $this->assertEquals(3, self::$query->division_id(ip2long('192.168.1.1')));
-        $this->assertEquals(3, self::$query->division_id(ip2long('10.0.0.1')));
-        $this->assertEquals(4, self::$query->division_id(ip2long('255.255.255.255')));
-        $this->assertEquals(440300, self::$query->division_id(ip2long('202.96.134.133'))); // 深圳
-        $this->assertEquals(420100, self::$query->division_id(ip2long('202.103.24.68')));  // 武汉
+        $this->assertEquals(4, self::$query->findId(ip2long('0.0.0.0')));
+        $this->assertEquals(2, self::$query->findId(ip2long('127.0.0.1')));
+        $this->assertEquals(3, self::$query->findId(ip2long('192.168.1.1')));
+        $this->assertEquals(3, self::$query->findId(ip2long('10.0.0.1')));
+        $this->assertEquals(4, self::$query->findId(ip2long('255.255.255.255')));
+        $this->assertEquals(440300, self::$query->findId(ip2long('202.96.134.133'))); // 深圳
+        $this->assertEquals(420100, self::$query->findId(ip2long('202.103.24.68')));  // 武汉
     }
 
     /**
@@ -129,7 +129,7 @@ class MonIPDBQueryTest extends \PHPUnit_Framework_TestCase
         }
         $this->assertEquals($count, count(self::$query));
         foreach ($tests as $ip => $division) {
-            $this->assertEquals($division, self::$query->division($ip));
+            $this->assertEquals($division, self::$query->find($ip));
         }
     }
 

@@ -5,9 +5,9 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Command;
+namespace larryli\ipv4\commands;
 
-use larryli\ipv4\Query\Query;
+use larryli\ipv4\query\Query;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class QueryCommand
- * @package larryli\ipv4\Command
+ * @package larryli\ipv4\commands
  */
 class QueryCommand extends Command
 {
@@ -56,7 +56,7 @@ class QueryCommand extends Command
     private function query(OutputInterface $output, $name, $ip)
     {
         $query = Query::create($name);
-        $address = $query->division($ip);
+        $address = $query->find($ip);
         $output->writeln("\t<comment>{$name}:</comment> {$address}");
     }
 }

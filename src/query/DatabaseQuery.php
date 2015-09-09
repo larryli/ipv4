@@ -5,12 +5,12 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Query;
+namespace larryli\ipv4\query;
 
 
 /**
  * Class DatabaseQuery
- * @package larryli\ipv4\Query
+ * @package larryli\ipv4\query
  */
 abstract class DatabaseQuery extends Query
 {
@@ -131,7 +131,7 @@ abstract class DatabaseQuery extends Query
         if (!empty($provider_extra)) {
             $translateId = function ($ip, $id) use ($provider_extra) {
                 if (empty($id)) {
-                    $id = $provider_extra->division_id($ip);
+                    $id = $provider_extra->findId($ip);
                 }
                 return $id;
             };
@@ -147,7 +147,7 @@ abstract class DatabaseQuery extends Query
         $time = Query::time();
         foreach ($provider as $ip => $id) {
             if (is_string($id)) {
-                $id = $provider->integer($id);
+                $id = $provider->idByDivision($id);
             }
             $id = $this->translateId($translateId($ip, $id));
             $this->insertIndex($ip, $id);
@@ -249,16 +249,16 @@ abstract class DatabaseQuery extends Query
      * @param $ip
      * @return mixed
      */
-    public function division($ip)
+    public function find($ip)
     {
-        return $this->string($this->division_id($ip));
+        return $this->divisionById($this->findId($ip));
     }
 
     /**
      * @param int $integer
      * @return string
      */
-    public function string($integer)
+    public function divisionById($integer)
     {
         return self::getDivision($integer);
     }
@@ -289,18 +289,19 @@ abstract class DatabaseQuery extends Query
      * @param $ip
      * @return mixed
      */
-    public function division_id($ip)
+    public function findId($ip)
     {
         return self::$db->getIndex($this->name(), $ip);
     }
 
     /**
      * @param string $string
-     * @return mixed
+     * @return int
      */
-    public function integer($string)
+    public function idByDivision($string)
     {
-        return '';
+        // TODO: need translate
+        return 0;
     }
 
     /**
@@ -316,24 +317,8 @@ abstract class DatabaseQuery extends Query
      */
     public function current()
     {
-//        return $this->position;
-//        $data = $this->getData();
         return intval($this->buffer[$this->position - $this->buffer_position]['division_id']);
     }
-
-    /**
-     * @return mixed
-     */
-//    protected function getData()
-//    {
-////        echo "{$this->position}\n";
-//        if ($this->position < $this->buffer_position || $this->position >= $this->buffer_position + self::SIZE) {
-//            $this->buffer_position = intval($this->position / self::SIZE) * self::SIZE;
-//            echo "{$this->position}, {$this->buffer_position}\n";
-//            $this->buffer = self::$db->getIndexes($this->name(), $this->buffer_position, self::SIZE);
-//        }
-//        return $this->buffer[$this->position - $this->buffer_position];
-//    }
 
     /**
      *
@@ -348,9 +333,7 @@ abstract class DatabaseQuery extends Query
      */
     public function key()
     {
-        //$data = $this->getData();
         return intval($this->buffer[$this->position - $this->buffer_position]['id']);
-//        return $this->position;
     }
 
     /**
@@ -360,11 +343,9 @@ abstract class DatabaseQuery extends Query
     {
         if ($this->position < $this->buffer_position || $this->position >= $this->buffer_position + self::SIZE) {
             $this->buffer_position = intval($this->position / self::SIZE) * self::SIZE;
-//            echo "{$this->position}, {$this->buffer_position}\n";
             $this->buffer = self::$db->getIndexes($this->name(), $this->buffer_position, self::SIZE);
         }
         return isset($this->buffer[$this->position - $this->buffer_position]);
-        //return $this->position < count($this);
     }
 
 }

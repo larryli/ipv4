@@ -5,12 +5,12 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Query;
+namespace larryli\ipv4\query;
 
 
 /**
  * Class Database
- * @package larryli\ipv4\Query
+ * @package larryli\ipv4\query
  */
 abstract class Database
 {

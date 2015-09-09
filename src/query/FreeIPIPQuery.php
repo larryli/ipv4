@@ -5,12 +5,12 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Query;
+namespace larryli\ipv4\query;
 
 
 /**
  * Class FreeIPIPQuery
- * @package larryli\ipv4\Query
+ * @package larryli\ipv4\query
  * @see https://www.ipip.net/api.html
  */
 class FreeIPIPQuery extends ApiQuery
@@ -27,7 +27,7 @@ class FreeIPIPQuery extends ApiQuery
      * @param $ip
      * @return string
      */
-    public function division($ip)
+    public function find($ip)
     {
         $url = 'http://freeapi.ipip.net/' . long2ip($ip);
         $content = json_decode(@file_get_contents($url), true);

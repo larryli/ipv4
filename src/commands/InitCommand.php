@@ -5,10 +5,10 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace larryli\ipv4\Command;
+namespace larryli\ipv4\commands;
 
-use larryli\ipv4\Query\Query;
-use larryli\ipv4\Query\DatabaseQuery;
+use larryli\ipv4\query\Query;
+use larryli\ipv4\query\DatabaseQuery;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class InitCommand
- * @package larryli\ipv4\Command
+ * @package larryli\ipv4\commands
  */
 class InitCommand extends Command
 {
