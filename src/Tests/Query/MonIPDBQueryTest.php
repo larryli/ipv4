@@ -65,7 +65,7 @@ class MonIPDBQueryTest extends \PHPUnit_Framework_TestCase
         if (!self::$query->exists()) {
             self::$query->init();
         }
-        $this->assertTrue(self::$query->exists());
+        $this->assertNotEmpty(self::$query->division(ip2long('0.0.0.0')));
     }
 
     /**
