@@ -159,9 +159,13 @@ class MonIPDBQuery extends FileQuery
         $zip = new \ZipArchive;
         $res = $zip->open($zip_file);
         if ($res === TRUE) {
-            $zip->extractTo(dirname($this->filename), basename($this->filename));
+            $data_filename = dirname($this->filename) . '/17monipdb.dat';
+            $zip->extractTo(dirname($this->filename), basename($data_filename));
             $zip->close();
             unlink($zip_file);
+            if (strcmp($data_filename, $this->filename)) {
+                rename($data_filename, $this->filename);
+            }
         } else {
             throw new \Exception("Unzip {$zip_file} error!");
         }
