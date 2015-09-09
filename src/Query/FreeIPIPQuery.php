@@ -27,10 +27,10 @@ class FreeIPIPQuery extends ApiQuery
      * @param $ip
      * @return string
      */
-    public function address($ip)
+    public function division($ip)
     {
         $url = 'http://freeapi.ipip.net/' . long2ip($ip);
-        $content = json_decode(file_get_contents($url), true);
+        $content = json_decode(@file_get_contents($url), true);
         if (empty($content)) {
             return '';
         }

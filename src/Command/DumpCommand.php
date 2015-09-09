@@ -37,7 +37,7 @@ class DumpCommand extends Command
             ->addArgument(
                 'type',
                 InputArgument::OPTIONAL,
-                "address or guess",
+                "division or division_id",
                 'default');
     }
 
@@ -57,15 +57,15 @@ class DumpCommand extends Command
                     $this->dumpDefault($output, $query, 'dump_' . $query . '.json');
                 }
                 break;
-            case 'address':
+            case 'division':
                 foreach (Query::config() as $query => $provider) {
-                    $this->dumpAddress($output, $query, 'dump_' . $query . '_address.json');
+                    $this->dumpDivision($output, $query, 'dump_' . $query . '_division.json');
                 }
                 break;
-            case 'guess':
+            case 'division_id':
                 foreach (Query::config() as $query => $provider) {
                     if (empty($provider)) {
-                        $this->dumpGuess($output, $query, 'dump_' . $query . '_guess.json');
+                        $this->dumpDivisionId($output, $query, 'dump_' . $query . '_division_id.json');
                     }
                 }
                 break;
@@ -76,62 +76,16 @@ class DumpCommand extends Command
     }
 
     /**
-     * @param $output
+     * @param OutputInterface $output
      * @param $name
      * @param $filename
      * @throws \Exception
      */
     private function dumpDefault(OutputInterface $output, $name, $filename)
     {
-        $result = [];
         $query = Query::create($name);
-        if ($query->total() > 0) {
-            $this->dump($output, $query, $filename, function (Query $query) use (&$result) {
-                $query->dump(function ($ip, $address) use (&$result) {
-                    static $n = 0;
-                    $result[long2ip($ip)] = $address;
-                    $n++;
-                    if (($n % 250) == 0) {
-                        $this->progress->setProgress($n);
-                    }
-                });
-            });
-            $this->write($output, $filename, $result);
-        }
-    }
-
-    /**
-     * @param OutputInterface $output
-     * @param string $name
-     * @param string $filename
-     * @throws \Exception
-     */
-    private function dumpAddress(OutputInterface $output, $name, $filename)
-    {
-        $query = Query::create($name);
-        if ($query->total() > 0) {
-            $result = $this->address($output, $query, $filename, 'dump_' . $name . '.json');
-            $this->write($output, $filename, $result);
-        }
-    }
-
-    /**
-     * @param OutputInterface $output
-     * @param string $name
-     * @param string $filename
-     * @throws \Exception
-     */
-    private function dumpGuess(OutputInterface $output, $name, $filename)
-    {
-        $query = Query::create($name);
-        if ($query->total() > 0) {
-            $json_filename = 'dump_' . $name . '_address.json';
-            if (file_exists($json_filename)) {
-                $addresses = $this->read($output, $json_filename);
-            } else {
-                $addresses = $this->address($output, $query, $filename, 'dump_' . $name . '.json');
-            }
-            $result = $this->guess($output, $query, $filename, $addresses);
+        $result = $this->dump($output, $query, $filename);
+        if (count($result) > 0) {
             $this->write($output, $filename, $result);
         }
     }
@@ -139,72 +93,32 @@ class DumpCommand extends Command
     /**
      * @param OutputInterface $output
      * @param Query $query
-     * @param string $filename
-     * @param callable $func
-     */
-    private function dump(OutputInterface $output, Query $query, $filename, callable $func)
-    {
-        $output->writeln("<info>dump {$filename}:</info>");
-        $this->progress = new ProgressBar($output, $query->total());
-        $this->progress->start();
-        $func($query);
-        $this->progress->finish();
-        $output->writeln('<info> completed!</info>');
-    }
-
-    /**
-     * @param OutputInterface $output
-     * @param Query $query
-     * @param string $filename
-     * @param string $json_filename
+     * @param $filename
      * @return array
      */
-    private function address(OutputInterface $output, Query $query, $filename, $json_filename)
-    {
-        if (file_exists($json_filename)) {
-            $addresses = array_unique(array_values($this->read($output, $json_filename)));
-        } else {
-            $addresses = [];
-            $this->dump($output, $query, $filename, function (Query $query) use (&$addresses) {
-                $query->dump(function ($_, $address) use (&$addresses) {
-                    static $n = 0;
-                    if (!in_array($address, $addresses)) {
-                        $addresses[] = $address;
-                    }
-                    $n++;
-                    if (($n % 250) == 0) {
-                        $this->progress->setProgress($n);
-                    }
-                });
-            });
-        }
-        sort($addresses);
-        return $addresses;
-    }
-
-    /**
-     * @param OutputInterface $output
-     * @param FileQuery $query
-     * @param string $filename
-     * @param string[] $addresses
-     * @return array
-     */
-    private function guess(OutputInterface $output, FileQuery $query, $filename, $addresses)
+    private function dump(OutputInterface $output, Query $query, $filename)
     {
         $result = [];
-        $output->writeln("<info>guess {$filename}:</info>");
-        $this->progress = new ProgressBar($output, count($addresses));
-        $this->progress->start();
-        foreach ($addresses as $address) {
-            static $n = 0;
-            list($result[$address], $_) = $query->guess($address);
-            $n++;
-            if (($n % 10) == 0) {
-                $this->progress->setProgress($n);
+        if (count($query) > 0) {
+            $output->writeln("<info>dump {$filename}:</info>");
+            $this->progress = new ProgressBar($output, count($query));
+            $this->progress->start();
+            $n = 0;
+            $time = Query::time();
+            foreach ($query as $ip => $division) {
+                if (is_integer($division)) {
+                    $division = $query->string($division);
+                }
+                $result[long2ip($ip)] = $division;
+                $n++;
+                if ($time < Query::time()) {
+                    $this->progress->setProgress($n);
+                    $time = Query::time();
+                }
             }
+            $this->progress->finish();
+            $output->writeln('<info> completed!</info>');
         }
-        $this->progress->finish();
-        $output->writeln('<info> completed!</info>');
         return $result;
     }
 
@@ -222,6 +136,40 @@ class DumpCommand extends Command
 
     /**
      * @param OutputInterface $output
+     * @param string $name
+     * @param string $filename
+     * @throws \Exception
+     */
+    private function dumpDivision(OutputInterface $output, $name, $filename)
+    {
+        $query = Query::create($name);
+        $result = $this->divisions($output, $query, $filename, 'dump_' . $name . '.json');
+        if (count($result) > 0) {
+            $result = array_unique(array_values($result));
+            sort($result);
+            $this->write($output, $filename, $result);
+        }
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param Query $query
+     * @param $filename
+     * @param $json_filename
+     * @return array|\string[]
+     */
+    private function divisions(OutputInterface $output, Query $query, $filename, $json_filename)
+    {
+        if (file_exists($json_filename)) {
+            $result = $this->read($output, $json_filename);
+        } else {
+            $result = $this->dump($output, $query, $filename);
+        }
+        return $result;
+    }
+
+    /**
+     * @param OutputInterface $output
      * @param string $filename
      * @return string[] $result
      */
@@ -229,6 +177,54 @@ class DumpCommand extends Command
     {
         $output->write("<info>read {$filename}:</info>");
         $result = json_decode(file_get_contents($filename), true);
+        $output->writeln('<info> completed!</info>');
+        return $result;
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param string $name
+     * @param string $filename
+     * @throws \Exception
+     */
+    private function dumpDivisionId(OutputInterface $output, $name, $filename)
+    {
+        $query = Query::create($name);
+        $json_filename = 'dump_' . $name . '_division.json';
+        if (file_exists($json_filename)) {
+            $result = $this->read($output, $json_filename);
+        } else {
+            $result = $this->divisions($output, $query, $filename, 'dump_' . $name . '.json');
+        }
+        if (count($result) > 0) {
+            $result = $this->division_ids($output, $query, $result);
+            $this->write($output, $filename, $result);
+        }
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param FileQuery $query
+     * @param string[] $divisions
+     * @return array
+     */
+    private function division_ids(OutputInterface $output, FileQuery $query, $divisions)
+    {
+        $result = [];
+        $output->writeln("<info>translate division to division_id:</info>");
+        $this->progress = new ProgressBar($output, count($divisions));
+        $this->progress->start();
+        $n = 0;
+        $time = Query::time();
+        foreach ($divisions as $division) {
+            $result[$division] = $query->integer($division);
+            $n++;
+            if ($time < Query::time()) {
+                $this->progress->setProgress($n);
+                $time = Query::time();
+            }
+        }
+        $this->progress->finish();
         $output->writeln('<info> completed!</info>');
         return $result;
     }

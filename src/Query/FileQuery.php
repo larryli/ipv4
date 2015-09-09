@@ -26,24 +26,11 @@ abstract class FileQuery extends Query
     /**
      * @var bool
      */
-    protected $is_init = false;
+    protected $is_initFile = false;
     /**
      * @var array
      */
     static protected $divisions = [];
-
-    /**
-     * @param $address
-     * @return array
-     */
-    abstract public function guess($address);
-
-    /**
-     * @param $func
-     * @param $translate
-     * @return void
-     */
-    abstract protected function traverse(callable $func, callable $translate);
 
     /**
      * @param string $filename
@@ -51,7 +38,7 @@ abstract class FileQuery extends Query
      */
     public function __construct($filename)
     {
-        self::initGuess();
+        self::initDivisions();
         if (empty($filename)) {
             throw new \Exception("must have a database file.");
         }
@@ -74,7 +61,7 @@ abstract class FileQuery extends Query
     /**
      *
      */
-    static protected function initGuess()
+    static protected function initDivisions()
     {
         if (empty(self::$divisions)) {
             self::$divisions = [
@@ -111,12 +98,12 @@ abstract class FileQuery extends Query
     /**
      * @return bool
      */
-    public function init()
+    protected function initFile()
     {
-        if ($this->is_init) {
+        if ($this->is_initFile) {
             return true;
         }
-        $this->is_init = true;
+        $this->is_initFile = true;
         return false;
     }
 
@@ -147,36 +134,12 @@ abstract class FileQuery extends Query
     }
 
     /**
-     * @param callable $func
-     * @throws \Exception
-     */
-    public function dump(callable $func)
-    {
-        $this->traverse($func, function ($str) {
-            return $str;
-        });
-    }
-
-    /**
-     * @param callable $func
-     * @throws \Exception
-     */
-    public function each(callable $func)
-    {
-        $this->traverse($func, function ($str) {
-            list($id, $_) = $this->guess($str);
-            return $id;
-        });
-    }
-
-    /**
      * @param $ip
      * @return integer
      * @throws \Exception
      */
-    public function id($ip)
+    public function division_id($ip)
     {
-        list($id, $_) = $this->guess($this->address($ip));
-        return $id;
+        return $this->integer($this->division($ip));
     }
 }

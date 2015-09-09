@@ -27,10 +27,10 @@ class TaobaoQuery extends ApiQuery
      * @param $ip
      * @return string
      */
-    public function address($ip)
+    public function division($ip)
     {
         $url = 'http://ip.taobao.com/service/getIpInfo.php?ip=' . long2ip($ip);
-        $content = json_decode(file_get_contents($url), true);
+        $content = json_decode(@file_get_contents($url), true);
         if (empty($content)) {
             return '';
         }

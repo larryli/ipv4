@@ -29,21 +29,27 @@ abstract class DatabaseQuery extends Query
     /**
      * @var string[]
      */
-    static private $data = [];
+    static private $divisons = [];
+    /**
+     * @var int
+     */
+    protected $position = 0;
+    /**
+     * @var
+     */
+    protected $buffer;
+    /**
+     * @var
+     */
+    protected $buffer_position;
+    /**
+     * @var array
+     */
+    private $lasted = [];
     /**
      * @var array
      */
     private $saved = [];
-    /**
-     * @var array
-     */
-    private $last_saved = [];
-
-    /**
-     * @param $id
-     * @return mixed
-     */
-    abstract public function translateId($id);
 
     /**
      * @param null|string|array|Database $options
@@ -87,10 +93,16 @@ abstract class DatabaseQuery extends Query
                 $divisions = array_merge($divisions, require('divisions_extra.php'));
             }
             $func(0, count($divisions));
+            self::$db->startCommit();
+            $time = Query::time();
             foreach (array_chunk($divisions, self::SIZE) as $n => $data) {
-                $func(1, self::SIZE * $n);
+                if ($time < Query::time()) {
+                    $func(1, self::SIZE * $n);
+                    $time = Query::time();
+                }
                 self::$db->insertDivisions(self::DIVISION, $data);
             }
+            self::$db->endCommit();
             $func(2, 0);
         }
     }
@@ -109,31 +121,55 @@ abstract class DatabaseQuery extends Query
     }
 
     /**
-     * @param $id
-     * @return string
+     * @param callable $func
+     * @param Query|null $provider
+     * @param Query|null $provider_extra
+     * @throws \Exception
      */
-    static private function _getData($id)
+    public function init(callable $func, Query $provider = null, Query $provider_extra = null)
     {
-        if (empty($id)) {
-            return '';
+        if (!empty($provider_extra)) {
+            $translateId = function ($ip, $id) use ($provider_extra) {
+                if (empty($id)) {
+                    $id = $provider_extra->division_id($ip);
+                }
+                return $id;
+            };
+        } else {
+            $translateId = function ($_, $id) {
+                return $id;
+            };
         }
-        $data = self::$db->getDivision(self::DIVISION, $id);
-        if (empty($data['parent_id'])) {
-            return $data['name'];
+
+        $func(0, count($provider));
+        $this->startInsertIndex();
+        $n = 0;
+        $time = Query::time();
+        foreach ($provider as $ip => $id) {
+            if (is_string($id)) {
+                $id = $provider->integer($id);
+            }
+            $id = $this->translateId($translateId($ip, $id));
+            $this->insertIndex($ip, $id);
+            $n++;
+            if ($time < Query::time()) {
+                $time = Query::time();
+                $func(1, $n);
+            }
         }
-        return self::_getData($data['parent_id']) . "\t" . $data['name'];
+        $this->endInsertIndex();
+        $func(2, 0);
+        $this->rewind();    // init \Iterator offset & buffer
     }
 
     /**
-     * @param $id
-     * @return mixed
+     *
      */
-    static protected function getData($id)
+    protected function startInsertIndex()
     {
-        if (!isset(self::$data[$id])) {
-            self::$data[$id] = self::_getData($id);
-        }
-        return self::$data[$id];
+        $this->initTable();
+        $this->lasted = [];
+        $this->saved = [];
     }
 
     /**
@@ -148,72 +184,47 @@ abstract class DatabaseQuery extends Query
     }
 
     /**
-     * @return bool
+     * @param $id
+     * @return mixed
      */
-    public function exists()
-    {
-        return self::$db->tableExists($this->name());
-    }
+    abstract public function translateId($id);
 
     /**
-     * @param $func
-     * @param $translateId
+     * @param $ip
+     * @param $id
      */
-    protected function traverse(callable $func, $translateId)
+    protected function insertIndex($ip, $id)
     {
-        $total = $this->total();
-        for ($i = 0; $i < $total; $i += self::SIZE) {
-            $data = self::$db->getIndexes($this->name(), $i, self::SIZE);
-            foreach ($data as $row) {
-                $func($row['id'], $translateId($row['division_id']));
+        if (!empty($this->lasted) && $id != $this->lasted['division_id']) {
+            if (count($this->saved) > 499) {
+                $this->endInsertIndex();
+            } else {
+                $this->saved[] = $this->lasted;
             }
         }
+        $this->lasted = ['id' => $ip, 'division_id' => $id];
     }
 
     /**
-     * @param callable $func
+     *
      */
-    public function each(callable $func)
+    protected function endInsertIndex()
     {
-        $this->traverse($func, function ($id) {
-            return $id;
-        });
+        $this->saved[] = $this->lasted;
+        self::$db->startCommit();
+        self::$db->insertIndexes($this->name(), $this->saved);
+        self::$db->endCommit();
+        $this->saved = [];
     }
 
     /**
-     * @param callable $func
+     *
      */
-    public function dump(callable $func)
+    public function rewind()
     {
-        $this->traverse($func, function ($id) {
-            return self::getData($id);
-        });
-    }
-
-    /**
-     * @param $ip
-     * @return mixed
-     */
-    public function address($ip)
-    {
-        return self::getData($this->id($ip));
-    }
-
-    /**
-     * @param $ip
-     * @return mixed
-     */
-    public function id($ip)
-    {
-        return self::$db->getIndex($this->name(), $ip);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function total()
-    {
-        return self::$db->count($this->name());
+        $this->position = 0;
+        $this->buffer_position = -self::SIZE; // active read buffer
+        $this->buffer = [];
     }
 
     /**
@@ -227,78 +238,133 @@ abstract class DatabaseQuery extends Query
     }
 
     /**
-     * @param callable $func
-     * @param Query|null $provider
-     * @param Query|null $provider_extra
-     * @throws \Exception
+     * @return bool
      */
-    public function generate(callable $func, Query $provider = null, Query $provider_extra = null)
+    public function exists()
     {
-        if (!empty($provider_extra)) {
-            $translateId = function ($ip, $id) use ($provider_extra) {
-                if (empty($id)) {
-                    $id = $provider_extra->id($ip);
-                }
-                return $id;
-            };
-        } else {
-            $translateId = function ($_, $id) {
-                return $id;
-            };
-        }
-
-        $this->startSave();
-        $func(0, $provider->total());
-        $provider->each(function ($ip, $id) use ($func, $translateId) {
-            static $n = 0;
-            $n++;
-            $id = $this->translateId($translateId($ip, $id));
-            if ($this->saveTo($ip, $id)) {
-                $func(1, $n);
-            }
-        });
-        $this->endSave();
-        $func(2, 0);
-    }
-
-    /**
-     *
-     */
-    protected function startSave()
-    {
-        $this->initTable();
-        $this->saved = [];
-        $this->last_saved = [];
+        return self::$db->tableExists($this->name());
     }
 
     /**
      * @param $ip
-     * @param $id
-     * @return bool
+     * @return mixed
      */
-    protected function saveTo($ip, $id)
+    public function division($ip)
     {
-        $flush = false;
-        if (!empty($this->last_saved) && $id != $this->last_saved['division_id']) {
-            if (count($this->saved) > self::SIZE) {
-                $this->endSave();
-                $flush = true;
-            } else {
-                $this->saved[] = $this->last_saved;
-            }
-        }
-        $this->last_saved = ['id' => $ip, 'division_id' => $id];
-        return $flush;
+        return $this->string($this->division_id($ip));
     }
+
+    /**
+     * @param int $integer
+     * @return string
+     */
+    public function string($integer)
+    {
+        return self::getDivision($integer);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    static protected function getDivision($id)
+    {
+        if (!isset(self::$divisons[$id])) {
+            if (empty($id)) {
+                $division = '';
+            } else {
+                $division = self::$db->getDivision(self::DIVISION, $id);
+                if (empty($division['parent_id'])) {
+                    $division = $division['name'];
+                } else {
+                    $division = self::getDivision($division['parent_id']) . "\t" . $division['name'];
+                }
+            }
+            self::$divisons[$id] = $division;
+        }
+        return self::$divisons[$id];
+    }
+
+    /**
+     * @param $ip
+     * @return mixed
+     */
+    public function division_id($ip)
+    {
+        return self::$db->getIndex($this->name(), $ip);
+    }
+
+    /**
+     * @param string $string
+     * @return mixed
+     */
+    public function integer($string)
+    {
+        return '';
+    }
+
+    /**
+     * @return integer
+     */
+    public function count()
+    {
+        return self::$db->count($this->name());
+    }
+
+    /**
+     * @return integer
+     */
+    public function current()
+    {
+//        return $this->position;
+//        $data = $this->getData();
+        return intval($this->buffer[$this->position - $this->buffer_position]['division_id']);
+    }
+
+    /**
+     * @return mixed
+     */
+//    protected function getData()
+//    {
+////        echo "{$this->position}\n";
+//        if ($this->position < $this->buffer_position || $this->position >= $this->buffer_position + self::SIZE) {
+//            $this->buffer_position = intval($this->position / self::SIZE) * self::SIZE;
+//            echo "{$this->position}, {$this->buffer_position}\n";
+//            $this->buffer = self::$db->getIndexes($this->name(), $this->buffer_position, self::SIZE);
+//        }
+//        return $this->buffer[$this->position - $this->buffer_position];
+//    }
 
     /**
      *
      */
-    protected function endSave()
+    public function next()
     {
-        $this->saved[] = $this->last_saved;
-        self::$db->insertIndexes($this->name(), $this->saved);
-        $this->saved = [];
+        $this->position++;
+    }
+
+    /**
+     * @return integer
+     */
+    public function key()
+    {
+        //$data = $this->getData();
+        return intval($this->buffer[$this->position - $this->buffer_position]['id']);
+//        return $this->position;
+    }
+
+    /**
+     * @return bool
+     */
+    public function valid()
+    {
+        if ($this->position < $this->buffer_position || $this->position >= $this->buffer_position + self::SIZE) {
+            $this->buffer_position = intval($this->position / self::SIZE) * self::SIZE;
+//            echo "{$this->position}, {$this->buffer_position}\n";
+            $this->buffer = self::$db->getIndexes($this->name(), $this->buffer_position, self::SIZE);
+        }
+        return isset($this->buffer[$this->position - $this->buffer_position]);
+        //return $this->position < count($this);
     }
 
 }

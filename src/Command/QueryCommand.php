@@ -56,7 +56,7 @@ class QueryCommand extends Command
     private function query(OutputInterface $output, $name, $ip)
     {
         $query = Query::create($name);
-        $address = $query->address($ip);
+        $address = $query->division($ip);
         $output->writeln("\t<comment>{$name}:</comment> {$address}");
     }
 }

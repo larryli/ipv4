@@ -53,11 +53,24 @@ abstract class Database
     abstract public function insertIndexes($table, $data);
 
     /**
+     * begin transaction
+     *
+     * @return mixed
+     */
+    abstract public function startCommit();
+
+    /**
+     * commit transaction
+     *
+     * @return mixed
+     */
+    abstract public function endCommit();
+
+    /**
      * @param $table
      * @return int
      */
     abstract public function count($table);
-
 
     /**
      * @param string $table
@@ -65,7 +78,6 @@ abstract class Database
      * @return mixed
      */
     abstract public function getDivision($table, $id);
-
 
     /**
      * @param string $table

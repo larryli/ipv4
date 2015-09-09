@@ -129,6 +129,22 @@ class MedooDatabase extends Database
     }
 
     /**
+     *
+     */
+    public function startCommit()
+    {
+        $this->medoo->pdo->beginTransaction();
+    }
+
+    /**
+     *
+     */
+    public function endCommit()
+    {
+        $this->medoo->pdo->commit();
+    }
+
+    /**
      * @param $table
      * @return bool|int
      */

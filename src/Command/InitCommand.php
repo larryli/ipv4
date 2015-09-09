@@ -62,6 +62,57 @@ class InitCommand extends Command
 
     /**
      * @param OutputInterface $output
+     * @param string $name
+     * @param bool $force
+     * @return void
+     * @throws \Exception
+     */
+    protected function download(OutputInterface $output, $name, $force)
+    {
+        $query = Query::create($name);
+        $name = $query->name();
+        if (!$force && $query->exists()) {
+            $output->writeln("<comment>use exist {$name} file or api.</comment>", OutputInterface::VERBOSITY_VERBOSE);
+        } else {
+            $output->writeln("<info>download {$name} file:</info>");
+            $query->init(function ($url) use ($output) {
+                return file_get_contents($url, false, $this->createStreamContext($output));
+            });
+            $output->writeln('<info> completed!</info>');
+        }
+    }
+
+    /**
+     * @param OutputInterface $output
+     *
+     * @return resource
+     */
+    protected function createStreamContext(OutputInterface $output)
+    {
+        $ctx = stream_context_create([], [
+            'notification' => function ($code, $severity, $message, $message_code, $bytesTransferred, $bytesMax) use ($output) {
+                switch ($code) {
+                    case STREAM_NOTIFY_FILE_SIZE_IS:
+                        $this->progress = new ProgressBar($output, $bytesMax);
+                        $this->progress->start();
+                        break;
+                    case STREAM_NOTIFY_PROGRESS:
+                        $this->progress->setProgress($bytesTransferred);
+                        if ($bytesTransferred == $bytesMax) {
+                            $this->progress->finish();
+                        }
+                        break;
+                    case STREAM_NOTIFY_COMPLETED:
+                        $this->progress->finish();
+                        break;
+                }
+            }
+        ]);
+        return $ctx;
+    }
+
+    /**
+     * @param OutputInterface $output
      */
     protected function division(OutputInterface $output)
     {
@@ -110,7 +161,7 @@ class InitCommand extends Command
             $output->writeln("<comment>use exist {$name} table.</comment>", OutputInterface::VERBOSITY_VERBOSE);
         } else {
             $output->writeln("<info>generate {$name} table with {$use}:</info>");
-            $query->generate(function ($code, $n) use ($output) {
+            $query->init(function ($code, $n) use ($output) {
                 switch ($code) {
                     case 0:
                         $this->progress = new ProgressBar($output, $n);
@@ -126,56 +177,5 @@ class InitCommand extends Command
             }, $provider, $provider_extra);
             $output->writeln('<info> completed!</info>');
         }
-    }
-
-    /**
-     * @param OutputInterface $output
-     * @param string $name
-     * @param bool $force
-     * @return void
-     * @throws \Exception
-     */
-    protected function download(OutputInterface $output, $name, $force)
-    {
-        $query = Query::create($name);
-        $name = $query->name();
-        if (!$force && $query->exists()) {
-            $output->writeln("<comment>use exist {$name} file or api.</comment>", OutputInterface::VERBOSITY_VERBOSE);
-        } else {
-            $output->writeln("<info>download {$name} file:</info>");
-            $query->generate(function ($url) use ($output) {
-                return file_get_contents($url, false, $this->createStreamContext($output));
-            });
-            $output->writeln('<info> completed!</info>');
-        }
-    }
-
-    /**
-     * @param OutputInterface $output
-     *
-     * @return resource
-     */
-    protected function createStreamContext(OutputInterface $output)
-    {
-        $ctx = stream_context_create([], [
-            'notification' => function ($code, $severity, $message, $message_code, $bytesTransferred, $bytesMax) use ($output) {
-                switch ($code) {
-                    case STREAM_NOTIFY_FILE_SIZE_IS:
-                        $this->progress = new ProgressBar($output, $bytesMax);
-                        $this->progress->start();
-                        break;
-                    case STREAM_NOTIFY_PROGRESS:
-                        $this->progress->setProgress($bytesTransferred);
-                        if ($bytesTransferred == $bytesMax) {
-                            $this->progress->finish();
-                        }
-                        break;
-                    case STREAM_NOTIFY_COMPLETED:
-                        $this->progress->finish();
-                        break;
-                }
-            }
-        ]);
-        return $ctx;
     }
 }

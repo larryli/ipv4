@@ -23,11 +23,13 @@ abstract class ApiQuery extends Query
     }
 
     /**
-     * @return int
+     * @param callable $func
+     * @param Query|null $provider
+     * @param Query|null $provider_extra
      */
-    public function total()
+    public function init(callable $func, Query $provider = null, Query $provider_extra = null)
     {
-        return 0;
+        // do nothing.
     }
 
     /**
@@ -38,39 +40,57 @@ abstract class ApiQuery extends Query
         // do nothing.
     }
 
-
     /**
-     * @param callable $func
-     * @param Query|null $provider
-     * @param Query|null $provider_extra
+     * @return int
      */
-    public function generate(callable $func, Query $provider = null, Query $provider_extra = null)
+    public function count()
     {
-        // do nothing.
-    }
-
-    /**
-     * @param callable $func
-     */
-    public function dump(callable $func)
-    {
-        // do nothing.
-    }
-
-    /**
-     * @param callable $func
-     */
-    public function each(callable $func)
-    {
-        // do nothing.
+        return 0;
     }
 
     /**
      * @param $ip
      * @return int
      */
-    public function id($ip)
+    public function division_id($ip)
     {
         return 0;
+    }
+
+
+    public function string($integer)
+    {
+        return '';
+    }
+
+    public function integer($string)
+    {
+        return 0;
+    }
+
+
+    public function current()
+    {
+        return null;
+    }
+
+    public function next()
+    {
+        // do nothing
+    }
+
+    public function key()
+    {
+        return null;
+    }
+
+    public function valid()
+    {
+        return false;
+    }
+
+    public function rewind()
+    {
+        // do nothing
     }
 }

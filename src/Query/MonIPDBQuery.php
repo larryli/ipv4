@@ -19,6 +19,10 @@ class MonIPDBQuery extends FileQuery
      */
     const URL = 'http://s.qdcdn.com/17mon/17monipdb.zip';
     /**
+     * @var
+     */
+    protected $position;
+    /**
      * @var null
      */
     private $fp = null;
@@ -66,38 +70,22 @@ class MonIPDBQuery extends FileQuery
     }
 
     /**
-     * @param callable $func
-     * @param Query|null $provider
-     * @param Query|null $provider_extra
+     * @return int
      * @throws \Exception
      */
-    public function generate(callable $func = null, Query $provider = null, Query $provider_extra = null)
+    public function count()
     {
-        if (empty($func)) {
-            $file = file_get_contents(self::URL);
-        } else {
-            $file = $func(self::URL);
-        }
-        $zip_file = dirname($this->filename) . '/17monipdb.zip';
-        file_put_contents($zip_file, $file);
-        $zip = new \ZipArchive;
-        $res = $zip->open($zip_file);
-        if ($res === TRUE) {
-            $zip->extractTo(dirname($this->filename), basename($this->filename));
-            $zip->close();
-            unlink($zip_file);
-        } else {
-            throw new \Exception("Unzip {$zip_file} error!");
-        }
+        $this->initFile();
+        return intval(($this->end - 1024) / 8);
     }
 
     /**
      * @return bool
      * @throws \Exception
      */
-    public function init()
+    protected function initFile()
     {
-        if (parent::init()) {
+        if (parent::initFile()) {
             return true;
         }
         $this->fp = fopen($this->filename, 'rb');
@@ -111,42 +99,16 @@ class MonIPDBQuery extends FileQuery
         }
         $this->end = $this->offset - 1024 - 4;
         $this->index = fread($this->fp, $this->offset - 4);
+        $this->rewind();
         return true;
     }
-
-    /**
-     * @param $func
-     * @param $translate
-     * @throws \Exception
-     */
-    protected function traverse(callable $func, callable $translate)
-    {
-        $this->init();
-        for ($start = 1024; $start < $this->end; $start += 8) {
-            $ip = unpack('Nlen', $this->index{$start} . $this->index{$start + 1} . $this->index{$start + 2} . $this->index{$start + 3});
-            $offset = unpack('Vlen', $this->index{$start + 4} . $this->index{$start + 5} . $this->index{$start + 6} . "\x0");
-            $length = unpack('Clen', $this->index{$start + 7});
-            $func($ip['len'], $translate($this->readOffset($offset['len'], $length['len'])));
-        }
-    }
-
-    /**
-     * @return int
-     * @throws \Exception
-     */
-    public function total()
-    {
-        $this->init();
-        return intval(($this->end - 1024) / 8);
-    }
-
 
     /**
      * @param $ip
      * @return string
      * @throws \Exception
      */
-    public function address($ip)
+    public function division($ip)
     {
         $ip_start = intval(floor($ip / (256 * 256 * 256)));
 
@@ -157,7 +119,7 @@ class MonIPDBQuery extends FileQuery
             return $this->cached[$ip];
         }
 
-        $this->init();
+        $this->initFile();
         $nip = pack('N', $ip);
         $tmp_offset = $ip_start * 4;
         $start = unpack('Vlen', $this->index{$tmp_offset} . $this->index{$tmp_offset + 1} . $this->index{$tmp_offset + 2} . $this->index{$tmp_offset + 3});
@@ -180,38 +142,29 @@ class MonIPDBQuery extends FileQuery
     }
 
     /**
-     * @param $address
-     * @return array
+     * @param callable $func
+     * @param Query|null $provider
+     * @param Query|null $provider_extra
      * @throws \Exception
      */
-    public function guess($address)
+    public function init(callable $func = null, Query $provider = null, Query $provider_extra = null)
     {
-        list($country, $province, $city, $_) = explode("\t", $address);
-
-        foreach (self::$divisions as $country_name => $country_data) {
-            if (strncmp($country, $country_name, strlen($country_name)) == 0) {
-                if (empty($province) || empty($country_data['divisions'])) {
-                    return [$country_data['id'], $country_name];
-                }
-                $provincies = $country_data['divisions'];
-                foreach ($provincies as $province_name => $province_data) {
-                    if (strncmp($province, $province_name, strlen($province_name)) == 0) {
-                        if (empty($city) || empty($province_data['divisions'])) {
-                            return [$province_data['id'], $province_name];
-                        }
-                        $cities = $province_data['divisions'];
-                        foreach ($cities as $city_name => $city_data) {
-                            if (strncmp($city, $city_name, strlen($city_name)) == 0) {
-                                return [$city_data['id'], $city_name];
-                            }
-                        }
-                        throw new \Exception("\"{$address}\" cannot found \"{$city}\" at \"{$country_name}\" \"{$province_name}\"");
-                    }
-                }
-                throw new \Exception("\"{$address}\" cannot found \"{$province}\" at \"{$country_name}\"");
-            }
+        if (empty($func)) {
+            $file = file_get_contents(self::URL);
+        } else {
+            $file = $func(self::URL);
         }
-        return [0, ''];
+        $zip_file = dirname($this->filename) . '/17monipdb.zip';
+        file_put_contents($zip_file, $file);
+        $zip = new \ZipArchive;
+        $res = $zip->open($zip_file);
+        if ($res === TRUE) {
+            $zip->extractTo(dirname($this->filename), basename($this->filename));
+            $zip->close();
+            unlink($zip_file);
+        } else {
+            throw new \Exception("Unzip {$zip_file} error!");
+        }
     }
 
     /**
@@ -244,4 +197,92 @@ class MonIPDBQuery extends FileQuery
         return $this->data[$offset];
     }
 
+    /**
+     * @param $address
+     * @return array
+     * @throws \Exception
+     */
+    public function integer($address)
+    {
+        list($country, $province, $city, $_) = explode("\t", $address);
+
+        foreach (self::$divisions as $country_name => $country_data) {
+            if (strncmp($country, $country_name, strlen($country_name)) == 0) {
+                if (empty($province) || empty($country_data['divisions'])) {
+                    return $country_data['id'];
+                }
+                $provinces = $country_data['divisions'];
+                foreach ($provinces as $province_name => $province_data) {
+                    if (strncmp($province, $province_name, strlen($province_name)) == 0) {
+                        if (empty($city) || empty($province_data['divisions'])) {
+                            return $province_data['id'];
+                        }
+                        $cities = $province_data['divisions'];
+                        foreach ($cities as $city_name => $city_data) {
+                            if (strncmp($city, $city_name, strlen($city_name)) == 0) {
+                                return $city_data['id'];
+                            }
+                        }
+                        throw new \Exception("\"{$address}\" cannot found \"{$city}\" at \"{$country_name}\" \"{$province_name}\"");
+                    }
+                }
+                throw new \Exception("\"{$address}\" cannot found \"{$province}\" at \"{$country_name}\"");
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * @return string
+     */
+    public function current()
+    {
+        $offset = unpack('Vlen', $this->index{$this->position + 4} . $this->index{$this->position + 5} . $this->index{$this->position + 6} . "\x0");
+        $length = unpack('Clen', $this->index{$this->position + 7});
+        return $this->readOffset($offset['len'], $length['len']);
+    }
+
+    /**
+     *
+     */
+    public function next()
+    {
+        $this->position += 8;
+    }
+
+    /**
+     * @return integer
+     */
+    public function key()
+    {
+        $ip = unpack('Nlen', $this->index{$this->position} . $this->index{$this->position + 1} . $this->index{$this->position + 2} . $this->index{$this->position + 3});
+        return intval($ip['len']);
+    }
+
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function valid()
+    {
+        $this->initFile();
+        return $this->position < $this->end;
+    }
+
+    /**
+     *
+     */
+    public function rewind()
+    {
+        $this->position = 1024;
+    }
+
+    /**
+     * @param int $integer
+     * @return string
+     */
+    public function string($integer)
+    {
+        return '';
+    }
 }

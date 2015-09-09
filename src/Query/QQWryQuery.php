@@ -23,9 +23,17 @@ class QQWryQuery extends FileQuery
      */
     const QQWRY_URL = 'http://update.cz88.net/ip/qqwry.rar';
     /**
+     * @var
+     */
+    protected $position;
+    /**
      * @var null
      */
     private $fp = null;
+    /**
+     * @var int
+     */
+    private $start = 0;
     /**
      * @var int
      */
@@ -69,43 +77,22 @@ class QQWryQuery extends FileQuery
     }
 
     /**
-     * @param callable $func
-     * @param Query|null $provider
-     * @param Query|null $provider_extra
+     * @return int
      * @throws \Exception
      */
-    public function generate(callable $func = null, Query $provider = null, Query $provider_extra = null)
+    public function count()
     {
-        if (empty($func)) {
-            $copywrite = file_get_contents(self::COPYWRITE_URL);
-            $qqwry = file_get_contents(self::QQWRY_URL);
-        } else {
-            $copywrite = $func(self::COPYWRITE_URL);
-            $qqwry = $func(self::QQWRY_URL);
-        }
-        $key = unpack("V6", $copywrite)[6];
-        for ($i = 0; $i < 0x200; $i++) {
-            $key *= 0x805;
-            $key++;
-            $key = $key & 0xFF;
-            $qqwry[$i] = chr(ord($qqwry[$i]) ^ $key);
-        }
-        $qqwry = gzuncompress($qqwry);
-        $fp = fopen($this->filename, 'wb');
-        if (!$fp) {
-            throw new \Exception("write \"{$this->filename}\" error");
-        }
-        fwrite($fp, $qqwry);
-        fclose($fp);
+        $this->initFile();
+        return intval($this->end / 7);
     }
 
     /**
      * @return bool
      * @throws \Exception
      */
-    public function init()
+    protected function initFile()
     {
-        if (parent::init()) {
+        if (parent::initFile()) {
             return true;
         }
         $this->fp = fopen($this->filename, 'rb');
@@ -127,58 +114,11 @@ class QQWryQuery extends FileQuery
     }
 
     /**
-     * @param callable $func
-     * @param callable $translate
-     * @throws \Exception
-     */
-    protected function traverse(callable $func, callable $translate)
-    {
-        $this->init();
-        $this->initData();
-        $start = 0;
-        while (1) {
-            $offset = unpack('Llen', $this->index{$start + 4} . $this->index{$start + 5} . $this->index{$start + 6} . "\x0");
-            $data = $translate($this->readRecode($offset['len']));
-            $start += 7;
-            if ($start < $this->end) {
-                $ip = unpack('Llen', $this->index{$start} . $this->index{$start + 1} . $this->index{$start + 2} . $this->index{$start + 3});
-                $func($ip['len'] - 1, $data);
-            } else {
-                $func(4294967295, $data);  // last
-                break;
-            }
-        }
-    }
-
-    /**
-     *
-     */
-    private function initData()
-    {
-        fseek($this->fp, 0);
-        $offset = unpack('Llen', fread($this->fp, 4));
-        fseek($this->fp, 0);
-        $this->data = fread($this->fp, $offset['len']);
-        fclose($this->fp);
-        $this->fp = null;
-    }
-
-    /**
-     * @return int
-     * @throws \Exception
-     */
-    public function total()
-    {
-        $this->init();
-        return intval($this->end / 7);
-    }
-
-    /**
      * @param $ip
      * @return mixed
      * @throws \Exception
      */
-    public function address($ip)
+    public function division($ip)
     {
         $ip_start = intval(floor($ip / (256 * 256 * 256)));
 
@@ -189,62 +129,11 @@ class QQWryQuery extends FileQuery
             return $this->cached[$ip];
         }
 
-        $this->init();
+        $this->initFile();
         $offset = $this->find($ip, 0, $this->end);
         $offset = unpack('Llen', $this->index{$offset + 4} . $this->index{$offset + 5} . $this->index{$offset + 6} . "\x0");
         $this->cached[$ip] = $this->readRecode($offset['len']);
         return $this->cached[$ip];
-    }
-
-    /**
-     * @param $address
-     * @return array
-     */
-    public function guess($address)
-    {
-        foreach (self::$divisions as $country_name => $country_data) {
-            if (strncmp($address, $country_name, strlen($country_name)) == 0) {
-                if (empty($country_data['divisions'])) {
-                    return [$country_data['id'], $country_name];
-                }
-                $pos = strlen($country_name);
-                $provincies = $country_data['divisions'];
-                foreach ($provincies as $province_name => $province_data) {
-                    $pos1 = strpos($address, $province_name, $pos);
-                    if ($pos1 !== FALSE) {
-                        if (empty($province_data['divisions'])) {
-                            return [$province_data['id'], $province_name];
-                        }
-                        $pos1 += strlen($province_name);
-                        $cities = $province_data['divisions'];
-                        foreach ($cities as $city_name => $city_data) {
-                            $pos2 = strpos($address, $city_name, $pos1);
-                            if ($pos2 !== FALSE) {
-                                return [$city_data['id'], $city_name];
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        $provincies = self::$divisions['中国']['divisions'];
-        foreach ($provincies as $province_name => $province_data) {
-            if (strncmp($address, $province_name, strlen($province_name)) == 0) {
-                if (empty($province_data['divisions'])) {
-                    return [$province_data['id'], $province_name];
-                }
-                $pos1 = strlen($province_name);
-                $cities = $province_data['divisions'];
-                foreach ($cities as $city_name => $city_data) {
-                    $pos2 = strpos($address, $city_name, $pos1);
-                    if ($pos2 !== FALSE) {
-                        return [$city_data['id'], $city_name];
-                    }
-                }
-                return [$province_data['id'], $province_name];
-            }
-        }
-        return [0, ''];
     }
 
     /**
@@ -307,6 +196,20 @@ class QQWryQuery extends FileQuery
     }
 
     /**
+     * @param $len
+     * @param $offset
+     * @return string
+     */
+    private function readOffset($len, $offset)
+    {
+        if (empty($this->fp)) {
+            return substr($this->data, $offset, $len);
+        }
+        fseek($this->fp, $offset);
+        return fread($this->fp, $len);
+    }
+
+    /**
      * @param $offset
      * @return string
      */
@@ -333,20 +236,159 @@ class QQWryQuery extends FileQuery
             $offset++;
             $chr = $this->readOffset(1, $offset);
         }
-        return $location;
+        return trim($location);
     }
 
     /**
-     * @param $len
-     * @param $offset
+     * @param callable $func
+     * @param Query|null $provider
+     * @param Query|null $provider_extra
+     * @throws \Exception
+     */
+    public function init(callable $func = null, Query $provider = null, Query $provider_extra = null)
+    {
+        if (empty($func)) {
+            $copywrite = file_get_contents(self::COPYWRITE_URL);
+            $qqwry = file_get_contents(self::QQWRY_URL);
+        } else {
+            $copywrite = $func(self::COPYWRITE_URL);
+            $qqwry = $func(self::QQWRY_URL);
+        }
+        $key = unpack("V6", $copywrite)[6];
+        for ($i = 0; $i < 0x200; $i++) {
+            $key *= 0x805;
+            $key++;
+            $key = $key & 0xFF;
+            $qqwry[$i] = chr(ord($qqwry[$i]) ^ $key);
+        }
+        $qqwry = gzuncompress($qqwry);
+        $fp = fopen($this->filename, 'wb');
+        if (!$fp) {
+            throw new \Exception("write \"{$this->filename}\" error");
+        }
+        fwrite($fp, $qqwry);
+        fclose($fp);
+    }
+
+    /**
+     * @param $address
+     * @return integer
+     */
+    public function integer($address)
+    {
+        foreach (self::$divisions as $country_name => $country_data) {
+            if (strncmp($address, $country_name, strlen($country_name)) == 0) {
+                if (empty($country_data['divisions'])) {
+                    return $country_data['id'];
+                }
+                $pos = strlen($country_name);
+                $provinces = $country_data['divisions'];
+                foreach ($provinces as $province_name => $province_data) {
+                    $pos1 = strpos($address, $province_name, $pos);
+                    if ($pos1 !== FALSE) {
+                        if (empty($province_data['divisions'])) {
+                            return $province_data['id'];
+                        }
+                        $pos1 += strlen($province_name);
+                        $cities = $province_data['divisions'];
+                        foreach ($cities as $city_name => $city_data) {
+                            $pos2 = strpos($address, $city_name, $pos1);
+                            if ($pos2 !== FALSE) {
+                                return $city_data['id'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $provinces = self::$divisions['中国']['divisions'];
+        foreach ($provinces as $province_name => $province_data) {
+            if (strncmp($address, $province_name, strlen($province_name)) == 0) {
+                if (empty($province_data['divisions'])) {
+                    return $province_data['id'];
+                }
+                $pos1 = strlen($province_name);
+                $cities = $province_data['divisions'];
+                foreach ($cities as $city_name => $city_data) {
+                    $pos2 = strpos($address, $city_name, $pos1);
+                    if ($pos2 !== FALSE) {
+                        return $city_data['id'];
+                    }
+                }
+                return $province_data['id'];
+            }
+        }
+        return 0;
+    }
+
+    /**
      * @return string
      */
-    private function readOffset($len, $offset)
+    public function current()
     {
-        if (empty($this->fp)) {
-            return substr($this->data, $offset, $len);
+        $offset = unpack('Llen', $this->index{$this->position + 4} . $this->index{$this->position + 5} . $this->index{$this->position + 6} . "\x0");
+        return $this->readRecode($offset['len']);
+    }
+
+    /**
+     *
+     */
+    public function next()
+    {
+        $this->position += 7;
+    }
+
+    /**
+     * @return int
+     */
+    public function key()
+    {
+        if ($this->position < $this->end - 7) {
+            $ip = unpack('Llen', $this->index{$this->position + 7} . $this->index{$this->position + 8} . $this->index{$this->position + 9} . $this->index{$this->position + 10});
+            return $ip['len'] - 1;
         }
-        fseek($this->fp, $offset);
-        return fread($this->fp, $len);
+        return 4294967295;
+    }
+
+    /**
+     * @return bool
+     */
+    public function valid()
+    {
+        $this->initData();
+        return $this->position < $this->end;
+    }
+
+    /**
+     *
+     */
+    public function rewind()
+    {
+        $this->position = $this->start;
+    }
+
+    /**
+     * @param int $integer
+     * @return string
+     */
+    public function string($integer)
+    {
+        return '';
+    }
+
+    /**
+     *
+     */
+    private function initData()
+    {
+        $this->initFile();
+        if (!empty($this->fp)) {
+            fseek($this->fp, 0);
+            $offset = unpack('Llen', fread($this->fp, 4));
+            fseek($this->fp, 0);
+            $this->data = fread($this->fp, $offset['len']);
+            fclose($this->fp);
+            $this->fp = null;
+        }
     }
 }

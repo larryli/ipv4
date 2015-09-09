@@ -26,10 +26,10 @@ class SinaQuery extends ApiQuery
      * @param $ip
      * @return string
      */
-    public function address($ip)
+    public function division($ip)
     {
         $url = 'http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=json&ip=' . long2ip($ip);
-        $content = json_decode(file_get_contents($url), true);
+        $content = json_decode(@file_get_contents($url), true);
         if (empty($content)) {
             return '';
         }

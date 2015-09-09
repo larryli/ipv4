@@ -55,13 +55,14 @@ bin/ipv4 init
 bin/ipv4 query 127.0.0.1
 ```
 
-## 导出与清除
+## 杂项
 
 ```shell
-bin/ipv4 dump           # 导出原始数据
-bin/ipv4 dump address   # 导出排序好的全部地址列表
-bin/ipv4 dump guess     # 导出排序好的全部地址和猜测行政区域代码列表
-bin/ipv4 clean          # 清除全部数据
-bin/ipv4 clean file     # 清除下载的文件数据
-bin/ipv4 clean database # 清除生成的数据库数据
+bin/ipv4 benchmark        # 性能测试
+bin/ipv4 clean            # 清除全部数据
+bin/ipv4 clean file       # 清除下载的文件数据
+bin/ipv4 clean database   # 清除生成的数据库数据
+bin/ipv4 dump             # 导出原始数据
+bin/ipv4 dump division    # 导出排序好的全部地址列表
+bin/ipv4 dump division_id # 导出排序好的全部地址和猜测行政区域代码列表
 ```
