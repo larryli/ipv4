@@ -16,8 +16,6 @@
     "catfan/medoo": "~0.9.8"
   },
   "require-dev": {
-    "ext-pdo-mysql": "*",
-    "ext-pdo-sqlite": "*",
     "phpunit/phpunit": "~4.5"
   },
   "suggest": {
