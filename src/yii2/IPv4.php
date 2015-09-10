@@ -44,7 +44,7 @@ class IPv4 extends Component
      */
     public function init()
     {
-        $this->providers = Query::config($this->providers);
+        $this->providers = Query::providers($this->providers);
         foreach ($this->providers as $name => $provider) {
             $this->createQuery($name);
         }
