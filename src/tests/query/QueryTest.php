@@ -30,9 +30,9 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     /**
      * @throws \Exception
      */
-    public function testConfig()
+    public function testProviders()
     {
-        $config = Query::config(['a', 'b', 'c']);
+        $config = Query::providers(['a', 'b', 'c']);
         foreach ($config as $name => $provider) {
             $this->assertEmpty($provider);
             $this->assertRegExp('/[abc]/', $name);

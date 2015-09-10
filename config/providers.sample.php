@@ -1,6 +1,6 @@
 <?php
 /**
- * query.sample.php
+ * providers.sample.php
  *
  * Author: Larry Li <larryli@qq.com>
  */
