@@ -41,6 +41,14 @@ cp config/db.sample.php config/db.php
 
 默认会使用 ```runtime``` 目录下的 ```ipv4.sqlite``` 数据库。
 
+## 可选查询库配置
+
+```shell
+cp config/providers.sample.php config/providers.php
+```
+
+配置选项请参见该文件的代码注释。
+
 ## 初始化
 
 ```shell

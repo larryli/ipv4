@@ -64,16 +64,16 @@ abstract class Query implements \Countable, \Iterator
     }
 
     /**
-     * return objects config
+     * return query providers
      *
      * @param null|array $options config filename or array
      * @return array
      * @throws \Exception
      */
-    static public function config($options = null)
+    static public function providers($options = null)
     {
         if (empty($options)) {
-            $config = dirname(dirname(__DIR__)) . '/config/query.php';
+            $config = dirname(dirname(__DIR__)) . '/config/providers.php';
             if (file_exists($config)) {
                 $options = $config;
             } else {
@@ -92,12 +92,12 @@ abstract class Query implements \Countable, \Iterator
         }
         if (is_array($options)) {
             $result = [];
-            foreach ($options as $query => $provider) {
-                if (is_integer($query)) {
-                    $query = $provider;
+            foreach ($options as $name => $provider) {
+                if (is_integer($name)) {
+                    $name = $provider;
                     $provider = '';
                 }
-                $result[$query] = $provider;
+                $result[$name] = $provider;
             }
             return $result;
         } else {
