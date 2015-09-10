@@ -42,8 +42,8 @@ class QueryCommand extends Command
         $ip = $input->getArgument('ip');
         $output->writeln("<info>query \"{$ip}\":</info>");
         $ip = ip2long($ip);
-        foreach (Query::config() as $query => $provider) {
-            $this->query($output, $query, $ip);
+        foreach (Query::config() as $name => $provider) {
+            $this->query($output, $name, $ip);
         }
     }
 

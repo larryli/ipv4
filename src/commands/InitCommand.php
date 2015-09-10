@@ -50,12 +50,12 @@ class InitCommand extends Command
     {
         $force = $input->getOption('force');
         $output->writeln("<info>initialize ip database:</info>");
-        foreach (Query::config() as $query => $provider) {
+        foreach (Query::config() as $name => $provider) {
             if (empty($provider)) {
-                $this->download($output, $query, $force);
+                $this->download($output, $name, $force);
             } else {
                 $this->division($output);
-                $this->generate($output, $query, $force, $provider);
+                $this->generate($output, $name, $force, $provider);
             }
         }
     }
