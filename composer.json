@@ -16,11 +16,13 @@
     "catfan/medoo": "~0.9.8"
   },
   "require-dev": {
-    "phpunit/phpunit": "~4.5"
+    "phpunit/phpunit": "~4.5",
+    "yiisoft/yii2": ">=2.0.5"
   },
   "suggest": {
     "ext-pdo-mysql": "For MySQL or MariaDB databases",
-    "ext-pdo-sqlite": "For SQLite databases"
+    "ext-pdo-sqlite": "For SQLite databases",
+    "yiisoft/yii2": ">=2.0.5"
   },
   "autoload": {
     "psr-4": { "larryli\\ipv4\\": "src/" }
