@@ -17,9 +17,9 @@ Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4/src');
 ```php
 // ipv4 component
 'ipv4' => [
-    'class' => 'larryli\\ipv4\\yii2\\IPv4',
+    'class' => "larryli\\ipv4\\yii2\\IPv4",
     'runtime' => '@app/runtime',
-    'database' => 'larryli\\ipv4\\yii2\\Database',
+    'database' => "larryli\\ipv4\\yii2\\Database",
     // query config
     'providers' => [
         'monipdb',    // empty
@@ -37,9 +37,9 @@ Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4/src');
 
 * ```class``` 指向组件自身；
 * ```runtime``` 如果为空，表示使用 ipv4 自己的 ```runtime```；
-* ```database``` 指向特定的 ```Database``` 类，为空表示使用 ipv4 默认的 Medoo，建议使用 ```larryli\\ipv4\\yii2\\Database``` 集成使用 yii2 的数据库配置；
-* ```prefix``` 为数据库表前缀，默认为 ```ipv4_```，仅在 ```database``` 为 ```larryli\\ipv4\\yii2\\Database``` 有效；
-* ```providers``` 配置可用的 ```larryli\\ipv4\\query\\Query``` 和其生成规则；
+* ```database``` 指向特定的 ```Database``` 类，为空表示使用 ipv4 默认的 Medoo，建议使用 ```larryli\ipv4\yii2\Database``` 集成使用 yii2 的数据库配置；
+* ```prefix``` 为数据库表前缀，默认为 ```ipv4_```，仅在 ```database``` 为 ```larryli\ipv4\yii2\Database``` 有效；
+* ```providers``` 配置可用的 ```larryli\ipv4\query\Query``` 和其生成规则；
 
 ### 命令
 
@@ -48,7 +48,7 @@ Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4/src');
 ```php
 // ipv4 command
 'ipv4' => [
-    'class' => 'larryli\\ipv4\\yii2\\commands\\Ipv4Controller',
+    'class' => "larryli\\ipv4\\yii2\\commands\\Ipv4Controller",
 ],
 ```
 
