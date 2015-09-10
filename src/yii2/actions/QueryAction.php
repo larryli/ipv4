@@ -1,6 +1,6 @@
 <?php
 /**
- * InitAction.php
+ * QueryAction.php
  *
  * Author: Larry Li <larryli@qq.com>
  */
@@ -29,20 +29,20 @@ class QueryAction extends Action
         $this->stdout('query ', Console::FG_GREEN);
         $this->stdout("{$ip}\n", Console::FG_YELLOW);
         $ip = ip2long($ip);
-        foreach ($this->ipv4->getQueries() as $query) {
-            $this->query($query, $ip);
+        foreach ($this->ipv4->providers as $name => $provider) {
+            $this->query($name, $ip);
         }
     }
 
     /**
-     * @param Query $query
+     * @param string $name
      * @param integer $ip
      * @throws \Exception
      */
-    private function query(Query $query, $ip)
+    private function query($name, $ip)
     {
+        $query = $this->ipv4->createQuery($name);
         $address = $query->find($ip);
-        $name = $query->name();
         $this->stdout("\t{$name}: ", Console::FG_YELLOW);
         $this->stdout("{$address}\n");
     }

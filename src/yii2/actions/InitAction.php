@@ -18,25 +18,23 @@ use yii\helpers\Console;
 class InitAction extends Action
 {
     /**
-     * @var \yii\console\Controller
+     * @var \larryli\ipv4\yii2\commands\Ipv4Controller
      */
     public $controller;
 
     /**
      * initialize ip database
-     *
-     * @throws \Exception
      */
     public function run()
     {
         $force = $this->controller->force;
         $this->stdout("initialize ip database:\n", Console::FG_GREEN);
-        foreach ($this->ipv4->providers as $query => $provider) {
+        foreach ($this->ipv4->providers as $name => $provider) {
             if (empty($provider)) {
-                $this->download($query, $force);
+                $this->download($name, $force);
             } else {
                 $this->division();
-                $this->generate($query, $force, $provider);
+                $this->generate($name, $force, $provider);
             }
         }
     }

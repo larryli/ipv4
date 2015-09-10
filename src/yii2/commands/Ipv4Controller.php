@@ -26,6 +26,10 @@ class Ipv4Controller extends Controller
      * @var bool Force to initialize(download qqwry.dat & 17monipdb.dat if not exist & generate new database)
      */
     public $force = 0;
+    /**
+     * @var int number of times
+     */
+    public $times = 100000;
 
     public function actions()
     {
@@ -34,7 +38,7 @@ class Ipv4Controller extends Controller
             'init' => 'larryli\ipv4\yii2\actions\InitAction',
 //            'dump' => 'larryli\ipv4\yii2\actions\DumpAction',
 //            'clean' => 'larryli\ipv4\yii2\actions\CleanAction',
-//            'benchmark' => 'larryli\ipv4\yii2\actions\BenchmarkAction',
+            'benchmark' => 'larryli\ipv4\yii2\actions\BenchmarkAction',
         ];
     }
 
@@ -44,7 +48,12 @@ class Ipv4Controller extends Controller
         switch ($actionID) {
             case 'init':
                 $options = [
-                    'force'
+                    'force',
+                ];
+                break;
+            case 'benchmark':
+                $options = [
+                    'times',
                 ];
                 break;
         }
