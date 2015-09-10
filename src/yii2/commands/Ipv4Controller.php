@@ -36,8 +36,8 @@ class Ipv4Controller extends Controller
         return [
             'query' => 'larryli\ipv4\yii2\actions\QueryAction',
             'init' => 'larryli\ipv4\yii2\actions\InitAction',
-//            'dump' => 'larryli\ipv4\yii2\actions\DumpAction',
-//            'clean' => 'larryli\ipv4\yii2\actions\CleanAction',
+            'dump' => 'larryli\ipv4\yii2\actions\DumpAction',
+            'clean' => 'larryli\ipv4\yii2\actions\CleanAction',
             'benchmark' => 'larryli\ipv4\yii2\actions\BenchmarkAction',
         ];
     }

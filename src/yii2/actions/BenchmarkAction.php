@@ -7,7 +7,6 @@
 
 namespace larryli\ipv4\yii2\actions;
 
-use larryli\ipv4\query\Query;
 use Yii;
 use yii\helpers\Console;
 
@@ -32,7 +31,6 @@ class BenchmarkAction extends Action
     public function run($type = 'all')
     {
         $times = $this->controller->times;
-
         if ($times < 1) {
             $this->stderr("benchmark {$times} is too small\n", Console::FG_GREY, Console::BG_RED);
             return;
@@ -84,5 +82,4 @@ class BenchmarkAction extends Action
             $this->stdout("{$time} secs\n", Console::FG_YELLOW);
         }
     }
-
 }

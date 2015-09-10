@@ -7,7 +7,6 @@
 
 namespace larryli\ipv4\yii2\actions;
 
-use larryli\ipv4\query\Query;
 use Yii;
 use yii\helpers\Console;
 

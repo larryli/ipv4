@@ -95,7 +95,7 @@ class Database extends BaseDatabase
      */
     public function dropTable($table)
     {
-        // do nothing
+        $this->cleanTable($table);  // just clean
     }
 
     /**
