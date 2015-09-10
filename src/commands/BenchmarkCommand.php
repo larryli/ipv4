@@ -57,21 +57,21 @@ class BenchmarkCommand extends Command
         $output->writeln("<info>benchmark {$type}:</info>\t<comment>{$times} times</comment>");
         switch ($type) {
             case 'all':
-                foreach (Query::config() as $query => $provider) {
-                    $this->benchmark($output, $query, $times);
+                foreach (Query::config() as $name => $provider) {
+                    $this->benchmark($output, $name, $times);
                 }
                 break;
             case 'file':
-                foreach (Query::config() as $query => $provider) {
+                foreach (Query::config() as $name => $provider) {
                     if (empty($provider)) {
-                        $this->benchmark($output, $query, $times);
+                        $this->benchmark($output, $name, $times);
                     }
                 }
                 break;
             case 'database':
-                foreach (Query::config() as $query => $provider) {
+                foreach (Query::config() as $name => $provider) {
                     if (!empty($provider)) {
-                        $this->benchmark($output, $query, $times);
+                        $this->benchmark($output, $name, $times);
                     }
                 }
                 break;

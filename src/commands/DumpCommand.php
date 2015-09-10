@@ -53,19 +53,19 @@ class DumpCommand extends Command
         $output->writeln("<info>dump {$type}:</info>");
         switch ($type) {
             case 'default':
-                foreach (Query::config() as $query => $provider) {
-                    $this->dumpDefault($output, $query, 'dump_' . $query . '.json');
+                foreach (Query::config() as $name => $provider) {
+                    $this->dumpDefault($output, $name, 'dump_' . $name . '.json');
                 }
                 break;
             case 'division':
-                foreach (Query::config() as $query => $provider) {
-                    $this->dumpDivision($output, $query, 'dump_' . $query . '_division.json');
+                foreach (Query::config() as $name => $provider) {
+                    $this->dumpDivision($output, $name, 'dump_' . $name . '_division.json');
                 }
                 break;
             case 'division_id':
-                foreach (Query::config() as $query => $provider) {
+                foreach (Query::config() as $name => $provider) {
                     if (empty($provider)) {
-                        $this->dumpDivisionWithId($output, $query, 'dump_' . $query . '_division_id.json');
+                        $this->dumpDivisionWithId($output, $name, 'dump_' . $name . '_division_id.json');
                     }
                 }
                 break;
