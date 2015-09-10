@@ -7,7 +7,7 @@
 可以在 ```config``` 文件先定义一个别名：
 
 ```php
-Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4/src');
+Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4');
 ```
 
 ### 组件
@@ -17,9 +17,9 @@ Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4/src');
 ```php
 // ipv4 component
 'ipv4' => [
-    'class' => "larryli\\ipv4\\yii2\\IPv4",
+    'class' => 'larryli\ipv4\yii2\IPv4',
     'runtime' => '@app/runtime',
-    'database' => "larryli\\ipv4\\yii2\\Database",
+    'database' => 'larryli\ipv4\yii2\Database',
     // query config
     'providers' => [
         'monipdb',    // empty
@@ -48,7 +48,7 @@ Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4/src');
 ```php
 // ipv4 command
 'ipv4' => [
-    'class' => "larryli\\ipv4\\yii2\\commands\\Ipv4Controller",
+    'class' => 'larryli\ipv4\yii2\commands\Ipv4Controller',
 ],
 ```
 
