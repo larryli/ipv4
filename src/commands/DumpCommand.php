@@ -37,7 +37,7 @@ class DumpCommand extends Command
             ->addArgument(
                 'type',
                 InputArgument::OPTIONAL,
-                "division or division_id",
+                "division or division_id or count",
                 'default');
     }
 
@@ -67,6 +67,11 @@ class DumpCommand extends Command
                     if (empty($provider)) {
                         $this->dumpDivisionWithId($output, $name, 'dump_' . $name . '_division_id.json');
                     }
+                }
+                break;
+            case 'count':
+                foreach (Query::providers() as $name => $provider) {
+                    $this->dumpCount($output, $name, 'dump_' . $name . '_count.json');
                 }
                 break;
             default:
@@ -229,5 +234,77 @@ class DumpCommand extends Command
         $this->progress->finish();
         $output->writeln('<info> completed!</info>');
         return $result;
+    }
+
+    private function dumpCount(OutputInterface $output, $name, $filename)
+    {
+        $result = [];
+        $query = Query::create($name);
+        if (count($query) > 0) {
+            $output->writeln("<info>dump {$filename}:</info>");
+            $this->progress = new ProgressBar($output, count($query));
+            $this->progress->start();
+            $n = 0;
+            $time = Query::time();
+            $last = -1;
+            foreach ($query as $ip => $division) {
+                if (is_integer($division)) {
+                    $id = $division;
+                    $division = $query->divisionById($id);
+                } else {
+                    $id = $query->idByDivision($division);
+                }
+                if ($id === null) {
+                    die(long2ip($ip));
+                }
+                $count = $ip - $last;
+                $last = $ip;
+                $result[$id]['id'] = $id;
+                $result[$id]['division'] = empty($id) ? '' : $division;
+                @$result[$id]['records'] += 1;    // 纪录数
+                @$result[$id]['count'] += $count;   // IP 数
+                if ($id > 100000) { // 中国
+                    @$result[1]['records'] += 1;
+                    @$result[1]['children_records'] += 1;
+                    @$result[1]['count'] += $count;
+                    @$result[1]['children_count'] += $count;
+                    $province = intval($id / 10000) * 10000;
+                    if ($province != $id) {
+                        @$result[$province]['records'] += 1;
+                        @$result[$province]['children_records'] += 1;
+                        @$result[$province]['count'] += $count;
+                        @$result[$province]['children_count'] += $count;
+                    }
+                }
+                $n++;
+                if ($time < Query::time()) {
+                    $this->progress->setProgress($n);
+                    $time = Query::time();
+                }
+            }
+            $this->progress->finish();
+            $output->writeln('<info> completed!</info>');
+        }
+        ksort($result);
+        $result = array_map(function ($data) {
+            $result = [
+                'id' => $data['id'],
+                'division' => $data['division'],
+                'records' => $data['records'],
+                'count' => $data['count'],
+            ];
+            if (isset($data['children_records'])) {
+                $result['self']['records'] = $data['records'] - $data['children_records'];
+                $result['children']['records'] = $data['children_records'];
+            }
+            if (isset($data['children_count'])) {
+                $result['self']['count'] = $data['count'] - $data['children_count'];
+                $result['children']['count'] = $data['children_count'];
+            }
+            return $result;
+        }, array_values($result));
+        if (count($result) > 0) {
+            $this->write($output, $filename, $result);
+        }
     }
 }

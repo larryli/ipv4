@@ -17,9 +17,9 @@ return [
     ['id' => 11, 'name' => '亚太地区', 'title' => '亚太地区', 'is_city' => 0, 'parent_id' => 0],
     ['id' => 12, 'name' => '北美地区', 'title' => '北美地区', 'is_city' => 0, 'parent_id' => 0],
     ['id' => 13, 'name' => '欧洲', 'title' => '欧洲', 'is_city' => 0, 'parent_id' => 0],
-    ['id' => 15, 'name' => '拉美地区', 'title' => '拉美地区', 'is_city' => 0, 'parent_id' => 0],
-    ['id' => 16, 'name' => '非洲地区', 'title' => '非洲地区', 'is_city' => 0, 'parent_id' => 0],
-    ['id' => 17, 'name' => '南极洲', 'title' => '南极洲', 'is_city' => 0, 'parent_id' => 0],
+    ['id' => 14, 'name' => '拉美地区', 'title' => '拉美地区', 'is_city' => 0, 'parent_id' => 0],
+    ['id' => 15, 'name' => '非洲地区', 'title' => '非洲地区', 'is_city' => 0, 'parent_id' => 0],
+    ['id' => 16, 'name' => '南极洲', 'title' => '南极洲', 'is_city' => 0, 'parent_id' => 0],
     // 非洲地区
     // 北部非洲
     ['id' => 101, 'name' => '阿尔及利亚', 'title' => '阿尔及利亚民主人民共和国', 'is_city' => 0, 'parent_id' => 0],
