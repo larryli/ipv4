@@ -185,10 +185,10 @@ abstract class Full extends Index
 查询：
 
 ```php
-    $model = Full::findOneByIp(long2ip('127.0.0.1'));
-    if (!empty($model) && !empty(!$model->division)) {
-        echo $model->division->name;
-    }
+$model = Full::findOneByIp(ip2long('127.0.0.1'));
+if (!empty($model) && !empty(!$model->division)) {
+    echo $model->division->name;
+}
 ```
 
 更多内容可以参考 [yii2 开发框架代码目录](../../yii2)。
