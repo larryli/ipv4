@@ -3,17 +3,32 @@
 namespace larryli\ipv4\yii2\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
- * This is the model class for table "{{%ipv4_divisions}}".
+ * This is the model class for table "{{%{$prefix}divisions}}".
+ *
+ * you can implement method tableName()
+ *
+ * ```php
+ * class YourDivision extends \larryli\ipv4\yii2\models\Division
+ * {
+ *     public static function tableName()
+ *     {
+ *         return "{{%your_divisions}}";
+ *     }
+ * }
+ * ```
  *
  * @property integer $id
  * @property string $name
  * @property string $title
  * @property boolean $is_city
  * @property integer $parent_id
+ * @property Division $parent
+ * @property Division[] $children
  */
-class Division extends \yii\db\ActiveRecord
+class Division extends ActiveRecord
 {
     /**
      * @inheritdoc
@@ -51,8 +66,6 @@ class Division extends \yii\db\ActiveRecord
             'title' => 'Title',
             'is_city' => 'Is City',
             'parent_id' => 'Parent ID',
-            'parent.name' => 'Parent Name',
-            'parent.title' => 'Parent Title',
         ];
     }
 
@@ -70,5 +83,28 @@ class Division extends \yii\db\ActiveRecord
     public function getChildren()
     {
         return $this->hasMany(self::className(), ['parent_id' => 'id']);
+    }
+
+    /**
+     * you can
+     *
+     * ```php
+     * // @property Index $full
+     * class YourDivision extends \larryli\ipv4\yii2\models\Division
+     * {
+     *     public function getFull()
+     *     {
+     *         return $this->getIndex(YourFull::className());
+     *     }
+     * }
+     * ```
+     *
+     * @param string $className
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIndex($className)
+    {
+        return $this->hasMany($className, ['division_id' => 'id']);
     }
 }

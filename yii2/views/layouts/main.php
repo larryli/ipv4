@@ -5,6 +5,8 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
+/* @var $content string */
+
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
@@ -39,6 +41,15 @@ AppAsset::register($this);
             'items' => [
                 ['label' => 'Home', 'url' => ['/site/index']],
                 ['label' => 'Divisions', 'url' => ['/division/index']],
+                [
+                    'label' => 'Index',
+                    'items' => [
+                        ['label' => 'Full', 'url' => ['/index/index', 'type' => 'full']],
+                        ['label' => 'Mini', 'url' => ['/index/index', 'type' => 'mini']],
+                        ['label' => 'China', 'url' => ['/index/index', 'type' => 'china']],
+                        ['label' => 'World', 'url' => ['/index/index', 'type' => 'world']],
+                    ],
+                ],
                 ['label' => 'Fork from Github', 'url' => 'https://github.com/larryli/ipv4'],
             ],
         ]);

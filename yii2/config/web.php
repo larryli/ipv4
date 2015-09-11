@@ -14,21 +14,6 @@ $config = [
     'bootstrap' => ['log'],
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
-        // ipv4 component
-        'ipv4' => [
-            'class' => 'larryli\ipv4\yii2\IPv4',
-            'runtime' => '@app/runtime',
-            'database' => 'larryli\ipv4\yii2\Database',
-            // query config
-            'providers' => [
-                'monipdb',    // empty
-                'qqwry',
-                'full' => ['monipdb', 'qqwry'], // ex. 'monipdb', 'qqwry', ['qqwry', 'monipdb']
-                'mini' => 'full',   // ex. ['monipdb', 'qqwry'], 'monipdb', 'qqwry', ['qqwry', 'monipdb']
-                'china' => 'full',
-                'world' => 'full',
-            ],
-        ],
         'request' => [
             'cookieValidationKey' => 'ipv4',
         ],

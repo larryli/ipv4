@@ -46,12 +46,12 @@ class Medoo extends \medoo
 
     /**
      * @param $table
-     * @param $datas
+     * @param $data
      * @return array
      */
-    public function insert($table, $datas)
+    public function insert($table, $data)
     {
-        return parent::insert($this->prefix . $table, $datas);
+        return parent::insert($this->prefix . $table, $data);
     }
 
     /**

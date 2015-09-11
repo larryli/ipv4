@@ -10,21 +10,20 @@ use yii\widgets\DetailView;
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Divisions', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->render('_parent', ['model' => $model]);
+$this->params['breadcrumbs'][] = $model->name;
+
 ?>
 <div class="division-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?= Html::encode($model->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a('View Full Index', ['indexes', 'id' => $model->id, 'type' => 'full'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('View Mini Index', ['indexes', 'id' => $model->id, 'type' => 'mini'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('View China Index', ['indexes', 'id' => $model->id, 'type' => 'china'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('View World Index', ['indexes', 'id' => $model->id, 'type' => 'world'], ['class' => 'btn btn-success']) ?>
+        <?= empty($model->parent) ? '' : Html::a('View Parent', ['view', 'id' => $model->parent_id], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?= DetailView::widget([
@@ -35,13 +34,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'title',
             'is_city:boolean',
             'parent_id',
-            'parent.name',
-            'parent.title',
             [
-                'label' => 'View Parent',
-                'visible' => !empty($model->parent_id),
-                'format' => 'html',
-                'value' => Html::a('View', ['view', 'id' => $model->parent_id]),
+                'label' => 'Parent Name',
+                'visible' => !empty($model->parent),
+                'value' => $model->parent->name,
+            ],
+            [
+                'label' => 'Parent Title',
+                'visible' => !empty($model->parent),
+                'value' => $model->parent->title,
             ],
         ],
     ]) ?>
@@ -61,7 +62,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'title',
                 'is_city:boolean',
 
-                ['class' => 'yii\grid\ActionColumn'],
+                [
+                    'class' => 'yii\grid\ActionColumn',
+                    'template' => '{view}',
+                ],
             ],
         ]); ?>
 

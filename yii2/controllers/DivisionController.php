@@ -3,29 +3,15 @@
 namespace app\controllers;
 
 use Yii;
-use larryli\ipv4\yii2\models\Division;
+use app\models\Division;
 use yii\data\ActiveDataProvider;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * DivisionController implements the CRUD actions for Division model.
  */
 class DivisionController extends Controller
 {
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all Division models.
      * @return mixed
@@ -41,6 +27,20 @@ class DivisionController extends Controller
         ]);
     }
 
+    public function actionIndexes($id, $type)
+    {
+        $model = $this->findModel($id);
+        $dataProvider = new ActiveDataProvider([
+            'query' => $model->getIndex($this->getIndexClass($type)),
+        ]);
+
+        return $this->render('indexes', [
+            'type' => $type,
+            'model' => $model,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
     /**
      * Displays a single Division model.
      * @param integer $id
@@ -51,56 +51,6 @@ class DivisionController extends Controller
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
-    }
-
-    /**
-     * Creates a new Division model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Division();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Updates an existing Division model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Deletes an existing Division model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
     }
 
     /**

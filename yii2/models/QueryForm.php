@@ -10,6 +10,10 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 
+/**
+ * Class QueryForm
+ * @package app\models
+ */
 class QueryForm extends Model
 {
     /**
@@ -37,6 +41,10 @@ class QueryForm extends Model
         ];
     }
 
+    /**
+     * @param $attribute
+     * @param $params
+     */
     public function validateIP($attribute, $params)
     {
         if (!$this->hasErrors()) {
@@ -55,20 +63,47 @@ class QueryForm extends Model
         if ($this->validate()) {
             $ip = ip2long($this->ip);
             $results = [];
-            /**
-             * @var $ipv4 \larryli\ipv4\yii2\IPv4
-             */
-            $ipv4 = Yii::$app->get('ipv4');
-            foreach ($ipv4->getQueries() as $name => $query) {
-                $results[$name] = $query->find($ip);
+            foreach ([
+                         'full' => Full::className(),
+                         'mini' => Mini::className(),
+                         'china' => China::className(),
+                         'world' => World::className(),
+                     ] as $name => $index) {
+                $results[$name] = $this->getResultFromModel($index, $ip);
             }
             return $results;
         }
         return null;
     }
 
+    /**
+     * @return string
+     */
     public function formName()
     {
         return '';
+    }
+
+    /**
+     * @param Index $index
+     * @param $ip
+     * @return string
+     */
+    protected function getResultFromModel($index, $ip)
+    {
+        $result = '<span class="not-set">(not set)</span>';
+        $model = $index::findOneByIp($ip);
+        if (empty($model)) {
+            return $result;
+        }
+        $division = $model->division;
+        if (empty($division)) {
+            return $result;
+        }
+        $result = $division->name;
+        for ($parent = $division->parent; $parent != null; $parent = $parent->parent) {
+            $result = $parent->name . "\t" . $result;
+        }
+        return $result;
     }
 }
