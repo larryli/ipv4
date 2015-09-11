@@ -72,7 +72,7 @@ class BenchmarkAction extends Action
     {
         $query = $this->ipv4->createQuery($name);
         if (count($query) > 0) {
-            $this->stdout("\tbenchmark {$name}: \t", Console::FG_GREEN);
+            $this->stdout("\t benchmark {$name}: \t", Console::FG_GREEN);
             $start = microtime(true);
             for ($i = 0; $i < $times; $i++) {
                 $ip = mt_rand(0, 4294967295);

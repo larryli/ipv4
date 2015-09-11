@@ -4,8 +4,14 @@ use yii\BaseYii as Yii;
 use yii\db\Schema;
 use yii\db\Migration;
 
+/**
+ * Class m150909_153352_ipv4_division
+ */
 class m150909_153352_ipv4_division extends Migration
 {
+    /**
+     *
+     */
     public function up()
     {
         $table = $this->tableName();
@@ -20,13 +26,24 @@ class m150909_153352_ipv4_division extends Migration
         $this->createIndex('parent_id', $table, 'parent_id');
     }
 
+    /**
+     *
+     */
     public function down()
     {
         $this->dropTable($this->tableName());
     }
 
+    /**
+     * @return string
+     * @throws \yii\base\InvalidConfigException
+     */
     private function tableName()
     {
-        return Yii::$app->ipv4->prefix . 'divisions';
+        /**
+         * @var $ipv4 \larryli\ipv4\yii2\IPv4
+         */
+        $ipv4 = Yii::$app->get('ipv4');
+        return $ipv4->prefix . 'divisions';
     }
 }

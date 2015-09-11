@@ -5,8 +5,8 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-Yii::setAlias('@ipv4', dirname(dirname(__DIR__)) . '/src');
-// Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4/src');
+Yii::setAlias('@ipv4', dirname(dirname(__DIR__)));
+// Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4');
 
 $db = require(__DIR__ . '/db.php');
 
@@ -24,9 +24,10 @@ $config = [
         // or see [improve migrate command](https://github.com/yiisoft/yii2/issues/384)
         'migrate' => [
             'class' => 'yii\console\controllers\MigrateController',
-            'migrationPath' => '@ipv4/yii2/migrations',
+            'migrationPath' => '@ipv4/src/yii2/migrations',
         ],
     ],
+    'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
         // ipv4 component
         'ipv4' => [
@@ -59,5 +60,13 @@ $config = [
     ],
     'params' => [],
 ];
+
+if (YII_ENV_DEV) {
+    // configuration adjustments for 'dev' environment
+    $config['bootstrap'][] = 'gii';
+    $config['modules']['gii'] = [
+        'class' => 'yii\gii\Module',
+    ];
+}
 
 return $config;

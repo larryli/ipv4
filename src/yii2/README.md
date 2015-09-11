@@ -7,7 +7,7 @@
 可以在 ```config``` 文件先定义一个别名：
 
 ```php
-Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4/src');
+Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4');
 ```
 
 ### 组件
@@ -17,9 +17,9 @@ Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4/src');
 ```php
 // ipv4 component
 'ipv4' => [
-    'class' => "larryli\\ipv4\\yii2\\IPv4",
+    'class' => 'larryli\ipv4\yii2\IPv4',
     'runtime' => '@app/runtime',
-    'database' => "larryli\\ipv4\\yii2\\Database",
+    'database' => 'larryli\ipv4\yii2\Database',
     // query config
     'providers' => [
         'monipdb',    // empty
@@ -48,7 +48,7 @@ Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4/src');
 ```php
 // ipv4 command
 'ipv4' => [
-    'class' => "larryli\\ipv4\\yii2\\commands\\Ipv4Controller",
+    'class' => 'larryli\ipv4\yii2\commands\Ipv4Controller',
 ],
 ```
 
@@ -113,6 +113,82 @@ Yii::$app->get('ipv4')->get('full')->find(ip2long('127.0.0.1'));
 
 ### 使用模型
 
-仅支持生成的数据库 ```larryli\ipv4\query\DatabaseQuery```。
+仅支持生成的数据库 ```larryli\ipv4\query\DatabaseQuery``` 查询。
 
-待补充。
+使用 yii2 模型可以不需要配置 ipv4 组件，但必须先使用 ipv4 组件生成好相关数据库。
+
+也就是说，可以只在 console 应用中配置 ipv4 组件；然后在 web 应用中*不*配置 ipv4 组件直接使用相关模型。
+
+#### Division 模型
+
+```php
+namespace app\models;
+
+use larryli\ipv4\yii2\models\Division as BaseDivision;
+
+/**
+ * Class Division
+ * @package app\models
+ */
+class Division extends BaseDivision
+{
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return "{{%ipv4_divisions}}";
+    }
+}
+```
+
+使用 ```tableName``` 静态方法可以重载掉父类中调用组件查询 ```prefix``` 的代码。
+
+#### Full/Mini/China/World 模型
+
+```php
+namespace app\models;
+
+use larryli\ipv4\yii2\models\Index;
+
+/**
+ * Class Full
+ * @package app\models
+ *
+ * @property string $ip
+ * @property Division $division
+ */
+abstract class Full extends Index
+{
+    /**
+     * @return string
+     */
+    static public function divisionClassName()
+    {
+        return Division::className();
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return '{{%ipv4_full}}';
+    }
+}
+```
+
+使用 ```divisionClassName``` 静态方法可以重载掉 ```Division``` 父类中调用组件查询 ```prefix``` 的代码。
+
+仅需要声明所需使用的查询模型即可。
+
+查询：
+
+```php
+    $model = Full::findOneByIp(long2ip('127.0.0.1'));
+    if (!empty($model) && !empty(!$model->division)) {
+        echo $model->division->name;
+    }
+```
+
+更多内容可以参考 [yii2 开发框架代码目录](../../yii2)。

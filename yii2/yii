@@ -7,12 +7,15 @@ if (function_exists('ini_set')) {
         $unit = strtolower(substr($value, -1, 1));
         $value = (int) $value;
         switch($unit) {
+            /** @noinspection PhpMissingBreakStatementInspection */
             case 'g':
                 $value *= 1024;
             // no break (cumulative multiplier)
+            /** @noinspection PhpMissingBreakStatementInspection */
             case 'm':
                 $value *= 1024;
             // no break (cumulative multiplier)
+            /** @noinspection PhpMissingBreakStatementInspection */
             case 'k':
                 $value *= 1024;
         }
