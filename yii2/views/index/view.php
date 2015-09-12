@@ -5,7 +5,7 @@ use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $type string */
-/* @var $model app\models\Full|app\models\Mini|app\models\China|app\models\World */
+/* @var $model larryli_ipv4_yii2_app\models\Full|larryli_ipv4_yii2_app\models\Mini|larryli_ipv4_yii2_app\models\China|larryli_ipv4_yii2_app\models\World */
 
 $this->title = $model->ip;
 $this->params['breadcrumbs'][] = 'Index';

@@ -5,13 +5,13 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace app\models;
+namespace larryli_ipv4_yii2_app\models;
 
 use larryli\ipv4\yii2\models\Division as BaseDivision;
 
 /**
  * Class Division
- * @package app\models
+ * @package larryli_ipv4_yii2_app\models
  *
  * @property Full $full
  * @property Mini $mini

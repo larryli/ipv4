@@ -6,7 +6,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Division */
+/* @var $model larryli_ipv4_yii2_app\models\Division */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Divisions', 'url' => ['index']];

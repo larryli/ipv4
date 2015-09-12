@@ -7,7 +7,7 @@
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
-/* @var $model app\models\QueryForm */
+/* @var $model larryli_ipv4_yii2_app\models\QueryForm */
 /* @var $results null|string[] */
 
 use yii\helpers\Html;

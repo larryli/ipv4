@@ -5,9 +5,9 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace app\controllers;
+namespace larryli_ipv4_yii2_app\controllers;
 
-use app\models\QueryForm;
+use larryli_ipv4_yii2_app\models\QueryForm;
 use Yii;
 use yii\web\Controller;
 

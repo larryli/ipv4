@@ -7,6 +7,7 @@
 
 Yii::setAlias('@ipv4', dirname(dirname(__DIR__)));
 // Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4');
+Yii::setAlias('larryli_ipv4_yii2_app', dirname(__DIR__));
 
 $db = require(__DIR__ . '/db.php');
 
@@ -14,7 +15,7 @@ $config = [
     'id' => 'ipv4-console',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
-    'controllerNamespace' => 'app\commands',
+    'controllerNamespace' => 'larryli_ipv4_yii2_app\commands',
     'controllerMap' => [
         // ipv4 command
         'ipv4' => [
@@ -32,7 +33,7 @@ $config = [
         // ipv4 component
         'ipv4' => [
             'class' => 'larryli\ipv4\yii2\IPv4',
-            'runtime' => '@app/runtime',
+            'runtime' => '@runtime',
             'database' => 'larryli\ipv4\yii2\Database',
             // query config
             'providers' => [

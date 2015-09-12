@@ -5,7 +5,7 @@ use yii\grid\GridView;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Division */
+/* @var $model larryli_ipv4_yii2_app\models\Division */
 /* @var $type string */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 

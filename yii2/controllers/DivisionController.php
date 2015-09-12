@@ -1,9 +1,9 @@
 <?php
 
-namespace app\controllers;
+namespace larryli_ipv4_yii2_app\controllers;
 
 use Yii;
-use app\models\Division;
+use larryli_ipv4_yii2_app\models\Division;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 
