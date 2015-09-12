@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IP v4 数量区域分布统计</title>
+    <script src="https://www.google.com/jsapi"></script>
+    <script>
+        google.load("visualization", "1", {packages: ["corechart"]});
+        google.setOnLoadCallback(start_draw);
+        function start_draw() {
+            loadJSON(function (response) {
+                var divisions = JSON.parse(response);
+
+                var provinces = [];
+                var country_count = [];
+                var provinces_count = [];
+                for (i in divisions) {
+                    var id = divisions[i]['id'];
+                    if (divisions[i]['id'] < 100000) {
+                        var title = divisions[i]['division'];
+                        if (title == '') {
+                            title = '(未知)';
+                        }
+                        country_count.push([divisions[i]['division'], divisions[i]['count']]);
+                        if (id == 1) {
+                            provinces_count.push(['(未知)', divisions[i]['self']['count']]);
+                        }
+                    } else if (id > 100000 && (id % 10000) == 0) {
+                        var title = divisions[i]['division'].split("\t");
+                        provinces.push([i, id, title[1]]);
+                        provinces_count.push([title[1], divisions[i]['count']]);
+                    }
+                }
+                draw_chart('country_count', country_count, '国家或地区分布统计');
+                draw_chart('provinces_count', provinces_count, '中国分省（直辖市、自治区、特别行政区）分布统计');
+
+                for (i in provinces) {
+                    var parent = provinces[i][0];
+                    var parent_id = provinces[i][1];
+                    var title = provinces[i][2];
+
+                    if (typeof divisions[parent]['children'] !== 'undefined') {
+                        if (typeof divisions[parent]['children']['count'] !== 'undefined'
+                                && divisions[parent]['children']['count'] > 0) {
+                            var div = 'province_' + parent_id + '_count';
+                            append_div(div);
+                            var province_count = [];
+                            for (n in divisions) {
+                                var id = divisions[n]['id'];
+                                if (id == parent_id) {
+                                    province_count.push(['(未知)', divisions[n]['self']['count']]);
+                                } else if ((Math.floor(id / 10000) * 10000) == parent_id) {
+                                    var title2 = divisions[n]['division'].split("\t");
+                                    province_count.push([title2[2], divisions[n]['count']]);
+                                }
+                            }
+                            draw_chart(div, province_count, title + '分市（自治盟、自治州、地区、直管县）分布统计');
+                        }
+                    }
+                }
+            });
+        }
+        function append_div(id)
+        {
+            var el = document.createElement('div');
+            el.id=id;
+            document.getElementById('provinces').appendChild(el);
+        }
+        function draw_chart(id, array, title) {
+            array.sort(function (a, b) {
+                return b[1] - a[1];
+            });
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', '区域');
+            data.addColumn('number', 'IP 数量');
+            data.addRows(array);
+            var options = {
+                title: title,
+                width: 800,
+                height: 400,
+                pieHole: 0.36,
+                sliceVisibilityThreshold: get_ten_threshold(array)
+            };
+            var chart = new google.visualization.PieChart(document.getElementById(id));
+            chart.draw(data, options);
+        }
+        function get_ten_threshold(array) {
+            var total = 0;
+            for (i in array) {
+                total += array[i][1];
+            }
+            if (array.length < 11) {
+                return array.pop()[1] / total;
+            }
+            return array[10][1] / total;
+        }
+        function loadJSON(callback) {
+            var file = 'dump_full_count.json';
+            var xobj = new XMLHttpRequest();
+            xobj.overrideMimeType("application/json");
+            xobj.open('GET', file, true);
+            xobj.onreadystatechange = function () {
+                if (xobj.readyState == 4) {
+                    if (xobj.status == '200') {
+                        callback(xobj.responseText);
+                    } else if (xobj.status == '404') {
+                        window.alert('请使用 bin/ipv4 dump count 先导出 ' + file + ' 数据文件。');
+                    }
+                }
+            };
+            xobj.send(null);
+        }
+    </script>
+</head>
+<body>
+<h1>IP v4 数量区域分布统计</h1>
+
+<div id="country_count"></div>
+<h2>中国分省（直辖市、自治区、特别行政区）分布统计</h2>
+
+<div id="provinces_count"></div>
+<div id="provinces"></div>
+</body>
+</html>
