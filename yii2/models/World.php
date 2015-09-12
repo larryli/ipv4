@@ -1,12 +1,12 @@
 <?php
 
-namespace app\models;
+namespace larryli_ipv4_yii2_app\models;
 
 use Yii;
 
 /**
  * This is the model class for table "{{%ipv4_world}}".
- * @package app\models
+ * @package larryli_ipv4_yii2_app\models
  */
 class World extends Index
 {

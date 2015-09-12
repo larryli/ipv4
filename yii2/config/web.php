@@ -7,11 +7,13 @@
 
 Yii::setAlias('@ipv4', dirname(dirname(__DIR__)));
 // Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4');
+Yii::setAlias('larryli_ipv4_yii2_app', dirname(__DIR__));
 
 $config = [
     'id' => 'ipv4',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'controllerNamespace' => 'larryli_ipv4_yii2_app\controllers',
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
         'request' => [
@@ -19,10 +21,6 @@ $config = [
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
-        ],
-        'user' => [
-            'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',

@@ -6,7 +6,7 @@
  */
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Division */
+/* @var $model larryli_ipv4_yii2_app\models\Division */
 
 $breadcrumbs = [];
 for ($parent = $model->parent; $parent != null; $parent = $parent->parent) {

@@ -5,14 +5,14 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace app\models;
+namespace larryli_ipv4_yii2_app\models;
 
 use Yii;
 use yii\base\Model;
 
 /**
  * Class QueryForm
- * @package app\models
+ * @package larryli_ipv4_yii2_app\models
  */
 class QueryForm extends Model
 {

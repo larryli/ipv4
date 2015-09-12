@@ -5,18 +5,18 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace app\controllers;
+namespace larryli_ipv4_yii2_app\controllers;
 
 use yii\web\Controller as BaseController;
-use app\models\China;
-use app\models\Full;
-use app\models\Mini;
-use app\models\World;
+use larryli_ipv4_yii2_app\models\China;
+use larryli_ipv4_yii2_app\models\Full;
+use larryli_ipv4_yii2_app\models\Mini;
+use larryli_ipv4_yii2_app\models\World;
 use yii\web\NotFoundHttpException;
 
 /**
  * Class Controller
- * @package app\controllers
+ * @package larryli_ipv4_yii2_app\controllers
  */
 class Controller extends BaseController
 {

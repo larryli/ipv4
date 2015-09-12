@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controllers;
+namespace larryli_ipv4_yii2_app\controllers;
 
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -48,7 +48,7 @@ class IndexController extends Controller
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
      * @param string $type
-     * @return \app\models\Full|\app\models\Mini|\app\models\China|\app\models\World the loaded model
+     * @return \larryli_ipv4_yii2_app\models\Full|\larryli_ipv4_yii2_app\models\Mini|\larryli_ipv4_yii2_app\models\China|\larryli_ipv4_yii2_app\models\World the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id, $type)

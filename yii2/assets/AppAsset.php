@@ -5,7 +5,7 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace app\assets;
+namespace larryli_ipv4_yii2_app\assets;
 
 use yii\web\AssetBundle;
 /**

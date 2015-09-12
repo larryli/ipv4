@@ -18,7 +18,7 @@ Yii::setAlias('@ipv4', (dirname(__DIR__) . '/vendor/larryli/ipv4');
 // ipv4 component
 'ipv4' => [
     'class' => 'larryli\ipv4\yii2\IPv4',
-    'runtime' => '@app/runtime',
+    'runtime' => '@runtime',
     'database' => 'larryli\ipv4\yii2\Database',
     // query config
     'providers' => [
