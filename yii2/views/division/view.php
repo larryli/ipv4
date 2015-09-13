@@ -37,12 +37,12 @@ $this->params['breadcrumbs'][] = $model->name;
             [
                 'label' => 'Parent Name',
                 'visible' => !empty($model->parent),
-                'value' => $model->parent->name,
+                'value' => empty($model->parent) ? '' : $model->parent->name,
             ],
             [
                 'label' => 'Parent Title',
                 'visible' => !empty($model->parent),
-                'value' => $model->parent->title,
+                'value' => empty($model->parent) ? '' : $model->parent->title,
             ],
         ],
     ]) ?>
