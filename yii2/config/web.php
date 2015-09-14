@@ -42,14 +42,18 @@ $config = [
             ],
         ],
         'db' => require(__DIR__ . '/db.php'),
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '' => 'site/index',
+                'division/<type:\w+>/<id:\d+>' => 'division/indexes',
+                'index/<type:\w+>' => 'index/index',
+                'index/<type:\w+>/<id:\d+>' => 'index/view',
+                '<controller:\w+>' => '<controller>/index',
+                '<controller:\w+>/<id:\d+>' => '<controller>/view',
             ],
         ],
-        */
     ],
     'params' => [],
 ];
