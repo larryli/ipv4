@@ -28,7 +28,7 @@ $config = [
             'migrationPath' => '@ipv4/src/yii2/migrations',
         ],
     ],
-    'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
+    'vendorPath' => VENDOR_PATH,
     'components' => [
         // ipv4 component
         'ipv4' => [
