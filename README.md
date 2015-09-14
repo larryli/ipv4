@@ -2,9 +2,13 @@
 
 整理 [IPIP.net](https://www.ipip.net) 和 [QQ IP 数据库纯真版](http://www.cz88.net/down/76250/) 为符合[中华人民共和国行政区划代码](http://www.stats.gov.cn/tjsj/tjbz/xzqhdm/)的国家与地区、省或直辖市、地级市或省管县级市地址。
 
+## 在线示例
+
+[https://ipv4.larryli.cn](https://ipv4.larryli.cn)
+
 ## 目标
 
-计划在 IPIP.net 库的基础上去掉 IDC/ISP 数据补上纯真 IP 库的数据，然后生成下列四个库：
+在 IPIP.net 库的基础上去掉 IDC/ISP 数据补上纯真 IP 库的数据，然后生成下列四个库：
 
 * ```mini```：**迷你库**用于快速识别中华人民共和国境内 IP（不含台澎金马、香港、澳门）；
 * ```china```: **国内城市库**用于定位中华人民共和国第一级和第二级行政区划（含部分省管第三级行政区划），即俗称的城市定位（含台湾、香港、澳门，作为第一级行政区划）；
