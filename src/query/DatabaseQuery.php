@@ -196,7 +196,7 @@ abstract class DatabaseQuery extends Query
     protected function insertIndex($ip, $id)
     {
         if (!empty($this->lasted) && $id != $this->lasted['division_id']) {
-            if (count($this->saved) > 499) {
+            if (count($this->saved) > self::SIZE) {
                 $this->endInsertIndex();
             } else {
                 $this->saved[] = $this->lasted;
