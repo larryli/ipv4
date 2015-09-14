@@ -2,7 +2,6 @@
 config/db.php
 config/query.php
 composer.phar
-runtime/
 vendor/
 dump_*.json
 
