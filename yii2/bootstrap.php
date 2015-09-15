@@ -23,6 +23,17 @@ function requireVendor($path)
     return false;
 }
 
+if (getenv('YII_DEBUG')) {
+    define('YII_DEBUG', getenv('YII_DEBUG'));
+} else {
+    defined('YII_DEBUG') or define('YII_DEBUG', true);
+}
+if (getenv('YII_ENV')) {
+    define('YII_ENV', getenv('YII_ENV'));
+} else {
+    defined('YII_ENV') or define('YII_ENV', 'dev');
+}
+
 if ((!$loader = requireVendor(__DIR__ . '/../vendor')) && (!$loader = requireVendor(__DIR__ . '/../../..'))) {
     if (PHP_SAPI !== 'cli') {
         echo '<pre>';

@@ -29,7 +29,6 @@ if (function_exists('ini_set')) {
     unset($memoryInBytes, $memoryLimit);
 }
 
-defined('YII_DEBUG') or define('YII_DEBUG', true);
 require(__DIR__ . '/bootstrap.php');
 $config = require(__DIR__ . '/config/console.php');
 $application = new yii\console\Application($config);
