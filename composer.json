@@ -2,7 +2,7 @@
   "name": "larryli/ipv4",
   "description": "IP v4 中国城市地址库",
   "homepage": "https://github.com/larryli/ipv4",
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "license": "MIT",
   "authors": [
     {
