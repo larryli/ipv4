@@ -93,15 +93,15 @@ abstract class DatabaseQuery extends Query
             $size = self::$db->size(self::DIVISION);
             $func(0, count($divisions));
             $time = Query::time();
-            foreach (array_chunk($divisions, $size) as $n => $d) {
+            foreach ($divisions as $n => $d) {
+                if ($time < Query::time()) {
+                    $func(1, $n);
+                    $time = Query::time();
+                }
                 $data[] = $d;
                 if (count($data) >= $size) {
                     self::$db->insertDivisions(self::DIVISION, $data);
                     $data = [];
-                }
-                if ($time < Query::time()) {
-                    $func(1, $size * $n);
-                    $time = Query::time();
                 }
             }
             if (count($data) > 0) {
