@@ -109,6 +109,30 @@ class DatabaseQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $query->findId(ip2long('127.0.0.1')));
         $this->assertEquals(3, $query->findId(ip2long('127.0.0.2')));
     }
+
+    public function testTranslateId()
+    {
+        $query0 = new DummyQuery();
+        $query0->init();
+
+        $query = new DummyPlusDatabaseQuery(new DummyDatabase());
+        DatabaseQuery::initDivision();
+        $this->assertFalse($query->exists());
+        $query->setProviders([
+            $query0,
+        ]);
+        $query->init();
+        $this->assertEquals(5, $query->findId(ip2long('0.0.0.0')));
+        $this->assertEquals(1, $query->findId(ip2long('1.0.0.0')));
+        $this->assertEquals(1, $query->findId(ip2long('2.0.0.0')));
+        $this->assertEquals(1, $query->findId(ip2long('3.0.0.0')));
+        $this->assertEquals(1, $query->findId(ip2long('4.0.0.0')));
+        $this->assertEquals(1, $query->findId(ip2long('5.0.0.0')));
+        $this->assertEquals(1, $query->findId(ip2long('6.0.0.0')));
+        $this->assertEquals(4, $query->findId(ip2long('10.0.0.0')));
+        $this->assertEquals(3, $query->findId(ip2long('127.0.0.1')));
+        $this->assertEquals(4, $query->findId(ip2long('127.0.0.2')));
+    }
 }
 
 /**
@@ -135,5 +159,32 @@ class DummyDatabaseQuery extends DatabaseQuery
     public function name()
     {
         return 'dummy';
+    }
+}
+
+/**
+ * Class DummyPlusDatabaseQuery
+ * @package larryli\ipv4\tests
+ */
+class DummyPlusDatabaseQuery extends DatabaseQuery
+{
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function translateId($id)
+    {
+        return $id + 1;
+    }
+
+    /**
+     * name of the query
+     *
+     * @return string name string
+     */
+    public function name()
+    {
+        return 'dummyPlus';
     }
 }

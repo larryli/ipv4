@@ -155,7 +155,7 @@ abstract class DatabaseQuery extends Query
             for ($i = 1; $i < $count && $id == 0; $i++) {
                 $id = $this->providers[$i]->findId($ip);
             }
-            $this->insertIndex($ip, $id);
+            $this->insertIndex($ip, $this->translateId($id));
             $n++;
             if ($time < Query::time()) {
                 $time = Query::time();
