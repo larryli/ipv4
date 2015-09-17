@@ -1,6 +1,6 @@
 <?php
 /**
- * QQWryQuery.php
+ * QqwryQuery.php
  *
  * Author: Larry Li <larryli@qq.com>
  */
@@ -9,10 +9,10 @@ namespace larryli\ipv4;
 
 
 /**
- * Class QQWryQuery
+ * Class QqwryQuery
  * @package larryli\ipv4\query
  */
-class QQWryQuery extends FileQuery
+class QqwryQuery extends FileQuery
 {
     /**
      *
@@ -83,7 +83,7 @@ class QQWryQuery extends FileQuery
         if (parent::initFile()) {
             return true;
         }
-        $this->fp = fopen($this->filename, 'rb');
+        $this->fp = @fopen($this->filename, 'rb');
         if ($this->fp === FALSE) {
             throw new \Exception("Invalid {$this->filename} file!");
         }
@@ -229,11 +229,9 @@ class QQWryQuery extends FileQuery
 
     /**
      * @param callable $func
-     * @param Query|null $provider
-     * @param Query|null $provider_extra
      * @throws \Exception
      */
-    public function init(callable $func = null, Query $provider = null, Query $provider_extra = null)
+    public function init(callable $func = null)
     {
         if (empty($func)) {
             $copywrite = file_get_contents(self::COPYWRITE_URL);

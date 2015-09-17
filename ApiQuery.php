@@ -24,10 +24,8 @@ abstract class ApiQuery extends Query
 
     /**
      * @param callable $func
-     * @param Query|null $provider
-     * @param Query|null $provider_extra
      */
-    public function init(callable $func, Query $provider = null, Query $provider_extra = null)
+    public function init(callable $func = null)
     {
         // do nothing.
     }

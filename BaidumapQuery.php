@@ -1,6 +1,6 @@
 <?php
 /**
- * BaiduMapQuery.php
+ * BaidumapQuery.php
  *
  * Author: Larry Li <larryli@qq.com>
  */
@@ -9,11 +9,11 @@ namespace larryli\ipv4;
 
 
 /**
- * Class BaiduMapQuery
+ * Class BaidumapQuery
  * @package larryli\ipv4\query
  * @see http://api.map.baidu.com/lbsapi/cloud/ip-location-api.htm
  */
-class BaiduMapQuery extends ApiQuery
+class BaidumapQuery extends ApiQuery
 {
     protected $key = 'F454f8a5efe5e577997931cc01de3974';
 

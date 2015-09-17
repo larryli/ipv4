@@ -12,7 +12,7 @@ namespace larryli\ipv4;
  * Class Database
  * @package larryli\ipv4\query
  */
-abstract class Database
+abstract class Database extends Object
 {
     /**
      * test table is exists

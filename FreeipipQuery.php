@@ -1,6 +1,6 @@
 <?php
 /**
- * FreeIPIPQuery.php
+ * FreeipipQuery.php
  *
  * Author: Larry Li <larryli@qq.com>
  */
@@ -9,11 +9,11 @@ namespace larryli\ipv4;
 
 
 /**
- * Class FreeIPIPQuery
+ * Class FreeipipQuery
  * @package larryli\ipv4\query
  * @see https://www.ipip.net/api.html
  */
-class FreeIPIPQuery extends ApiQuery
+class FreeipipQuery extends ApiQuery
 {
     /**
      * @return string

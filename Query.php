@@ -10,11 +10,15 @@ namespace larryli\ipv4;
 
 /**
  * Class Query
- *
- * @package larryli\ipv4\query
+ * @package larryli\ipv4
  */
-abstract class Query implements \Countable, \Iterator
+abstract class Query extends Object implements \Countable, \Iterator
 {
+    /**
+     * @var Query[]
+     */
+    protected $providers = [];
+
     /**
      * return 0.1s
      *
@@ -23,6 +27,34 @@ abstract class Query implements \Countable, \Iterator
     static public function time()
     {
         return intval(microtime(true) * 10);
+    }
+
+    /**
+     * @param $name
+     * @param $options
+     * @return Query
+     * @throws \Exception
+     */
+    public static function create($name, $options)
+    {
+        if (is_array($options) && isset($options['class'])) {
+            $class = $options['class'];
+            $options = @$options['options'];
+        } else {
+            $class = __NAMESPACE__ . "\\" . ucfirst($name) . 'Query';
+        }
+        if (!class_exists($class)) {
+            throw new \Exception("{$class} not found");
+        }
+        return new $class($options);
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->name();
     }
 
     /**
@@ -42,12 +74,10 @@ abstract class Query implements \Countable, \Iterator
     /**
      * initialize data with provider
      *
-     * @param callback $func notify function
-     * @param Query|null $provider main query provider
-     * @param Query|null $provider_extra extra query provider
+     * @param null|callback $func notify function
      * @return void
      */
-    abstract public function init(callable $func, Query $provider = null, Query $provider_extra = null);
+    abstract public function init(callable $func = null);
 
     /**
      * clean data
@@ -87,4 +117,26 @@ abstract class Query implements \Countable, \Iterator
      * @return integer division id
      */
     abstract public function idByDivision($string);
+
+    /**
+     * @return Query[]
+     */
+    public function getProviders()
+    {
+        return $this->providers;
+    }
+
+    /**
+     * @param Query[] $providers
+     * @return mixed
+     */
+    public function setProviders(array $providers)
+    {
+        $this->providers = [];
+        foreach ($providers as $provider) {
+            if (Query::is_a($provider)) {
+                $this->providers[] = $provider;
+            }
+        }
+    }
 }

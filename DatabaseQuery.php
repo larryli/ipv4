@@ -63,26 +63,30 @@ abstract class DatabaseQuery extends Query
      */
     static public function initDatabase(Database $database)
     {
-        $className = __NAMESPACE__ . "\\Database";
-        if (is_a($database, $className)) {
+        if (Database::is_a($database)) {
             self::$db = $database;
         } else {
+            $className = Database::className();
             throw new \Exception("{$database} is not a {$className} object.");
         }
     }
 
     /**
-     * @param callable $func
+     * @param null|callable $func
      * @param bool $has_extra
      * @throws \Exception
      */
-    static public function initDivision(callable $func, $has_extra = false)
+    static public function initDivision(callable $func = null, $has_extra = false)
     {
         if (self::$db === null) {
             self::initDatabase(null);
         }
         if (!self::$db->tableExists(self::DIVISION)) {
             self::$db->createDivisionsTable(self::DIVISION);
+        }
+        if ($func == null) {
+            $func = function () {
+            };
         }
         if (self::$db->count(self::DIVISION) == 0) {
             $divisions = require('divisions_zh_CN.php');
@@ -126,31 +130,20 @@ abstract class DatabaseQuery extends Query
 
     /**
      * @param callable $func
-     * @param Query|null $provider
-     * @param Query|null $provider_extra
      * @throws \Exception
      */
-    public function init(callable $func, Query $provider = null, Query $provider_extra = null)
+    public function init(callable $func = null)
     {
-        if (!empty($provider_extra)) {
-            $translateId = function ($ip, $id) use ($provider_extra) {
-                if (empty($id)) {
-                    $id = $provider_extra->findId($ip);
-                }
-                return $id;
-            };
-        } else {
-            $translateId = function ($_, $id) {
-                return $id;
-            };
+        $count = count($this->providers);
+        if (empty($count)) {
+            return;
         }
-
         if (empty($func)) {
             $func = function ($code, $n) {
                 // do nothing
             };
         }
-
+        $provider = $this->providers[0];
         $func(0, count($provider));
         $this->startInsertIndex();
         $n = 0;
@@ -159,7 +152,9 @@ abstract class DatabaseQuery extends Query
             if (is_string($id)) {
                 $id = $provider->idByDivision($id);
             }
-            $id = $this->translateId($translateId($ip, $id));
+            for ($i = 1; $i < $count && $id == 0; $i++) {
+                $id = $this->providers[$i]->findId($ip);
+            }
             $this->insertIndex($ip, $id);
             $n++;
             if ($time < Query::time()) {
@@ -354,5 +349,4 @@ abstract class DatabaseQuery extends Query
         }
         return isset($this->buffer[$this->position - $this->buffer_position]);
     }
-
 }

@@ -30,7 +30,8 @@ if (!$qqwry->exists()) {
 }
 $your_query = new \larryli\ipv4\FullQuery(new YourDatabase());
 if (!$your_query->exists()) {
-    $your_query->init(null, $monipdb, $qqwry);
+    $your_query->setProviders([$monipdb, $qqwry]);
+    $your_query->init();
 }
 $your_query->find(ip2long('127.0.0.1'));
 
@@ -39,6 +40,8 @@ class YourDatabase extends \larryli\ipv4\Database
     ...
 }
 ```
+
+可以选用 ```larryli/ipv4-medoo``` 的 ```\larryli\ipv4\medoo\Database```。
 
 ## 相关包
 

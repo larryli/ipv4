@@ -133,5 +133,4 @@ class MonIPDBQueryTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($division, self::$query->find($ip));
         }
     }
-
 }

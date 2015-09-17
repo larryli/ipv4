@@ -1,6 +1,6 @@
 <?php
 /**
- * MonIPDBQuery.php
+ * MonipdbQuery.php
  *
  * Author: Larry Li <larryli@qq.com>
  */
@@ -9,10 +9,10 @@ namespace larryli\ipv4;
 
 
 /**
- * Class MonIPDBQuery
+ * Class MonipdbQuery
  * @package larryli\ipv4\query
  */
-class MonIPDBQuery extends FileQuery
+class MonipdbQuery extends FileQuery
 {
     /**
      *
@@ -76,7 +76,7 @@ class MonIPDBQuery extends FileQuery
         if (parent::initFile()) {
             return true;
         }
-        $this->fp = fopen($this->filename, 'rb');
+        $this->fp = @fopen($this->filename, 'rb');
         if ($this->fp === FALSE) {
             throw new \Exception("Invalid {$this->filename} file!");
         }
@@ -131,11 +131,9 @@ class MonIPDBQuery extends FileQuery
 
     /**
      * @param callable $func
-     * @param Query|null $provider
-     * @param Query|null $provider_extra
      * @throws \Exception
      */
-    public function init(callable $func = null, Query $provider = null, Query $provider_extra = null)
+    public function init(callable $func = null)
     {
         if (empty($func)) {
             $file = file_get_contents(self::URL);
