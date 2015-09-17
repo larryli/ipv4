@@ -1,19 +1,19 @@
 <?php
 /**
- * MonIPDBQueryTest.php
+ * MonipdbQueryTest.php
  *
  * Author: Larry Li <larryli@qq.com>
  */
 
 namespace larryli\ipv4\tests;
 
-use larryli\ipv4\MonIPDBQuery;
+use larryli\ipv4\MonipdbQuery;
 
 /**
  * Class MonIPDBQueryTest
  * @package larryli\ipv4\tests\query
  */
-class MonIPDBQueryTest extends \PHPUnit_Framework_TestCase
+class MonipdbQueryTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var MonIPDBQuery
@@ -22,7 +22,7 @@ class MonIPDBQueryTest extends \PHPUnit_Framework_TestCase
 
     public static function setUpBeforeClass()
     {
-        self::$query = new MonIPDBQuery(__DIR__ . '/17monipdb.dat');
+        self::$query = new MonipdbQuery(__DIR__ . '/17monipdb.dat');
     }
 
     public static function tearDownAfterClass()
