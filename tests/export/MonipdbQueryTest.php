@@ -5,7 +5,7 @@
  * Author: Larry Li <larryli@qq.com>
  */
 
-namespace export;
+namespace larryli\ipv4\tests\export;
 
 use larryli\ipv4\export\MonipdbQuery as Export;
 use larryli\ipv4\MonipdbQuery as Query;
@@ -13,7 +13,7 @@ use larryli\ipv4\tests\DummyQuery;
 
 /**
  * Class MonipdbQueryTest
- * @package export
+ * @package larryli\ipv4\tests\export
  */
 class MonipdbQueryTest extends \PHPUnit_Framework_TestCase
 {
