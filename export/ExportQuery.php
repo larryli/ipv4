@@ -55,7 +55,7 @@ abstract class ExportQuery extends Query
     /**
      * @param $name
      * @param $options
-     * @return Query
+     * @return ExportQuery
      * @throws \Exception
      */
     public static function create($name, $options)
