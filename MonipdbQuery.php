@@ -81,12 +81,12 @@ class MonipdbQuery extends FileQuery
             throw new \Exception("Invalid {$this->filename} file!");
         }
         $offset = unpack('Nlen', fread($this->fp, 4));
-        $this->offset = $offset['len'];
+        $this->offset = $offset['len'] - 1024;
         if ($this->offset < 4) {
             throw new \Exception("Invalid {$this->filename} file!");
         }
-        $this->end = $this->offset - 1024 - 4;
-        $this->index = fread($this->fp, $this->offset - 4);
+        $this->end = $this->offset - 4;
+        $this->index = fread($this->fp, $this->end);
         $this->rewind();
         return true;
     }
@@ -181,7 +181,7 @@ class MonipdbQuery extends FileQuery
     private function readOffset($offset, $len)
     {
         if (!isset($this->data[$offset])) {
-            fseek($this->fp, $this->offset + $offset - 1024);
+            fseek($this->fp, $this->offset + $offset);
             $this->data[$offset] = fread($this->fp, $len);
         }
         return $this->data[$offset];
