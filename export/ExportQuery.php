@@ -22,6 +22,17 @@ abstract class ExportQuery extends Query
      * @var string
      */
     protected $filename = '';
+    /**
+     * @var string
+     */
+    protected $encoding = 'UTF-8';
+
+    /**
+     * @param Query $query
+     * @param callable $func
+     * @return
+     */
+    abstract public function export(Query $query, callable $func);
 
     /**
      * @param string $filename
@@ -46,6 +57,39 @@ abstract class ExportQuery extends Query
             }
         }
         $this->filename = $filename;
+    }
+
+    /**
+     * @param $encoding
+     * @return string
+     */
+    public function setEncoding($encoding)
+    {
+        $encoding = strtoupper($encoding);
+        if (in_array($encoding, ['UTF-8', 'GB2312', 'GBK', 'GB18030', 'BIG5'])) {
+            $this->encoding = $encoding;
+        }
+        return $this->encoding;
+    }
+
+    /**
+     * @param callable|null $func
+     * @throws \Exception
+     */
+    public function init(callable $func = null)
+    {
+        if (count($this->providers) <= 0) {
+            throw new \Exception("Invalid provider: must need one!");
+        }
+        if (count($this->providers[0]) <= 0) {
+            throw new \Exception("Invalid provider {$this->providers[0]}: is empty!");
+        }
+        if ($func == null) {
+            $func = function () {
+                // do nothing
+            };
+        }
+        $this->export($this->providers[0], $func);
     }
 
     /**
@@ -154,5 +198,19 @@ abstract class ExportQuery extends Query
     public function count()
     {
         return 0;
+    }
+
+    /**
+     * @param Query $query
+     * @return array
+     */
+    protected function version(Query $query)
+    {
+        return [
+            'ipv4.larryli.cn',
+            date('Ymd'),
+            $query->className(),
+            $query->name(),
+        ];
     }
 }
