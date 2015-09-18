@@ -30,6 +30,18 @@ class Strings
      * @var array
      */
     protected $exists = [];
+    /**
+     * @var bool
+     */
+    protected $ecdz;
+
+    /**
+     * @param bool|false $ecdz
+     */
+    public function __construct($ecdz = false)
+    {
+        $this->ecdz = $ecdz;
+    }
 
     /**
      * @param $fp
@@ -39,7 +51,11 @@ class Strings
     public function set($fp, $ip, $str)
     {
         if (!isset($this->exists[$str])) {
-            $pad = $this->pad($str);
+            if ($this->ecdz) {
+                $pad = $str;
+            } else {
+                $pad = $this->pad($str);
+            }
             $offset = $this->offset;
             $len = strlen($pad);
             $this->buffer .= $pad;

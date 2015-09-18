@@ -38,7 +38,7 @@ class MonipdbQuery extends ExportQuery
     public function export(Query $query, callable $func)
     {
         $func(0, count($query));
-        $file = new File($this->filename, implode("\t", $this->version($query)));
+        $file = new File($this->filename, implode("\t", $this->version($query)), $this->ecdz);
         $n = 0;
         $time = self::time();
         foreach ($query as $ip => $id) {

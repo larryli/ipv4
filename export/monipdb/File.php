@@ -46,9 +46,10 @@ class File
     /**
      * @param $filename
      * @param $version
+     * @param bool $ecdz
      * @throws \Exception
      */
-    public function __construct($filename, $version)
+    public function __construct($filename, $version, $ecdz = false)
     {
         $this->fp = @fopen($filename, 'wb');
         if ($this->fp === false) {
@@ -58,7 +59,7 @@ class File
         $this->last_ip = ip2long('255.255.255.255');
         $this->version = $version;
         $this->idx = new Indexes();
-        $this->str = new Strings();
+        $this->str = new Strings($ecdz);
         $this->n = 0;
         $size = 4 + 1024;
         fwrite($this->fp, str_pad('', $size, "\x00"), $size); // write empty offset & index
