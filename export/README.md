@@ -23,6 +23,7 @@ var_dump(IP::find('202.103.24.68'));
 ```
 
 方法 ```setEcdz(true)``` 会删除地址字符串中的制表符分隔，默认为 ```false```。
+
 方法 ```setEncoding``` 可以设置导出数据的编码，默认为 ```UTF-8```。
 
 ## 导出为 qqwry.dat 格式
