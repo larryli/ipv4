@@ -28,13 +28,6 @@ abstract class ExportQuery extends Query
     protected $encoding = 'UTF-8';
 
     /**
-     * @param Query $query
-     * @param callable $func
-     * @return
-     */
-    abstract public function export(Query $query, callable $func);
-
-    /**
      * @param string $filename
      * @throws \Exception
      */
@@ -57,6 +50,29 @@ abstract class ExportQuery extends Query
             }
         }
         $this->filename = $filename;
+    }
+
+    /**
+     * @param $name
+     * @param $options
+     * @return Query
+     * @throws \Exception
+     */
+    public static function create($name, $options)
+    {
+        $class = __NAMESPACE__ . "\\" . ucfirst($name) . 'Query';
+        if (is_array($options)) {
+            if (!isset($options['class'])) {
+                $options['options'] = $options;
+                $options['class'] = $class;
+            }
+        } else {
+            $options = [
+                'options' => $options,
+                'class' => $class,
+            ];
+        }
+        return parent::create($name, $options);
     }
 
     /**
@@ -91,6 +107,13 @@ abstract class ExportQuery extends Query
         }
         $this->export($this->providers[0], $func);
     }
+
+    /**
+     * @param Query $query
+     * @param callable $func
+     * @return
+     */
+    abstract public function export(Query $query, callable $func);
 
     /**
      * @return bool
