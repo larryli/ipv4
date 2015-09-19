@@ -81,12 +81,12 @@ class MonipdbQuery extends FileQuery
             throw new \Exception("Invalid {$this->filename} file!");
         }
         $offset = unpack('Nlen', fread($this->fp, 4));
-        $this->offset = $offset['len'];
+        $this->offset = $offset['len'] - 1024;
         if ($this->offset < 4) {
             throw new \Exception("Invalid {$this->filename} file!");
         }
-        $this->end = $this->offset - 1024 - 4;
-        $this->index = fread($this->fp, $this->offset - 4);
+        $this->end = $this->offset - 4;
+        $this->index = fread($this->fp, $this->end);
         $this->rewind();
         return true;
     }
@@ -181,7 +181,7 @@ class MonipdbQuery extends FileQuery
     private function readOffset($offset, $len)
     {
         if (!isset($this->data[$offset])) {
-            fseek($this->fp, $this->offset + $offset - 1024);
+            fseek($this->fp, $this->offset + $offset);
             $this->data[$offset] = fread($this->fp, $len);
         }
         return $this->data[$offset];
@@ -265,5 +265,55 @@ class MonipdbQuery extends FileQuery
     public function rewind()
     {
         $this->position = 1024;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function yaml()
+    {
+        $fp = @fopen($this->filename, 'rb');
+        if ($fp === FALSE) {
+            throw new \Exception("Invalid {$this->filename} file!");
+        }
+        echo "---\n";
+        $offset = unpack('Nlen', fread($fp, 4));
+        echo "offset: {$offset['len']}\n";
+        $size = $offset['len'] - 2048 - 4;
+        $total = $size / 8;
+        echo "total: {$total}\n";
+        $index = fread($fp, 1024);
+        echo "index:\n";
+        for ($n = 0; $n < 256; $n++) {
+            $i = $n * 4;
+            $ip = long2ip($n * 256 * 256 * 256);
+            $offset = unpack('Vlen', $index{$i} . $index{$i + 1} . $index{$i + 2} . $index{$i + 3});
+            echo "\t- ip: {$ip}\n\t  no: {$offset['len']}\n";
+        }
+        $string = [];
+        $data = fread($fp, $size);
+        echo "data:\n";
+        for ($n = 0; $n < $total; $n++) {
+            $i = $n * 8;
+            $ip = unpack('Nlen', $data{$i} . $data{$i + 1} . $data{$i + 2} . $data{$i + 3});
+            $ip = long2ip($ip['len']);
+            $offset = unpack('Vlen', $data{$i + 4} . $data{$i + 5} . $data{$i + 6} . "\x0");
+            $len = unpack('Clen', $data{$i + 7});
+            echo "\t- no: {$n}\n\t  ip: {$ip}\n\t  offset: {$offset['len']}\n\t  len: {$len['len']}\n";
+            $string[$offset['len']] = $len['len'];
+        }
+        echo "string:\n";
+        while (true) {
+            $position = ftell($fp);
+            $offset = $position - $size - 1024 - 4;
+            if (array_key_exists($offset, $string)) {
+                $len = $string[$offset];
+                $str = fread($fp, $len);
+                echo "\t- position: {$position}\n\t  offset: {$offset}\n\t  len: {$len}\n\t  string: \"{$str}\"\n";
+            } else {
+                break;
+            }
+        }
+        fclose($fp);
     }
 }

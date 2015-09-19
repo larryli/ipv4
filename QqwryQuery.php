@@ -87,8 +87,8 @@ class QqwryQuery extends FileQuery
         if ($this->fp === FALSE) {
             throw new \Exception("Invalid {$this->filename} file!");
         }
-        $offset = unpack('Llen', fread($this->fp, 4));
-        $end = unpack('Llen', fread($this->fp, 4));
+        $offset = unpack('Vlen', fread($this->fp, 4));
+        $end = unpack('Vlen', fread($this->fp, 4));
         $this->end = $end['len'] - $offset['len'] + 7;
         if ($offset['len'] < 4) {
             throw new \Exception("Invalid {$this->filename} file!");
@@ -119,7 +119,7 @@ class QqwryQuery extends FileQuery
 
         $this->initFile();
         $offset = $this->findIndex($ip, 0, $this->end);
-        $offset = unpack('Llen', $this->index{$offset + 4} . $this->index{$offset + 5} . $this->index{$offset + 6} . "\x0");
+        $offset = unpack('Vlen', $this->index{$offset + 4} . $this->index{$offset + 5} . $this->index{$offset + 6} . "\x00");
         $this->cached[$ip] = $this->readRecode($offset['len']);
         return $this->cached[$ip];
     }
@@ -136,7 +136,7 @@ class QqwryQuery extends FileQuery
             return $l;
         }
         $m = intval(($l + $r) / 14) * 7;
-        $mip = unpack('Llen', $this->index{$m} . $this->index{$m + 1} . $this->index{$m + 2} . $this->index{$m + 3});
+        $mip = unpack('Vlen', $this->index{$m} . $this->index{$m + 1} . $this->index{$m + 2} . $this->index{$m + 3});
         if ($ip < $mip['len']) {
             return $this->findIndex($ip, $l, $m);
         } else {
@@ -155,12 +155,12 @@ class QqwryQuery extends FileQuery
         $flag = ord($this->readOffset(1, $offset));
         if ($flag == 1) {
             $location_offset = $this->readOffset(3, $offset + 1);
-            $location_offset = unpack('Llen', $location_offset . "\x0");
+            $location_offset = unpack('Vlen', $location_offset . "\x00");
             $sub_flag = ord($this->readOffset(1, $location_offset['len']));
             if ($sub_flag == 2) {
                 // 国家
                 $country_offset = $this->readOffset(3, $location_offset['len'] + 1);
-                $country_offset = unpack('Llen', $country_offset . "\x0");
+                $country_offset = unpack('Vlen', $country_offset . "\x00");
                 $record[0] = $this->readLocation($country_offset['len']);
                 // 地区
                 $record[1] = $this->readLocation($location_offset['len'] + 4);
@@ -174,7 +174,7 @@ class QqwryQuery extends FileQuery
             $record[1] = $this->readLocation($offset + 4);
             // offset + 1(flag)
             $country_offset = $this->readOffset(3, $offset + 1);
-            $country_offset = unpack('Llen', $country_offset . "\x0");
+            $country_offset = unpack('Vlen', $country_offset . "\x00");
             $record[0] = $this->readLocation($country_offset['len']);
         } else {
             $record[0] = $this->readLocation($offset);
@@ -214,7 +214,7 @@ class QqwryQuery extends FileQuery
         // 仍然为重定向
         if ($flag == 2) {
             $offset = $this->readOffset(3, $offset + 1);
-            $offset = unpack('Llen', $offset . "\x0");
+            $offset = unpack('Vlen', $offset . "\x00");
             return $this->readLocation($offset['len']);
         }
         $location = '';
@@ -312,7 +312,7 @@ class QqwryQuery extends FileQuery
      */
     public function current()
     {
-        $offset = unpack('Llen', $this->index{$this->position + 4} . $this->index{$this->position + 5} . $this->index{$this->position + 6} . "\x0");
+        $offset = unpack('Vlen', $this->index{$this->position + 4} . $this->index{$this->position + 5} . $this->index{$this->position + 6} . "\x0");
         return $this->readRecode($offset['len']);
     }
 
@@ -330,7 +330,7 @@ class QqwryQuery extends FileQuery
     public function key()
     {
         if ($this->position < $this->end - 7) {
-            $ip = unpack('Llen', $this->index{$this->position + 7} . $this->index{$this->position + 8} . $this->index{$this->position + 9} . $this->index{$this->position + 10});
+            $ip = unpack('Vlen', $this->index{$this->position + 7} . $this->index{$this->position + 8} . $this->index{$this->position + 9} . $this->index{$this->position + 10});
             return $ip['len'] - 1;
         }
         return 4294967295;
@@ -353,7 +353,7 @@ class QqwryQuery extends FileQuery
         $this->initFile();
         if (!empty($this->fp)) {
             fseek($this->fp, 0);
-            $offset = unpack('Llen', fread($this->fp, 4));
+            $offset = unpack('Vlen', fread($this->fp, 4));
             fseek($this->fp, 0);
             $this->data = fread($this->fp, $offset['len']);
             fclose($this->fp);
