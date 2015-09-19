@@ -2,10 +2,6 @@
 
 整理 [IPIP.net](https://www.ipip.net) 和 [QQ IP 数据库纯真版](http://www.cz88.net/down/76250/) 为符合[中华人民共和国行政区划代码](http://www.stats.gov.cn/tjsj/tjbz/xzqhdm/)的国家与地区、省或直辖市、地级市或省管县级市地址。
 
-## 在线示例
-
-[https://ipv4.larryli.cn](https://ipv4.larryli.cn)
-
 ## 目标
 
 在 IPIP.net 库的基础上去掉 IDC/ISP 数据补上纯真 IP 库的数据，然后生成下列四个库：
@@ -21,67 +17,35 @@
 composer require larryli/ipv4
 ```
 
-## 可选 IP 库
+## 使用
 
-```shell
-cp config/query.sample.php config/query.php
+```php
+$monipdb = new \larryli\ipv4\MonipdbQuery(__DIR__ . '/17monipdb.dat');
+if (!$monipdb->exists()) {
+    $monipdb->init();
+}
+$qqwry = new \larryli\ipv4\QqwryQuery(__DIR__ . '/qqwry.dat');
+if (!$qqwry->exists()) {
+    $qqwry->init();
+}
+$your_query = new \larryli\ipv4\FullQuery(new YourDatabase());
+if (!$your_query->exists()) {
+    $your_query->setProviders([$monipdb, $qqwry]);
+    $your_query->init();
+}
+$your_query->find(ip2long('127.0.0.1'));
+
+class YourDatabase extends \larryli\ipv4\Database
+{
+    ...
+}
 ```
 
-配置选项请参见该文件的代码注释。
+可以选用 ```larryli/ipv4-medoo``` 的 ```\larryli\ipv4\medoo\Database```。
 
-默认会下载 **IPIP.net**（```monipdb```）和 **QQ IP 数据库纯真版**（```qqwry```）。
+## 相关包
 
-然后使用 **IPIP.net**（```monipdb```）配合 **QQ IP 数据库纯真版**（```qqwry```）生成**完整库**（```full```）。
-
-再使用**完整库**（```full```）直接生成**迷你库**（```mini```）、**国内城市库**（```china```）和**国家库**（```world```）。
-
-## 可选配置 MySQL 数据库
-
-```shell
-cp config/db.sample.php config/db.php
-```
-
-配置选项请参见该文件的代码注释或 [Medoo 文档](http://medoo.in/api/new)，当前仅支持 SQLite 和 MySQL（MariaDB）。
-
-默认会使用 ```runtime``` 目录下的 ```ipv4.sqlite``` 数据库。
-
-## 可选查询库配置
-
-```shell
-cp config/providers.sample.php config/providers.php
-```
-
-配置选项请参见该文件的代码注释。
-
-## 初始化
-
-```shell
-bin/ipv4 init
-```
-
-可以使用 ```--force``` 更新覆盖现有数据。
-
-## 查询
-
-```shell
-bin/ipv4 query 127.0.0.1
-```
-
-## 杂项
-
-```shell
-bin/ipv4 benchmark        # 性能测试
-bin/ipv4 clean            # 清除全部数据
-bin/ipv4 clean file       # 清除下载的文件数据
-bin/ipv4 clean database   # 清除生成的数据库数据
-bin/ipv4 dump             # 导出原始数据
-bin/ipv4 dump division    # 导出排序好的全部地址列表
-bin/ipv4 dump division_id # 导出排序好的全部地址和猜测行政区域代码列表
-bin/ipv4 dump count       # 导出纪录统计数据
-```
-
-注意：```dump``` 命令会耗费大量内存，请配置 PHP ```memory_limit``` 至少为 ```128M``` 或更多。
-
-## Yii2 组件
-
-请参见 [yii2 代码目录文档](src/yii2/README.md)
+* 控制台命令 [larryli/ipv4-console](https://github.com/larryli/ipv4-console)
+* Medoo 数据库支持 [larryli/ipv4-medoo](https://github.com/larryli/ipv4-medoo)
+* Yii2 组件 [larryli/ipv4-yii2](https://github.com/larryli/ipv4-yii2)
+* Yii2 示例 [larryli/ipv4-yii2-sample](https://github.com/larryli/ipv4-yii2-sample)
