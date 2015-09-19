@@ -44,7 +44,7 @@ $qqwry = new \larryli\ipv4\QqwryQuery('qqwry.dat');
 var_dump($qqwry->find(ip2long('202.103.24.68')));
 ```
 
-方法 ```setRemoveIpInRecode(true)``` 会删除纪录区冗余的 IP 数据（每条纪录 4 个字节），默认为 ```false```。
+方法 ```setRemoveIpInRecode(true)``` 会删除记录区冗余的 IP 数据（每条记录 4 个字节），默认为 ```false```。
 
 一般来说，网上流行的 qqwry.dat 处理代码都会直接跳过这 4 个字节的数据。如果要保持最大兼容，请不要去掉。但文件会增加许多。
 
