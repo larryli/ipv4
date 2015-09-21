@@ -2,6 +2,12 @@
 
 整理 [IPIP.net](https://www.ipip.net) 和 [QQ IP 数据库纯真版](http://www.cz88.net/down/76250/) 为符合[中华人民共和国行政区划代码](http://www.stats.gov.cn/tjsj/tjbz/xzqhdm/)的国家与地区、省或直辖市、地级市或省管县级市地址。
 
+[![Latest Stable Version](https://poser.pugx.org/larryli/ipv4/v/stable)](https://packagist.org/packages/larryli/ipv4)
+[![Total Downloads](https://poser.pugx.org/larryli/ipv4/downloads)](https://packagist.org/packages/larryli/ipv4)
+[![Latest Unstable Version](https://poser.pugx.org/larryli/ipv4/v/unstable)](https://packagist.org/packages/larryli/ipv4)
+[![License](https://poser.pugx.org/larryli/ipv4/license)](https://packagist.org/packages/larryli/ipv4)
+[![Build Status](https://travis-ci.org/larryli/ipv4.svg?branch=master)](https://travis-ci.org/larryli/ipv4)
+
 ## 目标
 
 在 IPIP.net 库的基础上去掉 IDC/ISP 数据补上纯真 IP 库的数据，然后生成下列四个库：
