@@ -674,6 +674,7 @@ return [
     ['id' => 659002, 'name' => '阿拉尔', 'title' => '阿拉尔市', 'is_city' => 1, 'parent_id' => 650000],
     ['id' => 659003, 'name' => '图木舒克', 'title' => '图木舒克市', 'is_city' => 1, 'parent_id' => 650000],
     ['id' => 659004, 'name' => '五家渠', 'title' => '五家渠市', 'is_city' => 1, 'parent_id' => 650000],
+    ['id' => 659005, 'name' => '北屯', 'title' => '北屯市', 'is_city' => 1, 'parent_id' => 650000],
     ['id' => 710000, 'name' => '台湾', 'title' => '台湾省', 'is_city' => 0, 'parent_id' => 1],
     ['id' => 810000, 'name' => '香港', 'title' => '香港特别行政区', 'is_city' => 1, 'parent_id' => 1],
     ['id' => 820000, 'name' => '澳门', 'title' => '澳门特别行政区', 'is_city' => 1, 'parent_id' => 1],
