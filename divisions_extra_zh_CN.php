@@ -21,8 +21,8 @@ return [
     ['id' => 110115, 'name' => '大兴', 'title' => '大兴区', 'is_city' => 0, 'parent_id' => 110000],
     ['id' => 110116, 'name' => '怀柔', 'title' => '怀柔区', 'is_city' => 0, 'parent_id' => 110000],
     ['id' => 110117, 'name' => '平谷', 'title' => '平谷区', 'is_city' => 0, 'parent_id' => 110000],
-    ['id' => 110228, 'name' => '密云', 'title' => '密云县', 'is_city' => 0, 'parent_id' => 110000],
-    ['id' => 110229, 'name' => '延庆', 'title' => '延庆县', 'is_city' => 0, 'parent_id' => 110000],
+    ['id' => 110118, 'name' => '密云', 'title' => '密云区', 'is_city' => 0, 'parent_id' => 110000],
+    ['id' => 110119, 'name' => '延庆', 'title' => '延庆区', 'is_city' => 0, 'parent_id' => 110000],
     // 天津
     ['id' => 120101, 'name' => '和平', 'title' => '和平区', 'is_city' => 0, 'parent_id' => 120000],
     ['id' => 120102, 'name' => '河东', 'title' => '河东区', 'is_city' => 0, 'parent_id' => 120000],
@@ -37,8 +37,8 @@ return [
     ['id' => 120114, 'name' => '武清', 'title' => '武清区', 'is_city' => 0, 'parent_id' => 120000],
     ['id' => 120115, 'name' => '宝坻', 'title' => '宝坻区', 'is_city' => 0, 'parent_id' => 120000],
     ['id' => 120116, 'name' => '滨海', 'title' => '滨海新区', 'is_city' => 0, 'parent_id' => 120000],
-    ['id' => 120221, 'name' => '宁河', 'title' => '宁河县', 'is_city' => 0, 'parent_id' => 120000],
-    ['id' => 120223, 'name' => '静海', 'title' => '静海县', 'is_city' => 0, 'parent_id' => 120000],
+    ['id' => 120117, 'name' => '宁河', 'title' => '宁河区', 'is_city' => 0, 'parent_id' => 120000],
+    ['id' => 120118, 'name' => '静海', 'title' => '静海区', 'is_city' => 0, 'parent_id' => 120000],
     ['id' => 120225, 'name' => '蓟县', 'title' => '蓟县', 'is_city' => 0, 'parent_id' => 120000],
     // 河北
     // 石家庄
@@ -128,14 +128,14 @@ return [
     ['id' => 130581, 'name' => '南宫', 'title' => '南宫市', 'is_city' => 0, 'parent_id' => 130500],
     ['id' => 130582, 'name' => '沙河', 'title' => '沙河市', 'is_city' => 0, 'parent_id' => 130500],
     // 保定
-    ['id' => 130602, 'name' => '新市', 'title' => '新市区', 'is_city' => 0, 'parent_id' => 130600],
-    ['id' => 130603, 'name' => '北市', 'title' => '北市区', 'is_city' => 0, 'parent_id' => 130600],
+    ['id' => 130602, 'name' => '竞秀', 'title' => '竞秀区', 'is_city' => 0, 'parent_id' => 130600],
     ['id' => 130604, 'name' => '南市', 'title' => '南市区', 'is_city' => 0, 'parent_id' => 130600],
-    ['id' => 130621, 'name' => '满城', 'title' => '满城县', 'is_city' => 0, 'parent_id' => 130600],
-    ['id' => 130622, 'name' => '清苑', 'title' => '清苑县', 'is_city' => 0, 'parent_id' => 130600],
+    ['id' => 130606, 'name' => '莲池', 'title' => '莲池区', 'is_city' => 0, 'parent_id' => 130600],
+    ['id' => 130607, 'name' => '满城', 'title' => '满城区', 'is_city' => 0, 'parent_id' => 130600],
+    ['id' => 130608, 'name' => '清苑', 'title' => '清苑区', 'is_city' => 0, 'parent_id' => 130600],
+    ['id' => 130609, 'name' => '徐水', 'title' => '徐水区', 'is_city' => 0, 'parent_id' => 130600],
     ['id' => 130623, 'name' => '涞水', 'title' => '涞水县', 'is_city' => 0, 'parent_id' => 130600],
     ['id' => 130624, 'name' => '阜平', 'title' => '阜平县', 'is_city' => 0, 'parent_id' => 130600],
-    ['id' => 130625, 'name' => '徐水', 'title' => '徐水县', 'is_city' => 0, 'parent_id' => 130600],
     ['id' => 130626, 'name' => '定兴', 'title' => '定兴县', 'is_city' => 0, 'parent_id' => 130600],
     ['id' => 130627, 'name' => '唐县', 'title' => '唐县', 'is_city' => 0, 'parent_id' => 130600],
     ['id' => 130628, 'name' => '高阳', 'title' => '高阳县', 'is_city' => 0, 'parent_id' => 130600],
@@ -477,7 +477,7 @@ return [
     ['id' => 210105, 'name' => '皇姑', 'title' => '皇姑区', 'is_city' => 0, 'parent_id' => 210100],
     ['id' => 210106, 'name' => '铁西', 'title' => '铁西区', 'is_city' => 0, 'parent_id' => 210100],
     ['id' => 210111, 'name' => '苏家屯', 'title' => '苏家屯区', 'is_city' => 0, 'parent_id' => 210100],
-    ['id' => 210112, 'name' => '浑南', 'title' => '浑南区', 'is_city' => 0, 'parent_id' => 210100],
+    ['id' => 210112, 'name' => '东陵', 'title' => '东陵区', 'is_city' => 0, 'parent_id' => 210100],
     ['id' => 210113, 'name' => '沈北', 'title' => '沈北新区', 'is_city' => 0, 'parent_id' => 210100],
     ['id' => 210114, 'name' => '于洪', 'title' => '于洪区', 'is_city' => 0, 'parent_id' => 210100],
     ['id' => 210122, 'name' => '辽中', 'title' => '辽中县', 'is_city' => 0, 'parent_id' => 210100],
@@ -664,6 +664,7 @@ return [
     ['id' => 230110, 'name' => '香坊', 'title' => '香坊区', 'is_city' => 0, 'parent_id' => 230100],
     ['id' => 230111, 'name' => '呼兰', 'title' => '呼兰区', 'is_city' => 0, 'parent_id' => 230100],
     ['id' => 230112, 'name' => '阿城', 'title' => '阿城区', 'is_city' => 0, 'parent_id' => 230100],
+    ['id' => 230113, 'name' => '双城', 'title' => '双城区', 'is_city' => 0, 'parent_id' => 230100],
     ['id' => 230123, 'name' => '依兰', 'title' => '依兰县', 'is_city' => 0, 'parent_id' => 230100],
     ['id' => 230124, 'name' => '方正', 'title' => '方正县', 'is_city' => 0, 'parent_id' => 230100],
     ['id' => 230125, 'name' => '宾县', 'title' => '宾县', 'is_city' => 0, 'parent_id' => 230100],
@@ -671,7 +672,6 @@ return [
     ['id' => 230127, 'name' => '木兰', 'title' => '木兰县', 'is_city' => 0, 'parent_id' => 230100],
     ['id' => 230128, 'name' => '通河', 'title' => '通河县', 'is_city' => 0, 'parent_id' => 230100],
     ['id' => 230129, 'name' => '延寿', 'title' => '延寿县', 'is_city' => 0, 'parent_id' => 230100],
-    ['id' => 230182, 'name' => '双城', 'title' => '双城市', 'is_city' => 0, 'parent_id' => 230100],
     ['id' => 230183, 'name' => '尚志', 'title' => '尚志市', 'is_city' => 0, 'parent_id' => 230100],
     ['id' => 230184, 'name' => '五常', 'title' => '五常市', 'is_city' => 0, 'parent_id' => 230100],
     // 齐齐哈尔
@@ -850,11 +850,10 @@ return [
     // 常州
     ['id' => 320402, 'name' => '天宁', 'title' => '天宁区', 'is_city' => 0, 'parent_id' => 320400],
     ['id' => 320404, 'name' => '钟楼', 'title' => '钟楼区', 'is_city' => 0, 'parent_id' => 320400],
-    ['id' => 320405, 'name' => '戚墅堰', 'title' => '戚墅堰区', 'is_city' => 0, 'parent_id' => 320400],
     ['id' => 320411, 'name' => '新北', 'title' => '新北区', 'is_city' => 0, 'parent_id' => 320400],
     ['id' => 320412, 'name' => '武进', 'title' => '武进区', 'is_city' => 0, 'parent_id' => 320400],
+    ['id' => 320413, 'name' => '金坛', 'title' => '金坛区', 'is_city' => 0, 'parent_id' => 320400],
     ['id' => 320481, 'name' => '溧阳', 'title' => '溧阳市', 'is_city' => 0, 'parent_id' => 320400],
-    ['id' => 320482, 'name' => '金坛', 'title' => '金坛市', 'is_city' => 0, 'parent_id' => 320400],
     // 苏州
     ['id' => 320505, 'name' => '虎丘', 'title' => '虎丘区', 'is_city' => 0, 'parent_id' => 320500],
     ['id' => 320506, 'name' => '吴中', 'title' => '吴中区', 'is_city' => 0, 'parent_id' => 320500],
@@ -893,13 +892,13 @@ return [
     // 盐城
     ['id' => 320902, 'name' => '亭湖', 'title' => '亭湖区', 'is_city' => 0, 'parent_id' => 320900],
     ['id' => 320903, 'name' => '盐都', 'title' => '盐都区', 'is_city' => 0, 'parent_id' => 320900],
+    ['id' => 320904, 'name' => '大丰', 'title' => '大丰区', 'is_city' => 0, 'parent_id' => 320900],
     ['id' => 320921, 'name' => '响水', 'title' => '响水县', 'is_city' => 0, 'parent_id' => 320900],
     ['id' => 320922, 'name' => '滨海', 'title' => '滨海县', 'is_city' => 0, 'parent_id' => 320900],
     ['id' => 320923, 'name' => '阜宁', 'title' => '阜宁县', 'is_city' => 0, 'parent_id' => 320900],
     ['id' => 320924, 'name' => '射阳', 'title' => '射阳县', 'is_city' => 0, 'parent_id' => 320900],
     ['id' => 320925, 'name' => '建湖', 'title' => '建湖县', 'is_city' => 0, 'parent_id' => 320900],
     ['id' => 320981, 'name' => '东台', 'title' => '东台市', 'is_city' => 0, 'parent_id' => 320900],
-    ['id' => 320982, 'name' => '大丰', 'title' => '大丰市', 'is_city' => 0, 'parent_id' => 320900],
     // 扬州
     ['id' => 321002, 'name' => '广陵', 'title' => '广陵区', 'is_city' => 0, 'parent_id' => 321000],
     ['id' => 321003, 'name' => '邗江', 'title' => '邗江区', 'is_city' => 0, 'parent_id' => 321000],
@@ -937,10 +936,10 @@ return [
     ['id' => 330108, 'name' => '滨江', 'title' => '滨江区', 'is_city' => 0, 'parent_id' => 330100],
     ['id' => 330109, 'name' => '萧山', 'title' => '萧山区', 'is_city' => 0, 'parent_id' => 330100],
     ['id' => 330110, 'name' => '余杭', 'title' => '余杭区', 'is_city' => 0, 'parent_id' => 330100],
+    ['id' => 330111, 'name' => '富阳', 'title' => '富阳区', 'is_city' => 0, 'parent_id' => 330100],
     ['id' => 330122, 'name' => '桐庐', 'title' => '桐庐县', 'is_city' => 0, 'parent_id' => 330100],
     ['id' => 330127, 'name' => '淳安', 'title' => '淳安县', 'is_city' => 0, 'parent_id' => 330100],
     ['id' => 330182, 'name' => '建德', 'title' => '建德市', 'is_city' => 0, 'parent_id' => 330100],
-    ['id' => 330183, 'name' => '富阳', 'title' => '富阳市', 'is_city' => 0, 'parent_id' => 330100],
     ['id' => 330185, 'name' => '临安', 'title' => '临安市', 'is_city' => 0, 'parent_id' => 330100],
     // 宁波
     ['id' => 330203, 'name' => '海曙', 'title' => '海曙区', 'is_city' => 0, 'parent_id' => 330200],
@@ -958,7 +957,7 @@ return [
     ['id' => 330302, 'name' => '鹿城', 'title' => '鹿城区', 'is_city' => 0, 'parent_id' => 330300],
     ['id' => 330303, 'name' => '龙湾', 'title' => '龙湾区', 'is_city' => 0, 'parent_id' => 330300],
     ['id' => 330304, 'name' => '瓯海', 'title' => '瓯海区', 'is_city' => 0, 'parent_id' => 330300],
-    ['id' => 330322, 'name' => '洞头', 'title' => '洞头县', 'is_city' => 0, 'parent_id' => 330300],
+    ['id' => 330305, 'name' => '洞头', 'title' => '洞头区', 'is_city' => 0, 'parent_id' => 330300],
     ['id' => 330324, 'name' => '永嘉', 'title' => '永嘉县', 'is_city' => 0, 'parent_id' => 330300],
     ['id' => 330326, 'name' => '平阳', 'title' => '平阳县', 'is_city' => 0, 'parent_id' => 330300],
     ['id' => 330327, 'name' => '苍南', 'title' => '苍南县', 'is_city' => 0, 'parent_id' => 330300],
@@ -1219,6 +1218,7 @@ return [
     ['id' => 350681, 'name' => '龙海', 'title' => '龙海市', 'is_city' => 0, 'parent_id' => 350600],
     // 南平
     ['id' => 350702, 'name' => '延平', 'title' => '延平区', 'is_city' => 0, 'parent_id' => 350700],
+    ['id' => 350703, 'name' => '建阳', 'title' => '建阳区', 'is_city' => 0, 'parent_id' => 350700],
     ['id' => 350721, 'name' => '顺昌', 'title' => '顺昌县', 'is_city' => 0, 'parent_id' => 350700],
     ['id' => 350722, 'name' => '浦城', 'title' => '浦城县', 'is_city' => 0, 'parent_id' => 350700],
     ['id' => 350723, 'name' => '光泽', 'title' => '光泽县', 'is_city' => 0, 'parent_id' => 350700],
@@ -1227,11 +1227,10 @@ return [
     ['id' => 350781, 'name' => '邵武', 'title' => '邵武市', 'is_city' => 0, 'parent_id' => 350700],
     ['id' => 350782, 'name' => '武夷山', 'title' => '武夷山市', 'is_city' => 0, 'parent_id' => 350700],
     ['id' => 350783, 'name' => '建瓯', 'title' => '建瓯市', 'is_city' => 0, 'parent_id' => 350700],
-    ['id' => 350784, 'name' => '建阳', 'title' => '建阳市', 'is_city' => 0, 'parent_id' => 350700],
     // 龙岩
     ['id' => 350802, 'name' => '新罗', 'title' => '新罗区', 'is_city' => 0, 'parent_id' => 350800],
+    ['id' => 350803, 'name' => '永定', 'title' => '永定区', 'is_city' => 0, 'parent_id' => 350800],
     ['id' => 350821, 'name' => '长汀', 'title' => '长汀县', 'is_city' => 0, 'parent_id' => 350800],
-    ['id' => 350822, 'name' => '永定', 'title' => '永定县', 'is_city' => 0, 'parent_id' => 350800],
     ['id' => 350823, 'name' => '上杭', 'title' => '上杭县', 'is_city' => 0, 'parent_id' => 350800],
     ['id' => 350824, 'name' => '武平', 'title' => '武平县', 'is_city' => 0, 'parent_id' => 350800],
     ['id' => 350825, 'name' => '连城', 'title' => '连城县', 'is_city' => 0, 'parent_id' => 350800],
@@ -1347,8 +1346,8 @@ return [
     ['id' => 361030, 'name' => '广昌', 'title' => '广昌县', 'is_city' => 0, 'parent_id' => 361000],
     // 上饶
     ['id' => 361102, 'name' => '信州', 'title' => '信州区', 'is_city' => 0, 'parent_id' => 361100],
+    ['id' => 361103, 'name' => '广丰', 'title' => '广丰区', 'is_city' => 0, 'parent_id' => 361100],
     ['id' => 361121, 'name' => '上饶', 'title' => '上饶县', 'is_city' => 0, 'parent_id' => 361100],
-    ['id' => 361122, 'name' => '广丰', 'title' => '广丰县', 'is_city' => 0, 'parent_id' => 361100],
     ['id' => 361123, 'name' => '玉山', 'title' => '玉山县', 'is_city' => 0, 'parent_id' => 361100],
     ['id' => 361124, 'name' => '铅山', 'title' => '铅山县', 'is_city' => 0, 'parent_id' => 361100],
     ['id' => 361125, 'name' => '横峰', 'title' => '横峰县', 'is_city' => 0, 'parent_id' => 361100],
@@ -1532,11 +1531,10 @@ return [
     ['id' => 410203, 'name' => '顺河', 'title' => '顺河回族区', 'is_city' => 0, 'parent_id' => 410200],
     ['id' => 410204, 'name' => '鼓楼', 'title' => '鼓楼区', 'is_city' => 0, 'parent_id' => 410200],
     ['id' => 410205, 'name' => '禹王台', 'title' => '禹王台区', 'is_city' => 0, 'parent_id' => 410200],
-    ['id' => 410211, 'name' => '金明', 'title' => '金明区', 'is_city' => 0, 'parent_id' => 410200],
+    ['id' => 410212, 'name' => '祥符', 'title' => '祥符区', 'is_city' => 0, 'parent_id' => 410200],
     ['id' => 410221, 'name' => '杞县', 'title' => '杞县', 'is_city' => 0, 'parent_id' => 410200],
     ['id' => 410222, 'name' => '通许', 'title' => '通许县', 'is_city' => 0, 'parent_id' => 410200],
     ['id' => 410223, 'name' => '尉氏', 'title' => '尉氏县', 'is_city' => 0, 'parent_id' => 410200],
-    ['id' => 410224, 'name' => '开封', 'title' => '开封县', 'is_city' => 0, 'parent_id' => 410200],
     ['id' => 410225, 'name' => '兰考', 'title' => '兰考县', 'is_city' => 0, 'parent_id' => 410200],
     // 洛阳
     ['id' => 410302, 'name' => '老城', 'title' => '老城区', 'is_city' => 0, 'parent_id' => 410300],
@@ -1627,8 +1625,8 @@ return [
     ['id' => 411122, 'name' => '临颍', 'title' => '临颍县', 'is_city' => 0, 'parent_id' => 411100],
     // 三门峡
     ['id' => 411202, 'name' => '湖滨', 'title' => '湖滨区', 'is_city' => 0, 'parent_id' => 411200],
+    ['id' => 411203, 'name' => '陕州', 'title' => '陕州区', 'is_city' => 0, 'parent_id' => 411200],
     ['id' => 411221, 'name' => '渑池', 'title' => '渑池县', 'is_city' => 0, 'parent_id' => 411200],
-    ['id' => 411222, 'name' => '陕县', 'title' => '陕县', 'is_city' => 0, 'parent_id' => 411200],
     ['id' => 411224, 'name' => '卢氏', 'title' => '卢氏县', 'is_city' => 0, 'parent_id' => 411200],
     ['id' => 411281, 'name' => '义马', 'title' => '义马市', 'is_city' => 0, 'parent_id' => 411200],
     ['id' => 411282, 'name' => '灵宝', 'title' => '灵宝市', 'is_city' => 0, 'parent_id' => 411200],
@@ -1689,6 +1687,7 @@ return [
     ['id' => 411727, 'name' => '汝南', 'title' => '汝南县', 'is_city' => 0, 'parent_id' => 411700],
     ['id' => 411728, 'name' => '遂平', 'title' => '遂平县', 'is_city' => 0, 'parent_id' => 411700],
     ['id' => 411729, 'name' => '新蔡', 'title' => '新蔡县', 'is_city' => 0, 'parent_id' => 411700],
+    // 济源
     // 湖北
     // 武汉
     ['id' => 420102, 'name' => '江岸', 'title' => '江岸区', 'is_city' => 0, 'parent_id' => 420100],
@@ -1802,6 +1801,10 @@ return [
     ['id' => 422826, 'name' => '咸丰', 'title' => '咸丰县', 'is_city' => 0, 'parent_id' => 422800],
     ['id' => 422827, 'name' => '来凤', 'title' => '来凤县', 'is_city' => 0, 'parent_id' => 422800],
     ['id' => 422828, 'name' => '鹤峰', 'title' => '鹤峰县', 'is_city' => 0, 'parent_id' => 422800],
+    // 仙桃
+    // 潜江
+    // 天门
+    // 神农架
     // 湖南
     // 长沙
     ['id' => 430102, 'name' => '芙蓉', 'title' => '芙蓉区', 'is_city' => 0, 'parent_id' => 430100],
@@ -1950,7 +1953,6 @@ return [
     ['id' => 440113, 'name' => '番禺', 'title' => '番禺区', 'is_city' => 0, 'parent_id' => 440100],
     ['id' => 440114, 'name' => '花都', 'title' => '花都区', 'is_city' => 0, 'parent_id' => 440100],
     ['id' => 440115, 'name' => '南沙', 'title' => '南沙区', 'is_city' => 0, 'parent_id' => 440100],
-    ['id' => 440116, 'name' => '萝岗', 'title' => '萝岗区', 'is_city' => 0, 'parent_id' => 440100],
     ['id' => 440117, 'name' => '从化', 'title' => '从化区', 'is_city' => 0, 'parent_id' => 440100],
     ['id' => 440118, 'name' => '增城', 'title' => '增城区', 'is_city' => 0, 'parent_id' => 440100],
     // 韶关
@@ -2016,11 +2018,11 @@ return [
     // 肇庆
     ['id' => 441202, 'name' => '端州', 'title' => '端州区', 'is_city' => 0, 'parent_id' => 441200],
     ['id' => 441203, 'name' => '鼎湖', 'title' => '鼎湖区', 'is_city' => 0, 'parent_id' => 441200],
+    ['id' => 441204, 'name' => '高要', 'title' => '高要区', 'is_city' => 0, 'parent_id' => 441200],
     ['id' => 441223, 'name' => '广宁', 'title' => '广宁县', 'is_city' => 0, 'parent_id' => 441200],
     ['id' => 441224, 'name' => '怀集', 'title' => '怀集县', 'is_city' => 0, 'parent_id' => 441200],
     ['id' => 441225, 'name' => '封开', 'title' => '封开县', 'is_city' => 0, 'parent_id' => 441200],
     ['id' => 441226, 'name' => '德庆', 'title' => '德庆县', 'is_city' => 0, 'parent_id' => 441200],
-    ['id' => 441283, 'name' => '高要', 'title' => '高要市', 'is_city' => 0, 'parent_id' => 441200],
     ['id' => 441284, 'name' => '四会', 'title' => '四会市', 'is_city' => 0, 'parent_id' => 441200],
     // 惠州
     ['id' => 441302, 'name' => '惠城', 'title' => '惠城区', 'is_city' => 0, 'parent_id' => 441300],
@@ -2051,8 +2053,8 @@ return [
     ['id' => 441625, 'name' => '东源', 'title' => '东源县', 'is_city' => 0, 'parent_id' => 441600],
     // 阳江
     ['id' => 441702, 'name' => '江城', 'title' => '江城区', 'is_city' => 0, 'parent_id' => 441700],
+    ['id' => 441704, 'name' => '阳东', 'title' => '阳东区', 'is_city' => 0, 'parent_id' => 441700],
     ['id' => 441721, 'name' => '阳西', 'title' => '阳西县', 'is_city' => 0, 'parent_id' => 441700],
-    ['id' => 441723, 'name' => '阳东', 'title' => '阳东县', 'is_city' => 0, 'parent_id' => 441700],
     ['id' => 441781, 'name' => '阳春', 'title' => '阳春市', 'is_city' => 0, 'parent_id' => 441700],
     // 清远
     ['id' => 441802, 'name' => '清城', 'title' => '清城区', 'is_city' => 0, 'parent_id' => 441800],
@@ -2063,6 +2065,8 @@ return [
     ['id' => 441826, 'name' => '连南', 'title' => '连南瑶族自治县', 'is_city' => 0, 'parent_id' => 441800],
     ['id' => 441881, 'name' => '英德', 'title' => '英德市', 'is_city' => 0, 'parent_id' => 441800],
     ['id' => 441882, 'name' => '连州', 'title' => '连州市', 'is_city' => 0, 'parent_id' => 441800],
+    // 东莞
+    // 中山
     // 潮州
     ['id' => 445102, 'name' => '湘桥', 'title' => '湘桥区', 'is_city' => 0, 'parent_id' => 445100],
     ['id' => 445103, 'name' => '潮安', 'title' => '潮安区', 'is_city' => 0, 'parent_id' => 445100],
@@ -2087,7 +2091,7 @@ return [
     ['id' => 450107, 'name' => '西乡塘', 'title' => '西乡塘区', 'is_city' => 0, 'parent_id' => 450100],
     ['id' => 450108, 'name' => '良庆', 'title' => '良庆区', 'is_city' => 0, 'parent_id' => 450100],
     ['id' => 450109, 'name' => '邕宁', 'title' => '邕宁区', 'is_city' => 0, 'parent_id' => 450100],
-    ['id' => 450122, 'name' => '武鸣', 'title' => '武鸣县', 'is_city' => 0, 'parent_id' => 450100],
+    ['id' => 450110, 'name' => '武鸣', 'title' => '武鸣区', 'is_city' => 0, 'parent_id' => 450100],
     ['id' => 450123, 'name' => '隆安', 'title' => '隆安县', 'is_city' => 0, 'parent_id' => 450100],
     ['id' => 450124, 'name' => '马山', 'title' => '马山县', 'is_city' => 0, 'parent_id' => 450100],
     ['id' => 450125, 'name' => '上林', 'title' => '上林县', 'is_city' => 0, 'parent_id' => 450100],
@@ -2165,13 +2169,13 @@ return [
     ['id' => 451022, 'name' => '田东', 'title' => '田东县', 'is_city' => 0, 'parent_id' => 451000],
     ['id' => 451023, 'name' => '平果', 'title' => '平果县', 'is_city' => 0, 'parent_id' => 451000],
     ['id' => 451024, 'name' => '德保', 'title' => '德保县', 'is_city' => 0, 'parent_id' => 451000],
-    ['id' => 451025, 'name' => '靖西', 'title' => '靖西县', 'is_city' => 0, 'parent_id' => 451000],
     ['id' => 451026, 'name' => '那坡', 'title' => '那坡县', 'is_city' => 0, 'parent_id' => 451000],
     ['id' => 451027, 'name' => '凌云', 'title' => '凌云县', 'is_city' => 0, 'parent_id' => 451000],
     ['id' => 451028, 'name' => '乐业', 'title' => '乐业县', 'is_city' => 0, 'parent_id' => 451000],
     ['id' => 451029, 'name' => '田林', 'title' => '田林县', 'is_city' => 0, 'parent_id' => 451000],
     ['id' => 451030, 'name' => '西林', 'title' => '西林县', 'is_city' => 0, 'parent_id' => 451000],
     ['id' => 451031, 'name' => '隆林', 'title' => '隆林各族自治县', 'is_city' => 0, 'parent_id' => 451000],
+    ['id' => 451081, 'name' => '靖西', 'title' => '靖西市', 'is_city' => 0, 'parent_id' => 451000],
     // 贺州
     ['id' => 451102, 'name' => '八步', 'title' => '八步区', 'is_city' => 0, 'parent_id' => 451100],
     ['id' => 451121, 'name' => '昭平', 'title' => '昭平县', 'is_city' => 0, 'parent_id' => 451100],
@@ -2215,6 +2219,23 @@ return [
     ['id' => 460203, 'name' => '吉阳', 'title' => '吉阳区', 'is_city' => 0, 'parent_id' => 460200],
     ['id' => 460204, 'name' => '天涯', 'title' => '天涯区', 'is_city' => 0, 'parent_id' => 460200],
     ['id' => 460205, 'name' => '崖州', 'title' => '崖州区', 'is_city' => 0, 'parent_id' => 460200],
+    // 三沙
+    // 儋州
+    // 五指山
+    // 琼海
+    // 文昌
+    // 万宁
+    // 东方
+    // 定安
+    // 屯昌
+    // 澄迈
+    // 临高
+    // 白沙
+    // 昌江
+    // 乐东
+    // 陵水
+    // 保亭
+    // 琼中
     // 重庆
     ['id' => 500101, 'name' => '万州', 'title' => '万州区', 'is_city' => 0, 'parent_id' => 500000],
     ['id' => 500102, 'name' => '涪陵', 'title' => '涪陵区', 'is_city' => 0, 'parent_id' => 500000],
@@ -2237,8 +2258,8 @@ return [
     ['id' => 500119, 'name' => '南川', 'title' => '南川区', 'is_city' => 0, 'parent_id' => 500000],
     ['id' => 500120, 'name' => '璧山', 'title' => '璧山区', 'is_city' => 0, 'parent_id' => 500000],
     ['id' => 500151, 'name' => '铜梁', 'title' => '铜梁区', 'is_city' => 0, 'parent_id' => 500000],
-    ['id' => 500223, 'name' => '潼南', 'title' => '潼南县', 'is_city' => 0, 'parent_id' => 500000],
-    ['id' => 500226, 'name' => '荣昌', 'title' => '荣昌县', 'is_city' => 0, 'parent_id' => 500000],
+    ['id' => 500152, 'name' => '潼南', 'title' => '潼南区', 'is_city' => 0, 'parent_id' => 500000],
+    ['id' => 500153, 'name' => '荣昌', 'title' => '荣昌区', 'is_city' => 0, 'parent_id' => 500000],
     ['id' => 500228, 'name' => '梁平', 'title' => '梁平县', 'is_city' => 0, 'parent_id' => 500000],
     ['id' => 500229, 'name' => '城口', 'title' => '城口县', 'is_city' => 0, 'parent_id' => 500000],
     ['id' => 500230, 'name' => '丰都', 'title' => '丰都县', 'is_city' => 0, 'parent_id' => 500000],
@@ -2357,8 +2378,8 @@ return [
     ['id' => 511381, 'name' => '阆中', 'title' => '阆中市', 'is_city' => 0, 'parent_id' => 511300],
     // 眉山
     ['id' => 511402, 'name' => '东坡', 'title' => '东坡区', 'is_city' => 0, 'parent_id' => 511400],
+    ['id' => 511403, 'name' => '彭山', 'title' => '彭山区', 'is_city' => 0, 'parent_id' => 511400],
     ['id' => 511421, 'name' => '仁寿', 'title' => '仁寿县', 'is_city' => 0, 'parent_id' => 511400],
-    ['id' => 511422, 'name' => '彭山', 'title' => '彭山县', 'is_city' => 0, 'parent_id' => 511400],
     ['id' => 511423, 'name' => '洪雅', 'title' => '洪雅县', 'is_city' => 0, 'parent_id' => 511400],
     ['id' => 511424, 'name' => '丹棱', 'title' => '丹棱县', 'is_city' => 0, 'parent_id' => 511400],
     ['id' => 511425, 'name' => '青神', 'title' => '青神县', 'is_city' => 0, 'parent_id' => 511400],
@@ -2409,6 +2430,7 @@ return [
     ['id' => 512022, 'name' => '乐至', 'title' => '乐至县', 'is_city' => 0, 'parent_id' => 512000],
     ['id' => 512081, 'name' => '简阳', 'title' => '简阳市', 'is_city' => 0, 'parent_id' => 512000],
     // 阿坝
+    ['id' => 513201, 'name' => '马尔康', 'title' => '马尔康市', 'is_city' => 0, 'parent_id' => 513200],
     ['id' => 513221, 'name' => '汶川', 'title' => '汶川县', 'is_city' => 0, 'parent_id' => 513200],
     ['id' => 513222, 'name' => '理县', 'title' => '理县', 'is_city' => 0, 'parent_id' => 513200],
     ['id' => 513223, 'name' => '茂县', 'title' => '茂县', 'is_city' => 0, 'parent_id' => 513200],
@@ -2417,13 +2439,12 @@ return [
     ['id' => 513226, 'name' => '金川', 'title' => '金川县', 'is_city' => 0, 'parent_id' => 513200],
     ['id' => 513227, 'name' => '小金', 'title' => '小金县', 'is_city' => 0, 'parent_id' => 513200],
     ['id' => 513228, 'name' => '黑水', 'title' => '黑水县', 'is_city' => 0, 'parent_id' => 513200],
-    ['id' => 513229, 'name' => '马尔康', 'title' => '马尔康县', 'is_city' => 0, 'parent_id' => 513200],
     ['id' => 513230, 'name' => '壤塘', 'title' => '壤塘县', 'is_city' => 0, 'parent_id' => 513200],
     ['id' => 513231, 'name' => '阿坝', 'title' => '阿坝县', 'is_city' => 0, 'parent_id' => 513200],
     ['id' => 513232, 'name' => '若尔盖', 'title' => '若尔盖县', 'is_city' => 0, 'parent_id' => 513200],
     ['id' => 513233, 'name' => '红原', 'title' => '红原县', 'is_city' => 0, 'parent_id' => 513200],
     // 甘孜
-    ['id' => 513321, 'name' => '康定', 'title' => '康定县', 'is_city' => 0, 'parent_id' => 513300],
+    ['id' => 513301, 'name' => '康定', 'title' => '康定市', 'is_city' => 0, 'parent_id' => 513300],
     ['id' => 513322, 'name' => '泸定', 'title' => '泸定县', 'is_city' => 0, 'parent_id' => 513300],
     ['id' => 513323, 'name' => '丹巴', 'title' => '丹巴县', 'is_city' => 0, 'parent_id' => 513300],
     ['id' => 513324, 'name' => '九龙', 'title' => '九龙县', 'is_city' => 0, 'parent_id' => 513300],
@@ -2493,7 +2514,7 @@ return [
     ['id' => 520382, 'name' => '仁怀', 'title' => '仁怀市', 'is_city' => 0, 'parent_id' => 520300],
     // 安顺
     ['id' => 520402, 'name' => '西秀', 'title' => '西秀区', 'is_city' => 0, 'parent_id' => 520400],
-    ['id' => 520421, 'name' => '平坝', 'title' => '平坝县', 'is_city' => 0, 'parent_id' => 520400],
+    ['id' => 520403, 'name' => '平坝', 'title' => '平坝区', 'is_city' => 0, 'parent_id' => 520400],
     ['id' => 520422, 'name' => '普定', 'title' => '普定县', 'is_city' => 0, 'parent_id' => 520400],
     ['id' => 520423, 'name' => '镇宁', 'title' => '镇宁布依族苗族自治县', 'is_city' => 0, 'parent_id' => 520400],
     ['id' => 520424, 'name' => '关岭', 'title' => '关岭布依族苗族自治县', 'is_city' => 0, 'parent_id' => 520400],
@@ -2596,9 +2617,9 @@ return [
     // 保山
     ['id' => 530502, 'name' => '隆阳', 'title' => '隆阳区', 'is_city' => 0, 'parent_id' => 530500],
     ['id' => 530521, 'name' => '施甸', 'title' => '施甸县', 'is_city' => 0, 'parent_id' => 530500],
-    ['id' => 530522, 'name' => '腾冲', 'title' => '腾冲县', 'is_city' => 0, 'parent_id' => 530500],
     ['id' => 530523, 'name' => '龙陵', 'title' => '龙陵县', 'is_city' => 0, 'parent_id' => 530500],
     ['id' => 530524, 'name' => '昌宁', 'title' => '昌宁县', 'is_city' => 0, 'parent_id' => 530500],
+    ['id' => 530581, 'name' => '腾冲', 'title' => '腾冲市', 'is_city' => 0, 'parent_id' => 530500],
     // 昭通
     ['id' => 530602, 'name' => '昭阳', 'title' => '昭阳区', 'is_city' => 0, 'parent_id' => 530600],
     ['id' => 530621, 'name' => '鲁甸', 'title' => '鲁甸县', 'is_city' => 0, 'parent_id' => 530600],
@@ -2700,7 +2721,7 @@ return [
     ['id' => 533324, 'name' => '贡山', 'title' => '贡山独龙族怒族自治县', 'is_city' => 0, 'parent_id' => 533300],
     ['id' => 533325, 'name' => '兰坪', 'title' => '兰坪白族普米族自治县', 'is_city' => 0, 'parent_id' => 533300],
     // 迪庆
-    ['id' => 533421, 'name' => '香格里拉', 'title' => '香格里拉县', 'is_city' => 0, 'parent_id' => 533400],
+    ['id' => 533401, 'name' => '香格里拉', 'title' => '香格里拉市', 'is_city' => 0, 'parent_id' => 533400],
     ['id' => 533422, 'name' => '德钦', 'title' => '德钦县', 'is_city' => 0, 'parent_id' => 533400],
     ['id' => 533423, 'name' => '维西', 'title' => '维西傈僳族自治县', 'is_city' => 0, 'parent_id' => 533400],
     // 西藏
@@ -2733,17 +2754,25 @@ return [
     ['id' => 540236, 'name' => '萨嘎', 'title' => '萨嘎县', 'is_city' => 0, 'parent_id' => 540200],
     ['id' => 540237, 'name' => '岗巴', 'title' => '岗巴县', 'is_city' => 0, 'parent_id' => 540200],
     // 昌都
-    ['id' => 542121, 'name' => '昌都', 'title' => '昌都县', 'is_city' => 0, 'parent_id' => 542100],
-    ['id' => 542122, 'name' => '江达', 'title' => '江达县', 'is_city' => 0, 'parent_id' => 542100],
-    ['id' => 542123, 'name' => '贡觉', 'title' => '贡觉县', 'is_city' => 0, 'parent_id' => 542100],
-    ['id' => 542124, 'name' => '类乌齐', 'title' => '类乌齐县', 'is_city' => 0, 'parent_id' => 542100],
-    ['id' => 542125, 'name' => '丁青', 'title' => '丁青县', 'is_city' => 0, 'parent_id' => 542100],
-    ['id' => 542126, 'name' => '察雅', 'title' => '察雅县', 'is_city' => 0, 'parent_id' => 542100],
-    ['id' => 542127, 'name' => '八宿', 'title' => '八宿县', 'is_city' => 0, 'parent_id' => 542100],
-    ['id' => 542128, 'name' => '左贡', 'title' => '左贡县', 'is_city' => 0, 'parent_id' => 542100],
-    ['id' => 542129, 'name' => '芒康', 'title' => '芒康县', 'is_city' => 0, 'parent_id' => 542100],
-    ['id' => 542132, 'name' => '洛隆', 'title' => '洛隆县', 'is_city' => 0, 'parent_id' => 542100],
-    ['id' => 542133, 'name' => '边坝', 'title' => '边坝县', 'is_city' => 0, 'parent_id' => 542100],
+    ['id' => 540302, 'name' => '卡若', 'title' => '卡若区', 'is_city' => 0, 'parent_id' => 540300],
+    ['id' => 540321, 'name' => '江达', 'title' => '江达县', 'is_city' => 0, 'parent_id' => 540300],
+    ['id' => 540322, 'name' => '贡觉', 'title' => '贡觉县', 'is_city' => 0, 'parent_id' => 540300],
+    ['id' => 540323, 'name' => '类乌齐', 'title' => '类乌齐县', 'is_city' => 0, 'parent_id' => 540300],
+    ['id' => 540324, 'name' => '丁青', 'title' => '丁青县', 'is_city' => 0, 'parent_id' => 540300],
+    ['id' => 540325, 'name' => '察雅', 'title' => '察雅县', 'is_city' => 0, 'parent_id' => 540300],
+    ['id' => 540326, 'name' => '八宿', 'title' => '八宿县', 'is_city' => 0, 'parent_id' => 540300],
+    ['id' => 540327, 'name' => '左贡', 'title' => '左贡县', 'is_city' => 0, 'parent_id' => 540300],
+    ['id' => 540328, 'name' => '芒康', 'title' => '芒康县', 'is_city' => 0, 'parent_id' => 540300],
+    ['id' => 540329, 'name' => '洛隆', 'title' => '洛隆县', 'is_city' => 0, 'parent_id' => 540300],
+    ['id' => 540330, 'name' => '边坝', 'title' => '边坝县', 'is_city' => 0, 'parent_id' => 540300],
+    // 林芝
+    ['id' => 540402, 'name' => '巴宜', 'title' => '巴宜区', 'is_city' => 0, 'parent_id' => 540400],
+    ['id' => 540421, 'name' => '工布江达', 'title' => '工布江达县', 'is_city' => 0, 'parent_id' => 540400],
+    ['id' => 540422, 'name' => '米林', 'title' => '米林县', 'is_city' => 0, 'parent_id' => 540400],
+    ['id' => 540423, 'name' => '墨脱', 'title' => '墨脱县', 'is_city' => 0, 'parent_id' => 540400],
+    ['id' => 540424, 'name' => '波密', 'title' => '波密县', 'is_city' => 0, 'parent_id' => 540400],
+    ['id' => 540425, 'name' => '察隅', 'title' => '察隅县', 'is_city' => 0, 'parent_id' => 540400],
+    ['id' => 540426, 'name' => '朗县', 'title' => '朗县', 'is_city' => 0, 'parent_id' => 540400],
     // 山南
     ['id' => 542221, 'name' => '乃东', 'title' => '乃东县', 'is_city' => 0, 'parent_id' => 542200],
     ['id' => 542222, 'name' => '扎囊', 'title' => '扎囊县', 'is_city' => 0, 'parent_id' => 542200],
@@ -2777,14 +2806,6 @@ return [
     ['id' => 542525, 'name' => '革吉', 'title' => '革吉县', 'is_city' => 0, 'parent_id' => 542500],
     ['id' => 542526, 'name' => '改则', 'title' => '改则县', 'is_city' => 0, 'parent_id' => 542500],
     ['id' => 542527, 'name' => '措勤', 'title' => '措勤县', 'is_city' => 0, 'parent_id' => 542500],
-    // 林芝
-    ['id' => 542621, 'name' => '林芝', 'title' => '林芝县', 'is_city' => 0, 'parent_id' => 542600],
-    ['id' => 542622, 'name' => '工布江达', 'title' => '工布江达县', 'is_city' => 0, 'parent_id' => 542600],
-    ['id' => 542623, 'name' => '米林', 'title' => '米林县', 'is_city' => 0, 'parent_id' => 542600],
-    ['id' => 542624, 'name' => '墨脱', 'title' => '墨脱县', 'is_city' => 0, 'parent_id' => 542600],
-    ['id' => 542625, 'name' => '波密', 'title' => '波密县', 'is_city' => 0, 'parent_id' => 542600],
-    ['id' => 542626, 'name' => '察隅', 'title' => '察隅县', 'is_city' => 0, 'parent_id' => 542600],
-    ['id' => 542627, 'name' => '朗县', 'title' => '朗县', 'is_city' => 0, 'parent_id' => 542600],
     // 陕西
     // 西安
     ['id' => 610102, 'name' => '新城', 'title' => '新城区', 'is_city' => 0, 'parent_id' => 610100],
@@ -2796,10 +2817,10 @@ return [
     ['id' => 610114, 'name' => '阎良', 'title' => '阎良区', 'is_city' => 0, 'parent_id' => 610100],
     ['id' => 610115, 'name' => '临潼', 'title' => '临潼区', 'is_city' => 0, 'parent_id' => 610100],
     ['id' => 610116, 'name' => '长安', 'title' => '长安区', 'is_city' => 0, 'parent_id' => 610100],
+    ['id' => 610117, 'name' => '高陵', 'title' => '高陵区', 'is_city' => 0, 'parent_id' => 610100],
     ['id' => 610122, 'name' => '蓝田', 'title' => '蓝田县', 'is_city' => 0, 'parent_id' => 610100],
     ['id' => 610124, 'name' => '周至', 'title' => '周至县', 'is_city' => 0, 'parent_id' => 610100],
     ['id' => 610125, 'name' => '户县', 'title' => '户县', 'is_city' => 0, 'parent_id' => 610100],
-    ['id' => 610126, 'name' => '高陵', 'title' => '高陵县', 'is_city' => 0, 'parent_id' => 610100],
     // 铜川
     ['id' => 610202, 'name' => '王益', 'title' => '王益区', 'is_city' => 0, 'parent_id' => 610200],
     ['id' => 610203, 'name' => '印台', 'title' => '印台区', 'is_city' => 0, 'parent_id' => 610200],
@@ -2835,7 +2856,7 @@ return [
     ['id' => 610481, 'name' => '兴平', 'title' => '兴平市', 'is_city' => 0, 'parent_id' => 610400],
     // 渭南
     ['id' => 610502, 'name' => '临渭', 'title' => '临渭区', 'is_city' => 0, 'parent_id' => 610500],
-    ['id' => 610521, 'name' => '华县', 'title' => '华县', 'is_city' => 0, 'parent_id' => 610500],
+    ['id' => 610503, 'name' => '华州', 'title' => '华州区', 'is_city' => 0, 'parent_id' => 610500],
     ['id' => 610522, 'name' => '潼关', 'title' => '潼关县', 'is_city' => 0, 'parent_id' => 610500],
     ['id' => 610523, 'name' => '大荔', 'title' => '大荔县', 'is_city' => 0, 'parent_id' => 610500],
     ['id' => 610524, 'name' => '合阳', 'title' => '合阳县', 'is_city' => 0, 'parent_id' => 610500],
@@ -2913,6 +2934,7 @@ return [
     ['id' => 620121, 'name' => '永登', 'title' => '永登县', 'is_city' => 0, 'parent_id' => 620100],
     ['id' => 620122, 'name' => '皋兰', 'title' => '皋兰县', 'is_city' => 0, 'parent_id' => 620100],
     ['id' => 620123, 'name' => '榆中', 'title' => '榆中县', 'is_city' => 0, 'parent_id' => 620100],
+    // 嘉峪关
     // 金昌
     ['id' => 620302, 'name' => '金川', 'title' => '金川区', 'is_city' => 0, 'parent_id' => 620300],
     ['id' => 620321, 'name' => '永昌', 'title' => '永昌县', 'is_city' => 0, 'parent_id' => 620300],
@@ -3014,7 +3036,7 @@ return [
     ['id' => 630123, 'name' => '湟源', 'title' => '湟源县', 'is_city' => 0, 'parent_id' => 630100],
     // 海东
     ['id' => 630202, 'name' => '乐都', 'title' => '乐都区', 'is_city' => 0, 'parent_id' => 630200],
-    ['id' => 630221, 'name' => '平安', 'title' => '平安县', 'is_city' => 0, 'parent_id' => 630200],
+    ['id' => 630203, 'name' => '平安', 'title' => '平安区', 'is_city' => 0, 'parent_id' => 630200],
     ['id' => 630222, 'name' => '民和', 'title' => '民和回族土族自治县', 'is_city' => 0, 'parent_id' => 630200],
     ['id' => 630223, 'name' => '互助', 'title' => '互助土族自治县', 'is_city' => 0, 'parent_id' => 630200],
     ['id' => 630224, 'name' => '化隆', 'title' => '化隆回族自治县', 'is_city' => 0, 'parent_id' => 630200],
@@ -3099,9 +3121,9 @@ return [
     ['id' => 650204, 'name' => '白碱滩', 'title' => '白碱滩区', 'is_city' => 0, 'parent_id' => 650200],
     ['id' => 650205, 'name' => '乌尔禾', 'title' => '乌尔禾区', 'is_city' => 0, 'parent_id' => 650200],
     // 吐鲁番
-    ['id' => 652101, 'name' => '吐鲁番', 'title' => '吐鲁番市', 'is_city' => 0, 'parent_id' => 652100],
-    ['id' => 652122, 'name' => '鄯善', 'title' => '鄯善县', 'is_city' => 0, 'parent_id' => 652100],
-    ['id' => 652123, 'name' => '托克逊', 'title' => '托克逊县', 'is_city' => 0, 'parent_id' => 652100],
+    ['id' => 650402, 'name' => '高昌', 'title' => '高昌区', 'is_city' => 0, 'parent_id' => 650400],
+    ['id' => 650421, 'name' => '鄯善', 'title' => '鄯善县', 'is_city' => 0, 'parent_id' => 650400],
+    ['id' => 650422, 'name' => '托克逊', 'title' => '托克逊县', 'is_city' => 0, 'parent_id' => 650400],
     // 哈密
     ['id' => 652201, 'name' => '哈密', 'title' => '哈密市', 'is_city' => 0, 'parent_id' => 652200],
     ['id' => 652222, 'name' => '巴里坤', 'title' => '巴里坤哈萨克自治县', 'is_city' => 0, 'parent_id' => 652200],
@@ -3169,6 +3191,7 @@ return [
     // 伊犁
     ['id' => 654002, 'name' => '伊宁市', 'title' => '伊宁市', 'is_city' => 0, 'parent_id' => 654000],
     ['id' => 654003, 'name' => '奎屯', 'title' => '奎屯市', 'is_city' => 0, 'parent_id' => 654000],
+    ['id' => 654004, 'name' => '霍尔果斯', 'title' => '霍尔果斯市', 'is_city' => 0, 'parent_id' => 654000],
     ['id' => 654021, 'name' => '伊宁县', 'title' => '伊宁县', 'is_city' => 0, 'parent_id' => 654000],
     ['id' => 654022, 'name' => '察布查尔', 'title' => '察布查尔锡伯自治县', 'is_city' => 0, 'parent_id' => 654000],
     ['id' => 654023, 'name' => '霍城', 'title' => '霍城县', 'is_city' => 0, 'parent_id' => 654000],
@@ -3193,4 +3216,12 @@ return [
     ['id' => 654324, 'name' => '哈巴河', 'title' => '哈巴河县', 'is_city' => 0, 'parent_id' => 654300],
     ['id' => 654325, 'name' => '青河', 'title' => '青河县', 'is_city' => 0, 'parent_id' => 654300],
     ['id' => 654326, 'name' => '吉木乃', 'title' => '吉木乃县', 'is_city' => 0, 'parent_id' => 654300],
+    // 石河子
+    // 阿拉尔
+    // 图木舒克
+    // 五家渠
+    // 北屯
+    // 铁门关
+    // 双河
+    // 可克达拉
 ];
